@@ -48,28 +48,49 @@ class TestCard(unittest.TestCase):
 class TestHand(unittest.TestCase):
 
     high_card = poker.Hand(poker.Card('Ad'), poker.Card('Ks'), poker.Card('Tc'), poker.Card('6c'), poker.Card('2h'))
+    high_card_total_value = 1413100602
 
     pair = poker.Hand(poker.Card('Ad'), poker.Card('As'), poker.Card('Tc'), poker.Card('6c'), poker.Card('2h'))
+    pair_total_value = 14.1414100502e10
+    pair_value = '14'
 
     two_pair = poker.Hand(poker.Card('Ad'), poker.Card('As'), poker.Card('Tc'), poker.Card('2c'), poker.Card('2h'))
+    two_pair_total_value = 1402.1414100202e10
+    two_pair_value = '1402'
 
     trips = poker.Hand(poker.Card('Ad'), poker.Card('As'), poker.Card('Ac'), poker.Card('6c'), poker.Card('2h'))
+    trips_total_value = 140000.1414140602e10
+    trips_value = '14'
 
     low_straight = poker.Hand(poker.Card('Ad'), poker.Card('2s'), poker.Card('3c'), poker.Card('4c'), poker.Card('5h'))
+    low_straight_total_value = 05000000.1405040302e10
+    low_straight_value = '05'
 
     high_straight = poker.Hand(poker.Card('Ad'), poker.Card('Ks'), poker.Card('Qc'), poker.Card('Jc'), poker.Card('Th'))
+    high_straight_total_value = 14000000.1413121110
+    high_straight_value = '14'
 
     flush = poker.Hand(poker.Card('Ad'), poker.Card('Kd'), poker.Card('Td'), poker.Card('6d'), poker.Card('2d'))
+    flush_total_value = 1400000000.1413100602
+    flush_value = '14'
 
     full_house = poker.Hand(poker.Card('Ad'), poker.Card('As'), poker.Card('Ac'), poker.Card('6c'), poker.Card('6h'))
+    full_house_total_value = 140600000000.1414140606
+    full_house_value = '1406'
 
     quads = poker.Hand(poker.Card('Ad'), poker.Card('As'), poker.Card('Ac'), poker.Card('Ah'), poker.Card('2h'))
+    quads_total_value = 14000000000000.1414141402
+    quads_house_value = '14'
 
-    straight_flush = poker.Hand(poker.Card('7s'), poker.Card('Js'), poker.Card('9s'),
-                                poker.Card('Ts'), poker.Card('8s'))
+    straight_flush = poker.Hand(poker.Card('7s'), poker.Card('6s'), poker.Card('9s'),
+                                poker.Card('5s'), poker.Card('8s'))
+    straight_flush_total_value = 0900000000000000.0908070605
+    straight_flush_house_value = '09'
 
     royal_straight_flush = poker.Hand(poker.Card('Ah'), poker.Card('Qh'), poker.Card('Kh'),
                                       poker.Card('Th'), poker.Card('Jh'))
+    royal_straight_flush_total_value = 1400000000000000.1413121110
+    royal_straight_flush_house_value = '14'
 
     def test_is_high_card(self):
         self.assertTrue(self.high_card.is_high_card())
@@ -200,6 +221,25 @@ class TestHand(unittest.TestCase):
         self.assertFalse(self.quads.is_royal_straight_flush())
         self.assertFalse(self.straight_flush.is_royal_straight_flush())
         self.assertTrue(self.royal_straight_flush.is_royal_straight_flush())
+
+    def test_high_card_value(self):
+        self.assertEqual(self.high_card_total_value, int(self.high_card._high_card()))
+
+    def test_pair_value(self):
+        self.assertEqual(self.pair_value, self.pair._pair())
+
+    def test_two_pair_value(self):
+        self.assertEqual(self.two_pair_value, self.two_pair._two_pairs())
+
+    def test_three_of_a_kind_value(self):
+        self.assertEqual(self.trips_value, self.trips._three_of_a_kind())
+
+    def test_straight_value(self):
+        self.assertEqual(self.low_straight_value, self.low_straight._straight())
+        self.assertEqual(self.high_straight_value, self.high_straight._straight())
+
+    def test_flush_value(self):
+        self.assertEqual(self.flush_value, self.flush._flush())
 
 
 if __name__ == '__main__':

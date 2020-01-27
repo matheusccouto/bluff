@@ -13,66 +13,122 @@ class Hand:
         self.ranks = [card.rank for card in args]
         self.suits = [card.suit for card in args]
         self.numerical_ranks = [card.numerical_rank for card in args]
+        self.value = self.get_value()
 
     @staticmethod
     def _find_repeated_ranks(ranks, reps):
         return set([rank for rank in ranks if ranks.count(rank) == reps])
 
-    def is_high_card(self):
-        return not any([self.is_pair(),
-                        self.is_two_pairs(),
-                        self.is_three_of_a_kind(),
-                        self.is_straight(),
-                        self.is_flush(),
-                        self.is_full_house(),
-                        self.is_four_of_a_kind(),
-                        self.is_straight_flush(),
-                        self.is_royal_straight_flush()])
+    def _high_card(self):
+        # Concatenate each cards value in a string, from the biggest to the smallest.
+        return ''.join([f'{rank:02d}' for rank in sorted(self.numerical_ranks, reverse=True)])
 
-    def is_pair(self):
-        return len(self._find_repeated_ranks(self.ranks, 2)) == 1 and not self.is_full_house()
+    def _pair(self):
+        pairs = list(self._find_repeated_ranks(self.numerical_ranks, 2))
+        if len(pairs) == 1:
+            return f'{pairs[0]:02d}'
+        else:
+            return '00'
 
-    def is_two_pairs(self):
-        return len(self._find_repeated_ranks(self.ranks, 2)) == 2
+    def _two_pairs(self):
+        pairs = list(self._find_repeated_ranks(self.numerical_ranks, 2))
+        if len(pairs) == 2:
+            return f'{max(pairs):02d}{min(pairs):02d}'
+        else:
+            return '0000'
 
-    def is_three_of_a_kind(self):
-        return bool(self._find_repeated_ranks(self.ranks, 3)) and not self.is_full_house()
+    def _three_of_a_kind(self):
+        trips = list(self._find_repeated_ranks(self.numerical_ranks, 3))
+        if trips:
+            return f'{trips[0]:02d}'
+        else:
+            return '00'
 
     def _straight(self):
         # In a straight an Ace can be the highest or lowest card. This makes necessary to check both possibilities.
         ace_high_hand = list(sorted(self.numerical_ranks))
         ace_low_hand = list(sorted([1 if rank == 14 else rank for rank in self.numerical_ranks]))
 
-        # Create reference strings (based on the lowest card) to compare to.
+        # Create reference strings1 ** (2 * i) (based on the lowest card) to compare to.
         ace_high_straight = list(range(ace_high_hand[0], ace_high_hand[0] + 5))
         ace_low_straight = list(range(ace_low_hand[0], ace_low_hand[0] + 5))
 
-        return ace_high_hand == ace_high_straight or ace_low_hand == ace_low_straight
-
-    def is_straight(self):
-        return self._straight() and not self._flush()
+        if ace_high_hand == ace_high_straight:
+            return f'{ace_high_hand[-1]:02d}'
+        elif ace_low_hand == ace_low_straight:
+            return f'{ace_low_hand[-1]:02d}'
+        else:
+            return '00'
 
     def _flush(self):
-        return len(set(self.suits)) == 1
+        if len(set(self.suits)) == 1:
+            return f'{max(self.numerical_ranks):02d}'
+        else:
+            return '00'
+
+    def _full_house(self):
+        trips = list(self._find_repeated_ranks(self.numerical_ranks, 3))
+        pair = list(self._find_repeated_ranks(self.numerical_ranks, 2))
+        if trips and pair:
+            return f'{trips[0]:02d}{pair[0]:02d}'
+        else:
+            return '0000'
+
+    def _four_of_a_kind(self):
+        quads = list(self._find_repeated_ranks(self.numerical_ranks, 4))
+        if quads:
+            return f'{quads[0]:02d}'
+        else:
+            return '00'
+
+    def _straight_flush(self):
+        if not '00' in self._straight() and not '00' in self._flush():
+            return self._straight()
+        else:
+            return '00'
+
+    def get_value(self):
+        value = ''
+        value = self._high_card() + value
+        value = self._pair() + value
+        value = self._two_pairs() + value
+        value = self._three_of_a_kind() + value
+        value = self._straight() + value
+        value = self._flush() + value
+        value = self._full_house() + value
+        value = self._four_of_a_kind() + value
+        value = self._straight_flush() + value
+        return int(value)
+
+    def is_high_card(self):
+        return self.value < 1e10
+
+    def is_pair(self):
+        return 1e10 < self.value < 1e12
+
+    def is_two_pairs(self):
+        return 1e12 < self.value < 1e16
+
+    def is_three_of_a_kind(self):
+        return 1e16 < self.value < 1e18
+
+    def is_straight(self):
+        return 1e18 < self.value < 1e20
 
     def is_flush(self):
-        return self._flush() and not self._straight()
+        return 1e20 < self.value < 1e22
 
     def is_full_house(self):
-        return bool(self._find_repeated_ranks(self.ranks, 3)) and bool(self._find_repeated_ranks(self.ranks, 2))
+        return 1e22 < self.value < 1e26
 
     def is_four_of_a_kind(self):
-        return bool(self._find_repeated_ranks(self.ranks, 4))
+        return 1e26 < self.value < 1e28
 
     def is_straight_flush(self):
-        return self._straight() and self._flush() and not ('T' in self.ranks and 'A' in self.ranks)
+        return 1e28 < self.value < 1.4e29
 
     def is_royal_straight_flush(self):
-        return self._straight() and self._flush() and ('T' in self.ranks and 'A' in self.ranks)
-
-    @property
-    def ranking(self):
-        return None
+        return self.value > 1.4e29
 
 
 class Card:
