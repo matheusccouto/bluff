@@ -241,6 +241,30 @@ class TestHand(unittest.TestCase):
     def test_flush_value(self):
         self.assertEqual(self.flush_value, self.flush._flush())
 
+    def test_string_arguments(self):
+        reference = poker.Hand(poker.Card('Ad'), poker.Card('Ks'), poker.Card('Tc'), poker.Card('6c'), poker.Card('2h'))
+        alternatives = [
+                        poker.Hand('Ad', 'Ks', 'Tc', '6c', '2h'),
+                        poker.Hand('AdKsTc6c2h'),
+                        poker.Hand('Ad Ks Tc 6c 2h'),
+                        poker.Hand('Ad, Ks, Tc, 6c, 2h'),
+                        poker.Hand('Ad,Ks,Tc,6c,2h'),
+                        ]
+        for alt in alternatives:
+            self.assertEqual(reference.value, alt.value)
+
+
+class TestPoker(unittest.TestCase):
+
+    hand1 = poker.Hand(poker.Card('Ts'), poker.Card('3d'), poker.Card('Jc'), poker.Card('3c'), poker.Card('2h'))
+    hand2 = poker.Hand(poker.Card('4s'), poker.Card('4h'), poker.Card('Jc'), poker.Card('3c'), poker.Card('2h'))
+    hand3 = poker.Hand(poker.Card('Qc'), poker.Card('Kc'), poker.Card('Jc'), poker.Card('3c'), poker.Card('2h'))
+
+    pkr = poker.Poker()
+
+    def test_winner(self):
+        self.assertEqual(1, self.pkr.winner(self.hand1, self.hand2, self.hand3))
+
 
 if __name__ == '__main__':
     unittest.main()
