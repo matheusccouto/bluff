@@ -1,18 +1,69 @@
 import re
+import itertools
+import random
 
 import numpy as np
+
+
+class NotEnoughCardsError(Exception):
+    pass
 
 
 class Poker:
     """ Abstract class for a poker game. """
 
-    def __init__(self, *args):
-        self.hands = args
+    def __init__(self, n_seats=9):
+        self.seats = [None] * n_seats
+        self.dealer = None
 
-    @staticmethod
-    def winner(*args):
-        values = [hand.value for hand in args]
-        return np.argmax(values)
+    def add_player(self, player, seat):
+        """ Add a player to a seat. """
+        self.seats[seat] = player
+
+    def remove_player(self, seat):
+        """ Remove a player from a seat. """
+        self.seats[seat] = None
+
+    def choose_dealer(self):
+        """ Chooses randomly the player to be the dealer. """
+        active_seats = [seat for seat, player in enumerate(self.seats) if player]
+        self.dealer = random.choice(active_seats)
+
+
+class Round:
+
+    def __init__(self, players, n_starting_cards=5):
+        self.players = players
+        self.deck = Deck()
+        self.n_starting_cards = n_starting_cards
+
+    def deal_cards(self, player, n_cards):
+        """ Deal a number of cards to all players. """
+        for _ in range(n_cards):
+            player.cards.append(self.deck.draw())
+
+    def new(self):
+        """ Start a new round. """
+        self.deck.set_and_shuffle()
+        for player in self.players:
+            self.deal_cards(player, self.n_starting_cards)
+
+    def _get_values(self):
+        """ Get values from players hands. """
+        return [player.hand.value for player in self.players]
+
+    def winner(self):
+        """ Evaluate the winner player. """
+        return np.argmax(self._get_values())
+
+
+class Player:
+
+    def __init__(self, name, chips):
+        self.name = name
+        self.chips = chips
+        self.cards = []
+        self.hand = None
 
 
 class Hand:
@@ -127,7 +178,7 @@ class Hand:
 
     def _straight_flush(self):
         """ Hand value code for a straight flush."""
-        if not '00' in self._straight() and not '00' in self._flush():
+        if '00' not in self._straight() and '00' not in self._flush():
             return self._straight()
         else:
             return '00'
@@ -187,6 +238,27 @@ class Hand:
         return self.value > 1.4e29
 
 
+class Deck:
+    ranks = ['2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K', 'A']
+    suits = ['s', 'h', 'c', 'd']
+
+    def __init__(self):
+        self.cards = self.set_and_shuffle()
+
+    def set_and_shuffle(self):
+        """ Set the deck cards and shuffle. """
+        cards = [Card(rank + suit) for rank, suit in itertools.product(self.ranks, self.suits)]
+        random.shuffle(cards)  # random.shuffle is inplace
+        return cards
+
+    def draw(self):
+        """ Draw a card. """
+        try:
+            return self.cards.pop(-1)
+        except IndexError:
+            NotEnoughCardsError('There are no cards left in the deck.')
+
+
 class Card:
     """ French deck card."""
 
@@ -201,7 +273,7 @@ class Card:
     @staticmethod
     def _rank(card_abbreviation):
         """ Get the rank from the card abbreviation. """
-        rank = re.findall(r"[2-9TtJjQqKkAa]{1}", card_abbreviation)
+        rank = re.findall(r"[2-9TtJjQqKkAa]", card_abbreviation)
         # If didn't match, the re.findall returns an empty list.
         if len(rank) == 1:
             return rank[0].upper()
@@ -211,7 +283,7 @@ class Card:
     @staticmethod
     def _suit(card_abbreviation):
         """ Get the suit from the card abbreviation. """
-        suit = re.findall(r"[SsHhCcDd]{1}", card_abbreviation)
+        suit = re.findall(r"[SsHhCcDd]", card_abbreviation)
         # If didn't match, the re.findall returns an empty list.
         if len(suit) == 1:
             return suit[0].lower()
