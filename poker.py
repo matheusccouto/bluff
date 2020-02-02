@@ -1,42 +1,34 @@
+""" An abstract Poker module. """
+
 import re
 import itertools
 import random
+from typing import Union, List, Iterable, Sequence
 
 import numpy as np
 
 
 class NotEnoughCardsError(Exception):
-    pass
+    """ Raise when the deck runs out of cards. """
 
 
-class Poker:
-    """ Abstract class for a poker game. """
-
-    def __init__(self, n_seats=9):
-        self.seats = [None] * n_seats
-        self.dealer = None
-
-    def add_player(self, player, seat):
-        """ Add a player to a seat. """
-        self.seats[seat] = player
-
-    def remove_player(self, seat):
-        """ Remove a player from a seat. """
-        self.seats[seat] = None
-
-    def choose_dealer(self):
-        """ Chooses randomly the player to be the dealer. """
-        active_seats = [seat for seat, player in enumerate(self.seats) if player]
-        self.dealer = random.choice(active_seats)
+class Player:
+    """ Poker player. """
+    def __init__(self, name: str, chips: int):
+        self.name = name
+        self.chips = chips
+        self.cards: List[Card] = []
+        self.hand: int = 0
 
 
 class Round:
-    def __init__(self, players, n_starting_cards=5):
+    """ Poker game round. """
+    def __init__(self, players: Iterable, n_starting_cards: int = 5):
         self.players = players
         self.deck = Deck()
         self.n_starting_cards = n_starting_cards
 
-    def deal_cards(self, player, n_cards):
+    def deal_cards(self, player: Player, n_cards: int):
         """ Deal a number of cards to all players. """
         for _ in range(n_cards):
             player.cards.append(self.deck.draw())
@@ -56,12 +48,25 @@ class Round:
         return np.argmax(self._get_values())
 
 
-class Player:
-    def __init__(self, name, chips):
-        self.name = name
-        self.chips = chips
-        self.cards = []
-        self.hand = None
+class Poker:
+    """ Abstract class for a poker game. """
+
+    def __init__(self, n_seats: int = 9):
+        self.seats: List[Union[None, Player]] = [None] * n_seats
+        self.dealer: int = random.randint(0, n_seats - 1)
+
+    def add_player(self, player: Player, seat: int):
+        """ Add a player to a seat. """
+        self.seats[seat] = player
+
+    def remove_player(self, seat: int):
+        """ Remove a player from a seat. """
+        self.seats[seat] = None
+
+    def choose_dealer(self):
+        """ Chooses randomly the player to be the dealer. """
+        active_seats = [seat for seat, player in enumerate(self.seats) if player]
+        self.dealer = random.choice(active_seats)
 
 
 class Hand:
@@ -79,9 +84,9 @@ class Hand:
         self.value = self.get_value()
 
     @staticmethod
-    def _find_repeated_ranks(ranks: list, reps: int) -> set:
+    def _find_repeated_ranks(ranks: Sequence, reps: int) -> set:
         """ Find ranks that are repeated a certain number of times in a hand. """
-        return set([rank for rank in ranks if ranks.count(rank) == reps])
+        return {rank for rank in ranks if ranks.count(rank) == reps}
 
     # The next methods are useful for the get_value method only. They work by transforming a hand in a huge integer
     # number. The bigger the number, the stronger the hand. Bellow the construction of this number is better explained.
@@ -114,24 +119,21 @@ class Hand:
         pairs = list(self._find_repeated_ranks(self.numerical_ranks, 2))
         if len(pairs) == 1:
             return f"{pairs[0]:02d}"
-        else:
-            return "00"
+        return "00"
 
     def _two_pairs(self) -> str:
         """ Hand value code for a two pair."""
         pairs = list(self._find_repeated_ranks(self.numerical_ranks, 2))
         if len(pairs) == 2:
             return f"{max(pairs):02d}{min(pairs):02d}"
-        else:
-            return "0000"
+        return "0000"
 
     def _three_of_a_kind(self) -> str:
         """ Hand value code for a three of a kind."""
         trips = list(self._find_repeated_ranks(self.numerical_ranks, 3))
         if trips:
             return f"{trips[0]:02d}"
-        else:
-            return "00"
+        return "00"
 
     def _straight(self) -> str:
         """ Hand value code for a straight."""
@@ -145,17 +147,15 @@ class Hand:
 
         if ace_high_hand == ace_high_straight:
             return f"{ace_high_hand[-1]:02d}"
-        elif ace_low_hand == ace_low_straight:
+        if ace_low_hand == ace_low_straight:
             return f"{ace_low_hand[-1]:02d}"
-        else:
-            return "00"
+        return "00"
 
     def _flush(self) -> str:
         """ Hand value code for a flush."""
         if len(set(self.suits)) == 1:
             return f"{max(self.numerical_ranks):02d}"
-        else:
-            return "00"
+        return "00"
 
     def _full_house(self) -> str:
         """ Hand value code for a full house."""
@@ -163,23 +163,20 @@ class Hand:
         pair = list(self._find_repeated_ranks(self.numerical_ranks, 2))
         if trips and pair:
             return f"{trips[0]:02d}{pair[0]:02d}"
-        else:
-            return "0000"
+        return "0000"
 
     def _four_of_a_kind(self) -> str:
         """ Hand value code for a four of a kind."""
         quads = list(self._find_repeated_ranks(self.numerical_ranks, 4))
         if quads:
             return f"{quads[0]:02d}"
-        else:
-            return "00"
+        return "00"
 
     def _straight_flush(self) -> str:
         """ Hand value code for a straight flush."""
         if "00" not in self._straight() and "00" not in self._flush():
             return self._straight()
-        else:
-            return "00"
+        return "00"
 
     def get_value(self) -> int:
         """ Get the numerical value of the hand. The bigger the value, the better the hand. """
@@ -237,7 +234,7 @@ class Hand:
 
 
 class Card:
-    """ French deck card."""
+    """ French-style deck card."""
 
     def __init__(self, abbreviation):
         self.rank = self._rank(abbreviation)
@@ -254,8 +251,7 @@ class Card:
         # If didn't match, the re.findall returns an empty list.
         if len(rank) == 1:
             return rank[0].upper()
-        else:
-            raise ValueError(f"'{card_abbreviation}' is not a valid card abbreviation.")
+        raise ValueError(f"'{card_abbreviation}' is not a valid card abbreviation.")
 
     @staticmethod
     def _suit(card_abbreviation: str) -> str:
@@ -264,8 +260,7 @@ class Card:
         # If didn't match, the re.findall returns an empty list.
         if len(suit) == 1:
             return suit[0].lower()
-        else:
-            raise ValueError(f"'{card_abbreviation}' is not a valid card abbreviation.")
+        raise ValueError(f"'{card_abbreviation}' is not a valid card abbreviation.")
 
     @staticmethod
     def _numerical_rank(rank: str) -> int:
@@ -277,13 +272,14 @@ class Card:
 
 
 class Deck:
+    """ French-style deck. """
     ranks = ["2", "3", "4", "5", "6", "7", "8", "9", "T", "J", "Q", "K", "A"]
     suits = ["s", "h", "c", "d"]
 
     def __init__(self):
         self.cards = self.set_and_shuffle()
 
-    def set_and_shuffle(self) -> list:
+    def set_and_shuffle(self) -> List[Card]:
         """ Set the deck cards and shuffle. """
         cards = [Card(rank + suit) for rank, suit in itertools.product(self.ranks, self.suits)]
         random.shuffle(cards)  # random.shuffle is inplace
