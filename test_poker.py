@@ -262,11 +262,6 @@ class TestPoker(unittest.TestCase):
     hand2 = poker.Hand(poker.Card("4s"), poker.Card("4h"), poker.Card("Jc"), poker.Card("3c"), poker.Card("2h"))
     hand3 = poker.Hand(poker.Card("Qc"), poker.Card("Kc"), poker.Card("Jc"), poker.Card("3c"), poker.Card("2h"))
 
-    pkr = poker.Poker()
-
-    def test_winner(self):
-        self.assertEqual(1, self.pkr.winner(self.hand1, self.hand2, self.hand3))
-
 
 if __name__ == "__main__":
     unittest.main()

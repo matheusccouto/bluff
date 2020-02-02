@@ -47,11 +47,11 @@ class Round:
         for player in self.players:
             self.deal_cards(player, self.n_starting_cards)
 
-    def _get_values(self):
+    def _get_values(self) -> list:
         """ Get values from players hands. """
         return [player.hand.value for player in self.players]
 
-    def winner(self):
+    def winner(self) -> np.ndarray:
         """ Evaluate the winner player. """
         return np.argmax(self._get_values())
 
@@ -79,7 +79,7 @@ class Hand:
         self.value = self.get_value()
 
     @staticmethod
-    def _find_repeated_ranks(ranks, reps):
+    def _find_repeated_ranks(ranks: list, reps: int) -> set:
         """ Find ranks that are repeated a certain number of times in a hand. """
         return set([rank for rank in ranks if ranks.count(rank) == reps])
 
@@ -104,12 +104,12 @@ class Hand:
     # In a nutshell, the next methods return a code used to form the hand value.
     # This is also where all the logic for deciding the hand level lies.
 
-    def _high_card(self):
+    def _high_card(self) -> str:
         """ Hand value code for a high card."""
         # Concatenate each cards value in a string, from the biggest to the smallest.
         return "".join([f"{rank:02d}" for rank in sorted(self.numerical_ranks, reverse=True)])
 
-    def _pair(self):
+    def _pair(self) -> str:
         """ Hand value code for a pair."""
         pairs = list(self._find_repeated_ranks(self.numerical_ranks, 2))
         if len(pairs) == 1:
@@ -117,7 +117,7 @@ class Hand:
         else:
             return "00"
 
-    def _two_pairs(self):
+    def _two_pairs(self) -> str:
         """ Hand value code for a two pair."""
         pairs = list(self._find_repeated_ranks(self.numerical_ranks, 2))
         if len(pairs) == 2:
@@ -125,7 +125,7 @@ class Hand:
         else:
             return "0000"
 
-    def _three_of_a_kind(self):
+    def _three_of_a_kind(self) -> str:
         """ Hand value code for a three of a kind."""
         trips = list(self._find_repeated_ranks(self.numerical_ranks, 3))
         if trips:
@@ -133,7 +133,7 @@ class Hand:
         else:
             return "00"
 
-    def _straight(self):
+    def _straight(self) -> str:
         """ Hand value code for a straight."""
         # In a straight an Ace can be the highest or lowest card. This makes necessary to check both possibilities.
         ace_high_hand = list(sorted(self.numerical_ranks))
@@ -150,14 +150,14 @@ class Hand:
         else:
             return "00"
 
-    def _flush(self):
+    def _flush(self) -> str:
         """ Hand value code for a flush."""
         if len(set(self.suits)) == 1:
             return f"{max(self.numerical_ranks):02d}"
         else:
             return "00"
 
-    def _full_house(self):
+    def _full_house(self) -> str:
         """ Hand value code for a full house."""
         trips = list(self._find_repeated_ranks(self.numerical_ranks, 3))
         pair = list(self._find_repeated_ranks(self.numerical_ranks, 2))
@@ -166,7 +166,7 @@ class Hand:
         else:
             return "0000"
 
-    def _four_of_a_kind(self):
+    def _four_of_a_kind(self) -> str:
         """ Hand value code for a four of a kind."""
         quads = list(self._find_repeated_ranks(self.numerical_ranks, 4))
         if quads:
@@ -174,14 +174,14 @@ class Hand:
         else:
             return "00"
 
-    def _straight_flush(self):
+    def _straight_flush(self) -> str:
         """ Hand value code for a straight flush."""
         if "00" not in self._straight() and "00" not in self._flush():
             return self._straight()
         else:
             return "00"
 
-    def get_value(self):
+    def get_value(self) -> int:
         """ Get the numerical value of the hand. The bigger the value, the better the hand. """
         value = ""
         value = self._high_card() + value
@@ -195,66 +195,45 @@ class Hand:
         value = self._straight_flush() + value
         return int(value)
 
-    def is_high_card(self):
+    def is_high_card(self) -> bool:
         """ Check if the hand is a high card. """
         return self.value < 1e10
 
-    def is_pair(self):
+    def is_pair(self) -> bool:
         """ Check if the hand is a pair. """
         return 1e10 < self.value < 1e12
 
-    def is_two_pairs(self):
+    def is_two_pairs(self) -> bool:
         """ Check if the hand is a two pair. """
         return 1e12 < self.value < 1e16
 
-    def is_three_of_a_kind(self):
+    def is_three_of_a_kind(self) -> bool:
         """ Check if the hand is a three of a kind. """
         return 1e16 < self.value < 1e18
 
-    def is_straight(self):
+    def is_straight(self) -> bool:
         """ Check if the hand is a straight. """
         return 1e18 < self.value < 1e20
 
-    def is_flush(self):
+    def is_flush(self) -> bool:
         """ Check if the hand is a flush. """
         return 1e20 < self.value < 1e22
 
-    def is_full_house(self):
+    def is_full_house(self) -> bool:
         """ Check if the hand is a full house. """
         return 1e22 < self.value < 1e26
 
-    def is_four_of_a_kind(self):
+    def is_four_of_a_kind(self) -> bool:
         """ Check if the hand is a four of a kind. """
         return 1e26 < self.value < 1e28
 
-    def is_straight_flush(self):
+    def is_straight_flush(self) -> bool:
         """ Check if the hand is a straight flush. """
         return 1e28 < self.value < 1.4e29
 
-    def is_royal_straight_flush(self):
+    def is_royal_straight_flush(self) -> bool:
         """ Check if the hand is a royal straight flush. """
         return self.value > 1.4e29
-
-
-class Deck:
-    ranks = ["2", "3", "4", "5", "6", "7", "8", "9", "T", "J", "Q", "K", "A"]
-    suits = ["s", "h", "c", "d"]
-
-    def __init__(self):
-        self.cards = self.set_and_shuffle()
-
-    def set_and_shuffle(self):
-        """ Set the deck cards and shuffle. """
-        cards = [Card(rank + suit) for rank, suit in itertools.product(self.ranks, self.suits)]
-        random.shuffle(cards)  # random.shuffle is inplace
-        return cards
-
-    def draw(self):
-        """ Draw a card. """
-        try:
-            return self.cards.pop(-1)
-        except IndexError:
-            NotEnoughCardsError("There are no cards left in the deck.")
 
 
 class Card:
@@ -269,7 +248,7 @@ class Card:
         return self.rank + self.suit
 
     @staticmethod
-    def _rank(card_abbreviation):
+    def _rank(card_abbreviation: str) -> str:
         """ Get the rank from the card abbreviation. """
         rank = re.findall(r"[2-9TtJjQqKkAa]", card_abbreviation)
         # If didn't match, the re.findall returns an empty list.
@@ -279,7 +258,7 @@ class Card:
             raise ValueError(f"'{card_abbreviation}' is not a valid card abbreviation.")
 
     @staticmethod
-    def _suit(card_abbreviation):
+    def _suit(card_abbreviation: str) -> str:
         """ Get the suit from the card abbreviation. """
         suit = re.findall(r"[SsHhCcDd]", card_abbreviation)
         # If didn't match, the re.findall returns an empty list.
@@ -289,9 +268,30 @@ class Card:
             raise ValueError(f"'{card_abbreviation}' is not a valid card abbreviation.")
 
     @staticmethod
-    def _numerical_rank(rank):
+    def _numerical_rank(rank: str) -> int:
         """ Get the numerical rank from an alpha-numerical rank. """
         numbers = {"T": 10, "J": 11, "Q": 12, "K": 13, "A": 14}
         for key, value in numbers.items():
             rank = rank.replace(key, str(value))
         return int(rank)
+
+
+class Deck:
+    ranks = ["2", "3", "4", "5", "6", "7", "8", "9", "T", "J", "Q", "K", "A"]
+    suits = ["s", "h", "c", "d"]
+
+    def __init__(self):
+        self.cards = self.set_and_shuffle()
+
+    def set_and_shuffle(self) -> list:
+        """ Set the deck cards and shuffle. """
+        cards = [Card(rank + suit) for rank, suit in itertools.product(self.ranks, self.suits)]
+        random.shuffle(cards)  # random.shuffle is inplace
+        return cards
+
+    def draw(self) -> Card:
+        """ Draw a card. """
+        try:
+            return self.cards.pop(-1)
+        except IndexError:
+            raise NotEnoughCardsError("There are no cards left in the deck.")
