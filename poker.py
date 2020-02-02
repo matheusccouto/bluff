@@ -31,7 +31,6 @@ class Poker:
 
 
 class Round:
-
     def __init__(self, players, n_starting_cards=5):
         self.players = players
         self.deck = Deck()
@@ -58,7 +57,6 @@ class Round:
 
 
 class Player:
-
     def __init__(self, name, chips):
         self.name = name
         self.chips = chips
@@ -72,7 +70,7 @@ class Hand:
     def __init__(self, *args):
         # Separate args if the user used a concatenated argument.
         if len(args) == 1:
-            args = re.findall(r'[2-9TJQKA][shcd]', args[0])
+            args = re.findall(r"[2-9TJQKA][shcd]", args[0])
         # Create cards instances if the user used string arguments.
         cards = [Card(card) if isinstance(card, str) else card for card in args]
         self.ranks = [card.rank for card in cards]
@@ -109,31 +107,31 @@ class Hand:
     def _high_card(self):
         """ Hand value code for a high card."""
         # Concatenate each cards value in a string, from the biggest to the smallest.
-        return ''.join([f'{rank:02d}' for rank in sorted(self.numerical_ranks, reverse=True)])
+        return "".join([f"{rank:02d}" for rank in sorted(self.numerical_ranks, reverse=True)])
 
     def _pair(self):
         """ Hand value code for a pair."""
         pairs = list(self._find_repeated_ranks(self.numerical_ranks, 2))
         if len(pairs) == 1:
-            return f'{pairs[0]:02d}'
+            return f"{pairs[0]:02d}"
         else:
-            return '00'
+            return "00"
 
     def _two_pairs(self):
         """ Hand value code for a two pair."""
         pairs = list(self._find_repeated_ranks(self.numerical_ranks, 2))
         if len(pairs) == 2:
-            return f'{max(pairs):02d}{min(pairs):02d}'
+            return f"{max(pairs):02d}{min(pairs):02d}"
         else:
-            return '0000'
+            return "0000"
 
     def _three_of_a_kind(self):
         """ Hand value code for a three of a kind."""
         trips = list(self._find_repeated_ranks(self.numerical_ranks, 3))
         if trips:
-            return f'{trips[0]:02d}'
+            return f"{trips[0]:02d}"
         else:
-            return '00'
+            return "00"
 
     def _straight(self):
         """ Hand value code for a straight."""
@@ -146,46 +144,46 @@ class Hand:
         ace_low_straight = list(range(ace_low_hand[0], ace_low_hand[0] + 5))
 
         if ace_high_hand == ace_high_straight:
-            return f'{ace_high_hand[-1]:02d}'
+            return f"{ace_high_hand[-1]:02d}"
         elif ace_low_hand == ace_low_straight:
-            return f'{ace_low_hand[-1]:02d}'
+            return f"{ace_low_hand[-1]:02d}"
         else:
-            return '00'
+            return "00"
 
     def _flush(self):
         """ Hand value code for a flush."""
         if len(set(self.suits)) == 1:
-            return f'{max(self.numerical_ranks):02d}'
+            return f"{max(self.numerical_ranks):02d}"
         else:
-            return '00'
+            return "00"
 
     def _full_house(self):
         """ Hand value code for a full house."""
         trips = list(self._find_repeated_ranks(self.numerical_ranks, 3))
         pair = list(self._find_repeated_ranks(self.numerical_ranks, 2))
         if trips and pair:
-            return f'{trips[0]:02d}{pair[0]:02d}'
+            return f"{trips[0]:02d}{pair[0]:02d}"
         else:
-            return '0000'
+            return "0000"
 
     def _four_of_a_kind(self):
         """ Hand value code for a four of a kind."""
         quads = list(self._find_repeated_ranks(self.numerical_ranks, 4))
         if quads:
-            return f'{quads[0]:02d}'
+            return f"{quads[0]:02d}"
         else:
-            return '00'
+            return "00"
 
     def _straight_flush(self):
         """ Hand value code for a straight flush."""
-        if '00' not in self._straight() and '00' not in self._flush():
+        if "00" not in self._straight() and "00" not in self._flush():
             return self._straight()
         else:
-            return '00'
+            return "00"
 
     def get_value(self):
         """ Get the numerical value of the hand. The bigger the value, the better the hand. """
-        value = ''
+        value = ""
         value = self._high_card() + value
         value = self._pair() + value
         value = self._two_pairs() + value
@@ -239,8 +237,8 @@ class Hand:
 
 
 class Deck:
-    ranks = ['2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K', 'A']
-    suits = ['s', 'h', 'c', 'd']
+    ranks = ["2", "3", "4", "5", "6", "7", "8", "9", "T", "J", "Q", "K", "A"]
+    suits = ["s", "h", "c", "d"]
 
     def __init__(self):
         self.cards = self.set_and_shuffle()
@@ -256,7 +254,7 @@ class Deck:
         try:
             return self.cards.pop(-1)
         except IndexError:
-            NotEnoughCardsError('There are no cards left in the deck.')
+            NotEnoughCardsError("There are no cards left in the deck.")
 
 
 class Card:
@@ -293,7 +291,7 @@ class Card:
     @staticmethod
     def _numerical_rank(rank):
         """ Get the numerical rank from an alpha-numerical rank. """
-        numbers = {'T': 10, 'J': 11, 'Q': 12, 'K': 13, 'A': 14}
+        numbers = {"T": 10, "J": 11, "Q": 12, "K": 13, "A": 14}
         for key, value in numbers.items():
             rank = rank.replace(key, str(value))
         return int(rank)

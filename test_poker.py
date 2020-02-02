@@ -47,50 +47,52 @@ class TestCard(unittest.TestCase):
 
 class TestHand(unittest.TestCase):
 
-    high_card = poker.Hand(poker.Card('Ad'), poker.Card('Ks'), poker.Card('Tc'), poker.Card('6c'), poker.Card('2h'))
+    high_card = poker.Hand(poker.Card("Ad"), poker.Card("Ks"), poker.Card("Tc"), poker.Card("6c"), poker.Card("2h"))
     high_card_total_value = 1413100602
 
-    pair = poker.Hand(poker.Card('Ad'), poker.Card('As'), poker.Card('Tc'), poker.Card('6c'), poker.Card('2h'))
+    pair = poker.Hand(poker.Card("Ad"), poker.Card("As"), poker.Card("Tc"), poker.Card("6c"), poker.Card("2h"))
     pair_total_value = 14.1414100502e10
-    pair_value = '14'
+    pair_value = "14"
 
-    two_pair = poker.Hand(poker.Card('Ad'), poker.Card('As'), poker.Card('Tc'), poker.Card('2c'), poker.Card('2h'))
+    two_pair = poker.Hand(poker.Card("Ad"), poker.Card("As"), poker.Card("Tc"), poker.Card("2c"), poker.Card("2h"))
     two_pair_total_value = 1402.1414100202e10
-    two_pair_value = '1402'
+    two_pair_value = "1402"
 
-    trips = poker.Hand(poker.Card('Ad'), poker.Card('As'), poker.Card('Ac'), poker.Card('6c'), poker.Card('2h'))
+    trips = poker.Hand(poker.Card("Ad"), poker.Card("As"), poker.Card("Ac"), poker.Card("6c"), poker.Card("2h"))
     trips_total_value = 140000.1414140602e10
-    trips_value = '14'
+    trips_value = "14"
 
-    low_straight = poker.Hand(poker.Card('Ad'), poker.Card('2s'), poker.Card('3c'), poker.Card('4c'), poker.Card('5h'))
+    low_straight = poker.Hand(poker.Card("Ad"), poker.Card("2s"), poker.Card("3c"), poker.Card("4c"), poker.Card("5h"))
     low_straight_total_value = 05000000.1405040302e10
-    low_straight_value = '05'
+    low_straight_value = "05"
 
-    high_straight = poker.Hand(poker.Card('Ad'), poker.Card('Ks'), poker.Card('Qc'), poker.Card('Jc'), poker.Card('Th'))
+    high_straight = poker.Hand(poker.Card("Ad"), poker.Card("Ks"), poker.Card("Qc"), poker.Card("Jc"), poker.Card("Th"))
     high_straight_total_value = 14000000.1413121110
-    high_straight_value = '14'
+    high_straight_value = "14"
 
-    flush = poker.Hand(poker.Card('Ad'), poker.Card('Kd'), poker.Card('Td'), poker.Card('6d'), poker.Card('2d'))
+    flush = poker.Hand(poker.Card("Ad"), poker.Card("Kd"), poker.Card("Td"), poker.Card("6d"), poker.Card("2d"))
     flush_total_value = 1400000000.1413100602
-    flush_value = '14'
+    flush_value = "14"
 
-    full_house = poker.Hand(poker.Card('Ad'), poker.Card('As'), poker.Card('Ac'), poker.Card('6c'), poker.Card('6h'))
+    full_house = poker.Hand(poker.Card("Ad"), poker.Card("As"), poker.Card("Ac"), poker.Card("6c"), poker.Card("6h"))
     full_house_total_value = 140600000000.1414140606
-    full_house_value = '1406'
+    full_house_value = "1406"
 
-    quads = poker.Hand(poker.Card('Ad'), poker.Card('As'), poker.Card('Ac'), poker.Card('Ah'), poker.Card('2h'))
+    quads = poker.Hand(poker.Card("Ad"), poker.Card("As"), poker.Card("Ac"), poker.Card("Ah"), poker.Card("2h"))
     quads_total_value = 14000000000000.1414141402
-    quads_house_value = '14'
+    quads_house_value = "14"
 
-    straight_flush = poker.Hand(poker.Card('7s'), poker.Card('6s'), poker.Card('9s'),
-                                poker.Card('5s'), poker.Card('8s'))
+    straight_flush = poker.Hand(
+        poker.Card("7s"), poker.Card("6s"), poker.Card("9s"), poker.Card("5s"), poker.Card("8s")
+    )
     straight_flush_total_value = 0900000000000000.0908070605
-    straight_flush_house_value = '09'
+    straight_flush_house_value = "09"
 
-    royal_straight_flush = poker.Hand(poker.Card('Ah'), poker.Card('Qh'), poker.Card('Kh'),
-                                      poker.Card('Th'), poker.Card('Jh'))
+    royal_straight_flush = poker.Hand(
+        poker.Card("Ah"), poker.Card("Qh"), poker.Card("Kh"), poker.Card("Th"), poker.Card("Jh")
+    )
     royal_straight_flush_total_value = 1400000000000000.1413121110
-    royal_straight_flush_house_value = '14'
+    royal_straight_flush_house_value = "14"
 
     def test_is_high_card(self):
         self.assertTrue(self.high_card.is_high_card())
@@ -242,23 +244,23 @@ class TestHand(unittest.TestCase):
         self.assertEqual(self.flush_value, self.flush._flush())
 
     def test_string_arguments(self):
-        reference = poker.Hand(poker.Card('Ad'), poker.Card('Ks'), poker.Card('Tc'), poker.Card('6c'), poker.Card('2h'))
+        reference = poker.Hand(poker.Card("Ad"), poker.Card("Ks"), poker.Card("Tc"), poker.Card("6c"), poker.Card("2h"))
         alternatives = [
-                        poker.Hand('Ad', 'Ks', 'Tc', '6c', '2h'),
-                        poker.Hand('AdKsTc6c2h'),
-                        poker.Hand('Ad Ks Tc 6c 2h'),
-                        poker.Hand('Ad, Ks, Tc, 6c, 2h'),
-                        poker.Hand('Ad,Ks,Tc,6c,2h'),
-                        ]
+            poker.Hand("Ad", "Ks", "Tc", "6c", "2h"),
+            poker.Hand("AdKsTc6c2h"),
+            poker.Hand("Ad Ks Tc 6c 2h"),
+            poker.Hand("Ad, Ks, Tc, 6c, 2h"),
+            poker.Hand("Ad,Ks,Tc,6c,2h"),
+        ]
         for alt in alternatives:
             self.assertEqual(reference.value, alt.value)
 
 
 class TestPoker(unittest.TestCase):
 
-    hand1 = poker.Hand(poker.Card('Ts'), poker.Card('3d'), poker.Card('Jc'), poker.Card('3c'), poker.Card('2h'))
-    hand2 = poker.Hand(poker.Card('4s'), poker.Card('4h'), poker.Card('Jc'), poker.Card('3c'), poker.Card('2h'))
-    hand3 = poker.Hand(poker.Card('Qc'), poker.Card('Kc'), poker.Card('Jc'), poker.Card('3c'), poker.Card('2h'))
+    hand1 = poker.Hand(poker.Card("Ts"), poker.Card("3d"), poker.Card("Jc"), poker.Card("3c"), poker.Card("2h"))
+    hand2 = poker.Hand(poker.Card("4s"), poker.Card("4h"), poker.Card("Jc"), poker.Card("3c"), poker.Card("2h"))
+    hand3 = poker.Hand(poker.Card("Qc"), poker.Card("Kc"), poker.Card("Jc"), poker.Card("3c"), poker.Card("2h"))
 
     pkr = poker.Poker()
 
@@ -266,5 +268,5 @@ class TestPoker(unittest.TestCase):
         self.assertEqual(1, self.pkr.winner(self.hand1, self.hand2, self.hand3))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()
