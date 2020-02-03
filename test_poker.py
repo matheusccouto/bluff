@@ -1,4 +1,6 @@
 import unittest
+import itertools
+
 import pandas as pd
 
 import poker
@@ -10,6 +12,7 @@ test_hands = pd.read_csv('test_hands.csv', index_col=None)
 class TestCard(unittest.TestCase):
 
     RANKS = ("2", "3", "4", "5", "6", "7", "8", "9", "T", "J", "Q", "K", "A")
+    SUITS = ("s", "h", "c", "d")
 
     def test_case_suit(self):
         lowercase_card = poker.Card("As")
@@ -33,8 +36,7 @@ class TestCard(unittest.TestCase):
             self.assertEqual(card.numerical_rank, numerical_rank)
 
     def test_all_suits(self):
-        suits = ("s", "h", "c", "d")
-        for suit in suits:
+        for suit in self.SUITS:
             card = poker.Card(f"A{suit}")
             self.assertEqual(card.suit, suit)
 
@@ -47,6 +49,10 @@ class TestCard(unittest.TestCase):
         invalid_suits = ("spades", "hearts", "clubs", "diamonds", "x", "y", "z")
         for suit in invalid_suits:
             self.assertRaises(ValueError, poker.Card, f"A{suit}")
+
+    def test_repr(self):
+        for rank, suit in itertools.product(self.RANKS, self.SUITS):
+            self.assertEquals(rank + suit, repr(poker.Card(rank + suit)))
 
 
 class TestHand(unittest.TestCase):
@@ -116,6 +122,14 @@ class TestHand(unittest.TestCase):
         ]
         for alt in alternatives:
             self.assertEqual(reference.value, alt.value)
+
+    def test_repr(self):
+        for row in test_hands.itertuples():
+            # Since the repr from Hand sorts the hand. Comparing the repr to the hand string in the test_hands.csv
+            # would fail. The way I decided to check if it was working was to construct another Hand from the repr.
+            # If the repr is working correctly, it must construct a Hand instance with the same repr as the hand
+            # instance from the hand created by with the test_hand.csv.
+            self.assertEquals(repr(poker.Hand(repr(poker.Hand(row.hand)))), repr(poker.Hand(row.hand)))
 
 
 class TestPoker(unittest.TestCase):
