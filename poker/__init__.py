@@ -1,8 +1,8 @@
 """ An abstract Poker module. """
 
-import re
 import itertools
 import random
+import re
 from typing import Union, List, Iterable, Sequence
 
 import numpy as np
@@ -82,6 +82,9 @@ class Hand:
         self.suits = [card.suit for card in cards]
         self.numerical_ranks = [card.numerical_rank for card in cards]
         self.value = self.get_value()
+
+    def __repr__(self):
+        return ' '.join([rank + suit for _, rank, suit in sorted(zip(self.numerical_ranks, self.ranks, self.suits))])
 
     @staticmethod
     def _find_repeated_ranks(ranks: Sequence, reps: int) -> set:

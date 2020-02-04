@@ -6,7 +6,7 @@ import pandas as pd
 import poker
 
 
-test_hands = pd.read_csv('test_hands.csv', index_col=None)
+test_hands = pd.read_csv('tests\\test_hands.csv', index_col=None)
 
 
 class TestCard(unittest.TestCase):
@@ -137,6 +137,12 @@ class TestPoker(unittest.TestCase):
     hand1 = poker.Hand(poker.Card("Ts"), poker.Card("3d"), poker.Card("Jc"), poker.Card("3c"), poker.Card("2h"))
     hand2 = poker.Hand(poker.Card("4s"), poker.Card("4h"), poker.Card("Jc"), poker.Card("3c"), poker.Card("2h"))
     hand3 = poker.Hand(poker.Card("Qc"), poker.Card("Kc"), poker.Card("Jc"), poker.Card("3c"), poker.Card("2h"))
+
+    def test_add_player(self):
+        pkr = poker.Poker(n_seats=9)
+        player = poker.Player(name='Chris Moneymaker', chips=1000)
+        pkr.add_player(player, seat=1)
+
 
 
 if __name__ == "__main__":
