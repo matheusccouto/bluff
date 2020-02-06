@@ -3,7 +3,7 @@
 import itertools
 import random
 import re
-from typing import Union, List, Iterable, Sequence
+from typing import Union, List, Iterable, Sequence, Sized
 
 import numpy as np
 
@@ -48,6 +48,7 @@ class Round:
         return np.argmax(self._get_values())
 
 
+# TODO Add Start
 class Poker:
     """ Abstract class for a poker game. """
 
@@ -181,9 +182,24 @@ class Hand:
             return self._straight()
         return "00"
 
+    @staticmethod
+    def compensate_missing_cards(ranks: Sized, value: str) -> str:
+        if len(ranks) < 5:
+            missing = 5 - len(ranks)
+            return value + '00' * missing
+        return value
+
+    @staticmethod
+    def compensate_extra_cards(ranks: Sized, value: str) -> str:
+        if len(ranks) > 5:
+            extras = len(ranks) - 5
+            return value[:-2 * extras]
+        return value
+
     def get_value(self) -> int:
         """ Get the numerical value of the hand. The bigger the value, the better the hand. """
         value = ""
+
         value = self._high_card() + value
         value = self._pair() + value
         value = self._two_pairs() + value
@@ -193,6 +209,10 @@ class Hand:
         value = self._full_house() + value
         value = self._four_of_a_kind() + value
         value = self._straight_flush() + value
+
+        value = self.compensate_missing_cards(self.ranks, value)
+        value = self.compensate_extra_cards(self.ranks, value)
+
         return int(value)
 
     def is_high_card(self) -> bool:
