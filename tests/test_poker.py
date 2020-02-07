@@ -68,6 +68,13 @@ class TestHand(unittest.TestCase):
                "is_straight_flush",
                "is_royal_straight_flush")
 
+    def check_create_empty_hand(self):
+        hand = poker.Hand()
+        self.assertEqual(hand.ranks, [])
+        self.assertEqual(hand.suits, [])
+        self.assertEqual(hand.numerical_ranks, [])
+        self.assertEqual(hand.value, 0)
+
     def check_hand_ranking_method(self, method):
         for row in test_hands.itertuples():
             # Remove the "is_" from the beginning of the method name to compare with the ranking from the file.

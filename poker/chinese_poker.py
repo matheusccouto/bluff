@@ -1,4 +1,3 @@
-# TODO Test Mid and Bottom Royalties
 # TODO Add Place Card
 # TODO Add discard card
 from typing import Dict
@@ -70,3 +69,7 @@ class BottomHand(Hand):
         02e28: 15,
         14e28: 25,
     }
+
+
+class Player(poker.Player):
+    pass

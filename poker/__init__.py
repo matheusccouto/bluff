@@ -3,7 +3,7 @@
 import itertools
 import random
 import re
-from typing import Union, List, Iterable, Sequence, Sized
+from typing import Union, List, Iterable, Sequence, Sized, Tuple
 
 import numpy as np
 
@@ -18,7 +18,7 @@ class Player:
         self.name = name
         self.chips = chips
         self.cards: List[Card] = []
-        self.hand: int = 0
+        self.hand: Hand = None
 
 
 class Round:
@@ -70,22 +70,97 @@ class Poker:
         self.dealer = random.choice(active_seats)
 
 
+class Card:
+    """ French-style deck card."""
+
+    def __init__(self, abbreviation):
+        self.rank = self._rank(abbreviation)
+        self.suit = self._suit(abbreviation)
+        self.numerical_rank = self._numerical_rank(self.rank)
+
+    def __repr__(self):
+        return self.rank + self.suit
+
+    @staticmethod
+    def _rank(card_abbreviation: str) -> str:
+        """ Get the rank from the card abbreviation. """
+        rank = re.findall(r"[2-9TtJjQqKkAa]", card_abbreviation)
+        # If didn't match, the re.findall returns an empty list.
+        if len(rank) == 1:
+            return rank[0].upper()
+        raise ValueError(f"'{card_abbreviation}' is not a valid card abbreviation.")
+
+    @staticmethod
+    def _suit(card_abbreviation: str) -> str:
+        """ Get the suit from the card abbreviation. """
+        suit = re.findall(r"[SsHhCcDd]", card_abbreviation)
+        # If didn't match, the re.findall returns an empty list.
+        if len(suit) == 1:
+            return suit[0].lower()
+        raise ValueError(f"'{card_abbreviation}' is not a valid card abbreviation.")
+
+    @staticmethod
+    def _numerical_rank(rank: str) -> int:
+        """ Get the numerical rank from an alpha-numerical rank. """
+        numbers = {"T": 10, "J": 11, "Q": 12, "K": 13, "A": 14}
+        for key, value in numbers.items():
+            rank = rank.replace(key, str(value))
+        return int(rank)
+
+
+class Deck:
+    """ French-style deck. """
+    ranks = ["2", "3", "4", "5", "6", "7", "8", "9", "T", "J", "Q", "K", "A"]
+    suits = ["s", "h", "c", "d"]
+
+    def __init__(self):
+        self.cards = self.set_and_shuffle()
+
+    def set_and_shuffle(self) -> List[Card]:
+        """ Set the deck cards and shuffle. """
+        cards = [Card(rank + suit) for rank, suit in itertools.product(self.ranks, self.suits)]
+        random.shuffle(cards)  # random.shuffle is inplace
+        return cards
+
+    def draw(self) -> Card:
+        """ Draw a card. """
+        try:
+            return self.cards.pop(-1)
+        except IndexError:
+            raise NotEnoughCardsError("There are no cards left in the deck.")
+
+
 class Hand:
     """ Poker hand. Formed by Card objects. """
 
-    def __init__(self, *args):
-        # Separate args if the user used a concatenated argument.
-        if len(args) == 1:
-            args = re.findall(r"[2-9TJQKA][shcd]", args[0])
-        # Create cards instances if the user used string arguments.
-        cards = [Card(card) if isinstance(card, str) else card for card in args]
-        self.ranks = [card.rank for card in cards]
-        self.suits = [card.suit for card in cards]
-        self.numerical_ranks = [card.numerical_rank for card in cards]
-        self.value = self.get_value()
+    def __init__(self, *args: str):
+        self.ranks: List[str] = []
+        self.suits: List[str] = []
+        self.numerical_ranks: List[int] = []
+        self.value: int = 0
+
+        self.add(*args)
 
     def __repr__(self):
         return ' '.join([rank + suit for _, rank, suit in sorted(zip(self.numerical_ranks, self.ranks, self.suits))])
+
+    @staticmethod
+    def _args_to_cards(*args: str) -> List[Card]:
+        """ Parse class arguments to Cards instances. """
+        # Separate args if the user used a concatenated argument.
+        if len(args) == 1:
+            args = re.findall(r"[2-9TJQKA][shcd]", args[0])
+
+        # Create cards instances if the user used string arguments.
+        return [Card(card) if isinstance(card, str) else card for card in args]
+
+    def add(self, *args: str):
+        """ Add cards to the hands. """
+        cards = self._args_to_cards(*args)
+        self.ranks += [card.rank for card in cards]
+        self.suits += [card.suit for card in cards]
+        self.numerical_ranks += [card.numerical_rank for card in cards]
+        self.value += self.get_value()
 
     @staticmethod
     def _find_repeated_ranks(ranks: Sequence, reps: int) -> set:
@@ -254,63 +329,3 @@ class Hand:
     def is_royal_straight_flush(self) -> bool:
         """ Check if the hand is a royal straight flush. """
         return self.value > 1.4e29
-
-
-class Card:
-    """ French-style deck card."""
-
-    def __init__(self, abbreviation):
-        self.rank = self._rank(abbreviation)
-        self.suit = self._suit(abbreviation)
-        self.numerical_rank = self._numerical_rank(self.rank)
-
-    def __repr__(self):
-        return self.rank + self.suit
-
-    @staticmethod
-    def _rank(card_abbreviation: str) -> str:
-        """ Get the rank from the card abbreviation. """
-        rank = re.findall(r"[2-9TtJjQqKkAa]", card_abbreviation)
-        # If didn't match, the re.findall returns an empty list.
-        if len(rank) == 1:
-            return rank[0].upper()
-        raise ValueError(f"'{card_abbreviation}' is not a valid card abbreviation.")
-
-    @staticmethod
-    def _suit(card_abbreviation: str) -> str:
-        """ Get the suit from the card abbreviation. """
-        suit = re.findall(r"[SsHhCcDd]", card_abbreviation)
-        # If didn't match, the re.findall returns an empty list.
-        if len(suit) == 1:
-            return suit[0].lower()
-        raise ValueError(f"'{card_abbreviation}' is not a valid card abbreviation.")
-
-    @staticmethod
-    def _numerical_rank(rank: str) -> int:
-        """ Get the numerical rank from an alpha-numerical rank. """
-        numbers = {"T": 10, "J": 11, "Q": 12, "K": 13, "A": 14}
-        for key, value in numbers.items():
-            rank = rank.replace(key, str(value))
-        return int(rank)
-
-
-class Deck:
-    """ French-style deck. """
-    ranks = ["2", "3", "4", "5", "6", "7", "8", "9", "T", "J", "Q", "K", "A"]
-    suits = ["s", "h", "c", "d"]
-
-    def __init__(self):
-        self.cards = self.set_and_shuffle()
-
-    def set_and_shuffle(self) -> List[Card]:
-        """ Set the deck cards and shuffle. """
-        cards = [Card(rank + suit) for rank, suit in itertools.product(self.ranks, self.suits)]
-        random.shuffle(cards)  # random.shuffle is inplace
-        return cards
-
-    def draw(self) -> Card:
-        """ Draw a card. """
-        try:
-            return self.cards.pop(-1)
-        except IndexError:
-            raise NotEnoughCardsError("There are no cards left in the deck.")
