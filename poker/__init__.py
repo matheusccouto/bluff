@@ -153,12 +153,20 @@ class Hand:
         # Create cards instances if the user used string arguments.
         return [Card(card) if isinstance(card, str) else card for card in cards]
 
-    @staticmethod
-    def _separate_concatenated_cards(*args: Union[Card, str]):
+    def _separate_concatenated_cards(self, *args: Union[Card, str]):
         """ Separate concatenated cards in a argument. """
         nested = [re.findall(r"[2-9TJQKA][shcd]", card) if isinstance(card, str) else card for card in args]
-        flat = list(itertools.chain(nested))
+        flat = list(self._flatten(nested))
         return flat
+
+    @staticmethod
+    def _flatten(i):
+        """ Flatten an irregular iterable. """
+        for i in i:
+            if isinstance(i, Iterable):
+                yield from i
+            else:
+                yield i
 
     def add(self, *args: Union[Card, str]):
         """ Add cards to the hands. """
@@ -225,6 +233,11 @@ class Hand:
         # In a straight an Ace can be the highest or lowest card. This makes necessary to check both possibilities.
         ace_high_hand = list(sorted(self.numerical_ranks))
         ace_low_hand = list(sorted([1 if rank == 14 else rank for rank in self.numerical_ranks]))
+
+        # This next comparisons only work when the Hand is not empty.
+        # When the list is empty, it should return no value.
+        if not ace_high_hand:
+            return '00'
 
         # Create reference strings1 ** (2 * i) (based on the lowest card) to compare to.
         ace_high_straight = list(range(ace_high_hand[0], ace_high_hand[0] + 5))
