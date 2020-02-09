@@ -1,5 +1,4 @@
-# TODO Add Place Card
-# TODO Add discard card
+""" Abstract chinese poker module. """
 from typing import Dict
 
 import poker
@@ -8,7 +7,7 @@ import poker
 class Hand(poker.Hand):
     """ Abstract chinese poker hand class"""
 
-    royalties_dict: Dict[int, int] = {}
+    royalties_dict: Dict[float, int] = {}
 
     def royalties(self):
         """ Find how many royalties points a hand has."""
@@ -20,7 +19,8 @@ class Hand(poker.Hand):
 
 class TopHand(Hand):
     """ Chinese poker top hand"""
-    royalties_dict: Dict[int, int] = {
+
+    royalties_dict: Dict[float, int] = {
         06e10: 1,
         07e10: 2,
         08e10: 3,
@@ -48,7 +48,8 @@ class TopHand(Hand):
 
 class MiddleHand(Hand):
     """ Chinese poker top hand"""
-    royalties_dict: Dict[int, int] = {
+
+    royalties_dict: Dict[float, int] = {
         02e16: 2,
         02e18: 4,
         02e20: 8,
@@ -61,7 +62,8 @@ class MiddleHand(Hand):
 
 class BottomHand(Hand):
     """ Chinese poker top hand"""
-    royalties_dict: Dict[int, int] = {
+
+    royalties_dict: Dict[float, int] = {
         02e18: 2,
         02e20: 4,
         02e22: 6,
@@ -72,4 +74,21 @@ class BottomHand(Hand):
 
 
 class Player(poker.Player):
-    pass
+    """ Chinese poker player. """
+
+    def __init__(self, name: str, chips: int):
+        super().__init__(name=name, chips=chips)
+        self.top_hand: Hand = TopHand()
+        self.middle_hand: Hand = MiddleHand()
+        self.bottom_hand: Hand = BottomHand()
+
+    def place(self, card: poker.Card, hand: str):
+        """ Place a card in one of the three chinese poker hands. """
+        if "top" in hand.lower():
+            self.top_hand.add(card)
+        elif "mid" in hand.lower():
+            self.middle_hand.add(card)
+        elif "bot" in hand.lower():
+            self.bottom_hand.add(card)
+        else:
+            raise ValueError(f"{hand} is not a valid hand.")

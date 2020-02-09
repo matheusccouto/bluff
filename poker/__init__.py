@@ -3,7 +3,7 @@
 import itertools
 import random
 import re
-from typing import Union, List, Iterable, Sequence, Sized, Tuple
+from typing import Union, List, Iterable, Sequence, Sized
 
 import numpy as np
 
@@ -14,15 +14,17 @@ class NotEnoughCardsError(Exception):
 
 class Player:
     """ Poker player. """
+
     def __init__(self, name: str, chips: int):
         self.name = name
         self.chips = chips
         self.cards: List[Card] = []
-        self.hand: Hand = None
+        self.hand: Hand = Hand()
 
 
 class Round:
     """ Poker game round. """
+
     def __init__(self, players: Iterable, n_starting_cards: int = 5):
         self.players = players
         self.deck = Deck()
@@ -48,7 +50,6 @@ class Round:
         return np.argmax(self._get_values())
 
 
-# TODO Add Start
 class Poker:
     """ Abstract class for a poker game. """
 
@@ -110,6 +111,7 @@ class Card:
 
 class Deck:
     """ French-style deck. """
+
     ranks = ["2", "3", "4", "5", "6", "7", "8", "9", "T", "J", "Q", "K", "A"]
     suits = ["s", "h", "c", "d"]
 
@@ -133,7 +135,7 @@ class Deck:
 class Hand:
     """ Poker hand. Formed by Card objects. """
 
-    def __init__(self, *args: str):
+    def __init__(self, *args: Union[Card, str]):
         self.ranks: List[str] = []
         self.suits: List[str] = []
         self.numerical_ranks: List[int] = []
@@ -142,19 +144,23 @@ class Hand:
         self.add(*args)
 
     def __repr__(self):
-        return ' '.join([rank + suit for _, rank, suit in sorted(zip(self.numerical_ranks, self.ranks, self.suits))])
+        return " ".join([rank + suit for _, rank, suit in sorted(zip(self.numerical_ranks, self.ranks, self.suits))])
 
-    @staticmethod
-    def _args_to_cards(*args: str) -> List[Card]:
+    def _args_to_cards(self, *args: Union[Card, str]) -> List[Card]:
         """ Parse class arguments to Cards instances. """
         # Separate args if the user used a concatenated argument.
-        if len(args) == 1:
-            args = re.findall(r"[2-9TJQKA][shcd]", args[0])
-
+        cards = self._separate_concatenated_cards(*args)
         # Create cards instances if the user used string arguments.
-        return [Card(card) if isinstance(card, str) else card for card in args]
+        return [Card(card) if isinstance(card, str) else card for card in cards]
 
-    def add(self, *args: str):
+    @staticmethod
+    def _separate_concatenated_cards(*args: Union[Card, str]):
+        """ Separate concatenated cards in a argument. """
+        nested = [re.findall(r"[2-9TJQKA][shcd]", card) if isinstance(card, str) else card for card in args]
+        flat = list(itertools.chain(nested))
+        return flat
+
+    def add(self, *args: Union[Card, str]):
         """ Add cards to the hands. """
         cards = self._args_to_cards(*args)
         self.ranks += [card.rank for card in cards]
@@ -258,17 +264,19 @@ class Hand:
         return "00"
 
     @staticmethod
-    def compensate_missing_cards(ranks: Sized, value: str) -> str:
+    def compensate_missing_cards_value(ranks: Sized, value: str) -> str:
+        """ Add trailing zeros to the value in order to compensate missing cards. """
         if len(ranks) < 5:
             missing = 5 - len(ranks)
-            return value + '00' * missing
+            return value + "00" * missing
         return value
 
     @staticmethod
-    def compensate_extra_cards(ranks: Sized, value: str) -> str:
+    def compensate_extra_cards_value(ranks: Sized, value: str) -> str:
+        """"Remove trailing zeros to the value in order to compensate extra cards. """
         if len(ranks) > 5:
             extras = len(ranks) - 5
-            return value[:-2 * extras]
+            return value[: -2 * extras]
         return value
 
     def get_value(self) -> int:
@@ -285,8 +293,8 @@ class Hand:
         value = self._four_of_a_kind() + value
         value = self._straight_flush() + value
 
-        value = self.compensate_missing_cards(self.ranks, value)
-        value = self.compensate_extra_cards(self.ranks, value)
+        value = self.compensate_missing_cards_value(self.ranks, value)
+        value = self.compensate_extra_cards_value(self.ranks, value)
 
         return int(value)
 

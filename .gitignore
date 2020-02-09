@@ -130,7 +130,6 @@ dmypy.json
 
 # MyPy
 mypy.ini
-.mypy_cache/
 
 # Pylint
 .pylintrc
