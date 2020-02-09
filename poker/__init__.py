@@ -12,65 +12,6 @@ class NotEnoughCardsError(Exception):
     """ Raise when the deck runs out of cards. """
 
 
-class Player:
-    """ Poker player. """
-
-    def __init__(self, name: str, chips: int):
-        self.name = name
-        self.chips = chips
-        self.cards: List[Card] = []
-        self.hand: Hand = Hand()
-
-
-class Round:
-    """ Poker game round. """
-
-    def __init__(self, players: Iterable, n_starting_cards: int = 5):
-        self.players = players
-        self.deck = Deck()
-        self.n_starting_cards = n_starting_cards
-
-    def deal_cards(self, player: Player, n_cards: int):
-        """ Deal a number of cards to all players. """
-        for _ in range(n_cards):
-            player.cards.append(self.deck.draw())
-
-    def new(self):
-        """ Start a new round. """
-        self.deck.set_and_shuffle()
-        for player in self.players:
-            self.deal_cards(player, self.n_starting_cards)
-
-    def _get_values(self) -> list:
-        """ Get values from players hands. """
-        return [player.hand.value for player in self.players]
-
-    def winner(self) -> np.ndarray:
-        """ Evaluate the winner player. """
-        return np.argmax(self._get_values())
-
-
-class Poker:
-    """ Abstract class for a poker game. """
-
-    def __init__(self, n_seats: int = 9):
-        self.seats: List[Union[None, Player]] = [None] * n_seats
-        self.dealer: int = random.randint(0, n_seats - 1)
-
-    def add_player(self, player: Player, seat: int):
-        """ Add a player to a seat. """
-        self.seats[seat] = player
-
-    def remove_player(self, seat: int):
-        """ Remove a player from a seat. """
-        self.seats[seat] = None
-
-    def choose_dealer(self):
-        """ Chooses randomly the player to be the dealer. """
-        active_seats = [seat for seat, player in enumerate(self.seats) if player]
-        self.dealer = random.choice(active_seats)
-
-
 class Card:
     """ French-style deck card."""
 
@@ -140,6 +81,7 @@ class Hand:
         self.suits: List[str] = []
         self.numerical_ranks: List[int] = []
         self.value: int = 0
+        self.n_cards: int = 0
 
         self.add(*args)
 
@@ -175,6 +117,7 @@ class Hand:
         self.suits += [card.suit for card in cards]
         self.numerical_ranks += [card.numerical_rank for card in cards]
         self.value += self.get_value()
+        self.n_cards = len(self.ranks)
 
     @staticmethod
     def _find_repeated_ranks(ranks: Sequence, reps: int) -> set:
@@ -350,3 +293,76 @@ class Hand:
     def is_royal_straight_flush(self) -> bool:
         """ Check if the hand is a royal straight flush. """
         return self.value > 1.4e29
+
+
+class Player:
+    """ Poker player. """
+
+    def __init__(self, name: str, chips: float):
+        self.name: str = name
+        self.chips: float = chips
+        self.hand: Hand = Hand()
+
+    def add_cards(self, cards: Iterable[Card]):
+        """ Add cards to a player hand. """
+        for card in cards:
+            self.hand.add(card)
+
+    def clear_hand(self):
+        """" Clear a player hand"""
+        self.hand = Hand()
+
+
+class Round:
+    """ Poker game round. """
+
+    def __init__(self, players: Iterable, n_starting_cards: int = 5):
+        self.players = players
+        self.deck = Deck()
+        self.n_starting_cards = n_starting_cards
+        self.new()
+
+    def deal_cards(self, player: Player, n_cards: int):
+        """ Deal a number of cards to a single players. """
+        cards = [self.deck.draw() for _ in range(n_cards)]
+        player.add_cards(cards)
+
+    def deal_cards_to_all(self, n_cards: int):
+        for player in self.players:
+            self.deal_cards(player=player, n_cards=n_cards)
+
+    def new(self):
+        """ Start a new round. """
+        for player in self.players:
+            player.clear_hand()
+        self.deck.set_and_shuffle()
+        self.deal_cards_to_all(self.n_starting_cards)
+
+    def _get_values(self) -> list:
+        """ Get values from players hands. """
+        return [player.hand.value for player in self.players]
+
+    def winner(self) -> np.ndarray:
+        """ Evaluate the winner player. """
+        return np.argmax(self._get_values())
+
+
+class Poker:
+    """ Abstract class for a poker game. """
+
+    def __init__(self, n_seats: int = 9):
+        self.seats: List[Union[None, Player]] = [None] * n_seats
+        self.dealer: int = random.randint(0, n_seats - 1)
+
+    def add_player(self, player: Player, seat: int):
+        """ Add a player to a seat. """
+        self.seats[seat] = player
+
+    def remove_player(self, seat: int):
+        """ Remove a player from a seat. """
+        self.seats[seat] = None
+
+    def choose_dealer(self):
+        """ Chooses randomly the player to be the dealer. """
+        active_seats = [seat for seat, player in enumerate(self.seats) if player]
+        self.dealer = random.choice(active_seats)

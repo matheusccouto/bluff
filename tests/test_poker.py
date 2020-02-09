@@ -167,5 +167,37 @@ class TestPoker(unittest.TestCase):
         self.assertEqual(n_players_before + 1, n_players_after)
 
 
+class TestRound(unittest.TestCase):
+
+    # Here we shall honor the 2003 WSOP finalists.
+    p1 = poker.Player(name="Chris Moneymaker", chips=2344)
+    p2 = poker.Player(name="Sam Farha", chips=999)
+    p3 = poker.Player(name="Dan Harrington", chips=574)
+    players = (p1, p2, p3)
+
+    def test_deal_cards_to_all_players(self):
+        """ Test dealing cards to all players. """
+        n_starting_cards = 5
+        round = poker.Round(players=self.players, n_starting_cards=n_starting_cards)
+        for player in round.players:
+            self.assertEqual(player.hand.n_cards, n_starting_cards)
+
+    def test_deal_cards_to_one_player(self):
+        """ Test dealing cards to a single player only. """
+        n_starting_cards = 5
+        n_cards_to_deal = 2
+        round = poker.Round(players=self.players, n_starting_cards=n_starting_cards)
+
+        # Deal cards to a single player
+        player_to_receive = round.players[0]
+        round.deal_cards(player=player_to_receive, n_cards=n_cards_to_deal)
+
+        for player in round.players:
+            if player is player_to_receive:
+                self.assertEqual(player.hand.n_cards, n_starting_cards + n_cards_to_deal)
+            else:
+                self.assertEqual(player.hand.n_cards, n_starting_cards)
+
+
 if __name__ == "__main__":
     unittest.main()
