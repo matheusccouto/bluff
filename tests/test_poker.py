@@ -179,6 +179,7 @@ class TestRound(unittest.TestCase):
         """ Test dealing cards to all players. """
         n_starting_cards = 5
         round = poker.Round(players=self.players, n_starting_cards=n_starting_cards)
+
         for player in round.players:
             self.assertEqual(player.hand.n_cards, n_starting_cards)
 
@@ -197,6 +198,19 @@ class TestRound(unittest.TestCase):
                 self.assertEqual(player.hand.n_cards, n_starting_cards + n_cards_to_deal)
             else:
                 self.assertEqual(player.hand.n_cards, n_starting_cards)
+
+    def test_winner(self):
+        """ Test the method winner. """
+        test_hands = (poker.Hand('As Ah 4d Tc Js'), poker.Hand('3s 4h 5d 6c 7s'), poker.Hand('Qs Ah 4d Tc Js'))
+        winner = 1
+        n_starting_cards = 5
+        round = poker.Round(players=self.players, n_starting_cards=n_starting_cards)
+
+        # Access the players hand to force they have the test hands.
+        for player, test_hand in zip(round.players, test_hands):
+            player.hand = test_hand
+
+        self.assertEqual(round.winner(), winner)
 
 
 if __name__ == "__main__":
