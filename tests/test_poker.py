@@ -9,6 +9,11 @@ import poker
 
 TEST_HANDS = pd.read_csv("tests\\test_hands.csv", index_col=None)
 
+# Here we shall honor the 2003 WSOP finalists.
+p1 = poker.Player(name="Chris Moneymaker", chips=2344)
+p2 = poker.Player(name="Sam Farha", chips=999)
+p3 = poker.Player(name="Dan Harrington", chips=574)
+players = (p1, p2, p3)
 
 class TestCard(unittest.TestCase):
     """ Test the class card. """
@@ -161,24 +166,40 @@ class TestPoker(unittest.TestCase):
         """ Test adding a player. """
         pkr = poker.Poker(n_seats=9)
         n_players_before = len([seat for seat in pkr.seats if seat is not None])
-        player = poker.Player(name="Chris Moneymaker", chips=1000)
+        player = players[0]
         pkr.add_player(player, seat=1)
         n_players_after = len([seat for seat in pkr.seats if seat is not None])
         self.assertEqual(n_players_before + 1, n_players_after)
 
+    def test_remove_player(self):
+        """ Test removing a player. """
+        pkr = poker.Poker(n_seats=len(players))
+        pkr.add_players(players)
+        pkr.remove_player(0)
+        self.assertEqual(pkr.seats[0], None)
+
+    def test_set_dealer(self):
+        """" Test that a new dealer is set every time a new game is started. """
+        # Dealer is set randomly, so there is no safe way of checking it. To overcome this I generate several Poker
+        # instances and check if at least in one of them the dealer is different. It is not proof-leak, one may be so
+        # unlucky that all values are randomly the same. However, the chances are very low, and whenever this happens,
+        # when testing again it should work.
+        pokers = [poker.Poker().dealer for _ in range(10)]
+        self.assertGreater(len(set(pokers)), 1)
+
+    def test_raise_seat_occupied(self):
+        """ Test if SeatOccupiedError is trown when necessary. """
+        pkr = poker.Poker()
+        pkr.add_player(players[0], seat=0)
+        self.assertRaises(poker.SeatOccupiedError, pkr.add_player, player=players[1], seat=0)
+
 
 class TestRound(unittest.TestCase):
-
-    # Here we shall honor the 2003 WSOP finalists.
-    p1 = poker.Player(name="Chris Moneymaker", chips=2344)
-    p2 = poker.Player(name="Sam Farha", chips=999)
-    p3 = poker.Player(name="Dan Harrington", chips=574)
-    players = (p1, p2, p3)
 
     def test_deal_cards_to_all_players(self):
         """ Test dealing cards to all players. """
         n_starting_cards = 5
-        round = poker.Round(players=self.players, n_starting_cards=n_starting_cards)
+        round = poker.Round(players=players, n_starting_cards=n_starting_cards)
 
         for player in round.players:
             self.assertEqual(player.hand.n_cards, n_starting_cards)
@@ -187,7 +208,7 @@ class TestRound(unittest.TestCase):
         """ Test dealing cards to a single player only. """
         n_starting_cards = 5
         n_cards_to_deal = 2
-        round = poker.Round(players=self.players, n_starting_cards=n_starting_cards)
+        round = poker.Round(players=players, n_starting_cards=n_starting_cards)
 
         # Deal cards to a single player
         player_to_receive = round.players[0]
@@ -204,13 +225,39 @@ class TestRound(unittest.TestCase):
         test_hands = (poker.Hand('As Ah 4d Tc Js'), poker.Hand('3s 4h 5d 6c 7s'), poker.Hand('Qs Ah 4d Tc Js'))
         winner = 1
         n_starting_cards = 5
-        round = poker.Round(players=self.players, n_starting_cards=n_starting_cards)
+        round = poker.Round(players=players, n_starting_cards=n_starting_cards)
 
         # Access the players hand to force they have the test hands.
         for player, test_hand in zip(round.players, test_hands):
             player.hand = test_hand
 
         self.assertEqual(round.winner(), winner)
+
+
+class TestDeck(unittest.TestCase):
+    """ Test the Deck class"""
+
+    @staticmethod
+    def draw_many_cards(deck, times=100):
+        """ Draw cards repeatedly. """
+        for _ in range(times):
+            deck.draw()
+
+    def test_raise_not_enough_cards(self):
+        """ Test that NotEnoughCards is being raised when necessary. """
+        deck = poker.Deck()
+        self.assertRaises(poker.NotEnoughCardsError, self.draw_many_cards, deck)
+
+    def test_set(self):
+        deck = poker.Deck()
+        self.assertEqual(len(deck.cards), 52)
+
+    def test_shuffle(self):
+        """ Test if method set and shuffle"""
+        deck = poker.Deck()
+        cards = deck.cards.copy()
+        deck.set_and_shuffle()
+        self.assertNotEqual(cards, deck.cards)
 
 
 if __name__ == "__main__":

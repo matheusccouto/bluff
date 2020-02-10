@@ -12,6 +12,10 @@ class NotEnoughCardsError(Exception):
     """ Raise when the deck runs out of cards. """
 
 
+class SeatOccupiedError(Exception):
+    """ Raise when trying to put a player in an already occupied seat. """
+
+
 class Card:
     """ French-style deck card."""
 
@@ -57,13 +61,13 @@ class Deck:
     suits = ["s", "h", "c", "d"]
 
     def __init__(self):
-        self.cards = self.set_and_shuffle()
+        self.cards: List[Card] = []
+        self.set_and_shuffle()
 
-    def set_and_shuffle(self) -> List[Card]:
+    def set_and_shuffle(self):
         """ Set the deck cards and shuffle. """
-        cards = [Card(rank + suit) for rank, suit in itertools.product(self.ranks, self.suits)]
-        random.shuffle(cards)  # random.shuffle is inplace
-        return cards
+        self.cards = [Card(rank + suit) for rank, suit in itertools.product(self.ranks, self.suits)]
+        random.shuffle(self.cards)  # random.shuffle is inplace
 
     def draw(self) -> Card:
         """ Draw a card. """
@@ -352,17 +356,29 @@ class Poker:
 
     def __init__(self, n_seats: int = 9):
         self.seats: List[Union[None, Player]] = [None] * n_seats
-        self.dealer: int = random.randint(0, n_seats - 1)
+        self.dealer = random.choice(range(n_seats))
 
     def add_player(self, player: Player, seat: int):
         """ Add a player to a seat. """
-        self.seats[seat] = player
+        if self.seats[seat] is None:
+            self.seats[seat] = player
+        else:
+            raise SeatOccupiedError(f"The seat {seat} is already occupied.")
+
+    def add_players(self, players: Iterable[Player], seats: Union[None, Iterable[int]] = None):
+        """ Add players to their seats. Use seats=None to choose seats randomly. """
+        # When no seats are passed, chooses randomly.
+        if seats is None:
+            free_seats = [seat for seat, player in enumerate(self.seats) if not player]
+            seats = [self.random_pop(free_seats) for _ in players]
+        for player, seat in zip(players, seats):
+            self.add_player(player=player, seat=seat)
+
+    @staticmethod
+    def random_pop(x: list):
+        """ Randomly pop an item from a list."""
+        return x.pop(random.randrange(len(x)))
 
     def remove_player(self, seat: int):
         """ Remove a player from a seat. """
         self.seats[seat] = None
-
-    def choose_dealer(self):
-        """ Chooses randomly the player to be the dealer. """
-        active_seats = [seat for seat, player in enumerate(self.seats) if player]
-        self.dealer = random.choice(active_seats)
