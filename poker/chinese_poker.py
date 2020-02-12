@@ -76,8 +76,8 @@ class BottomHand(Hand):
 class Player(poker.Player):
     """ Chinese poker player. """
 
-    def __init__(self, name: str, chips: float):
-        super().__init__(name=name, chips=chips)
+    def __init__(self, name: str, points: int):
+        super().__init__(name=name, chips=points)
         self.top_hand: Hand = TopHand()
         self.middle_hand: Hand = MiddleHand()
         self.bottom_hand: Hand = BottomHand()
@@ -92,3 +92,12 @@ class Player(poker.Player):
             self.bottom_hand.add(card)
         else:
             raise ValueError(f"{hand} is not a valid hand.")
+
+
+class Round(poker.Round):
+    """ Chinese poker round. """
+
+
+class Poker(poker.Poker):
+    """ Chinese Poker. """
+    N_STARTING_CARDS = 13

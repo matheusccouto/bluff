@@ -64,6 +64,9 @@ class Deck:
         self.cards: List[Card] = []
         self.set_and_shuffle()
 
+    def __len__(self):
+        return len(self.cards)
+
     def set_and_shuffle(self):
         """ Set the deck cards and shuffle. """
         self.cards = [Card(rank + suit) for rank, suit in itertools.product(self.ranks, self.suits)]
@@ -311,6 +314,9 @@ class Player:
         self.chips: float = chips
         self.hand: Hand = Hand()
 
+    def __repr__(self):
+        return self.name
+
     def add_cards(self, cards: Iterable[Card]):
         """ Add cards to a player hand. """
         for card in cards:
@@ -358,6 +364,8 @@ class Round:
 class Poker:
     """ Abstract class for a poker game. """
 
+    N_STARTING_CARDS = 5
+
     def __init__(self, n_seats: int = 9):
         self.seats: List[Union[None, Player]] = [None] * n_seats
         self.dealer = random.choice(range(n_seats))
@@ -386,3 +394,32 @@ class Poker:
     def remove_player(self, seat: int):
         """ Remove a player from a seat. """
         self.seats[seat] = None
+
+    @staticmethod
+    def _item_to_beginning(list_: list, index: int):
+        """ Move an item to the beginning of a list. """
+        return list_[index:] + list_[:index]
+
+    def _validate_dealer(self):
+        """ Find a valid position for the dealer. """
+        # I sort the seats to put the dealer in the beginning so then I only have to add values to the seat number until
+        # I find a valid player. The move variable represents how  many seats the dealer button must move until it finds
+        # a valid player.
+        seats = self._item_to_beginning(self.seats, self.dealer)
+        move = 0
+        while seats[move] is None:
+            move += 1
+        self.dealer += move
+
+    def new_round(self) -> Round:
+        """ Start a new round with available players. """
+        # Firstly, organize players list so it is passed to the Round class in the playing order.
+        self._validate_dealer()
+        ordered_seats = self._item_to_beginning(self.seats, self.dealer)
+        players = [seat for seat in ordered_seats if seat is not None]
+
+        # Start a round
+        rnd = Round(players=players, n_starting_cards=self.N_STARTING_CARDS)
+        rnd.new()
+
+        return rnd

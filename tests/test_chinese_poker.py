@@ -34,10 +34,37 @@ class TestHand(unittest.TestCase):
 class TestPlayer(unittest.TestCase):
     """ Test class player. """
 
-    def test_place_card(self):
-        player = chinese_poker.Player(name="Chris Moneymaker", chips=1000)
+    def test_place_card_in_top_hand(self):
+        player = chinese_poker.Player(name="Chris Moneymaker", points=2344)
         player.place_card(card=poker.Card('As'), hand='top')
         self.assertEqual(len(player.top_hand), 1)
+
+    def test_place_card_in_mid_hand(self):
+        player = chinese_poker.Player(name="Sam Farha", points=999)
+        player.place_card(card=poker.Card('As'), hand='middle')
+        self.assertEqual(len(player.middle_hand), 1)
+
+    def test_place_card_in_btm_hand(self):
+        player = chinese_poker.Player(name="Dan Harrington", points=574)
+        player.place_card(card=poker.Card('As'), hand='bottom')
+        self.assertEqual(len(player.bottom_hand), 1)
+
+
+class TestGame(unittest.TestCase):
+    """ Test game dynamics."""
+
+    @staticmethod
+    def _new_round():
+        pkr = chinese_poker.Poker(n_seats=2)
+        chris = chinese_poker.Player(name="Chris Moneymaker", points=0)
+        sam = chinese_poker.Player(name="Sam Farha", points=0)
+        pkr.add_players(players=[chris, sam])
+        return pkr.new_round()
+
+    def test_round(self):
+        rnd = self._new_round()
+        p1 = rnd.players[0]
+        self.assertEqual(len(p1.hand), 13)
 
 
 if __name__ == "__main__":
