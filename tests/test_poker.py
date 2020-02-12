@@ -15,6 +15,7 @@ p2 = poker.Player(name="Sam Farha", chips=999)
 p3 = poker.Player(name="Dan Harrington", chips=574)
 players = (p1, p2, p3)
 
+
 class TestCard(unittest.TestCase):
     """ Test the class card. """
 

@@ -92,6 +92,9 @@ class Hand:
     def __repr__(self):
         return " ".join([rank + suit for _, rank, suit in sorted(zip(self.numerical_ranks, self.ranks, self.suits))])
 
+    def __len__(self):
+        return self.n_cards
+
     def _args_to_cards(self, *args: Union[Card, str]) -> List[Card]:
         """ Parse class arguments to Cards instances. """
         # Separate args if the user used a concatenated argument.

@@ -76,13 +76,13 @@ class BottomHand(Hand):
 class Player(poker.Player):
     """ Chinese poker player. """
 
-    def __init__(self, name: str, chips: int):
+    def __init__(self, name: str, chips: float):
         super().__init__(name=name, chips=chips)
         self.top_hand: Hand = TopHand()
         self.middle_hand: Hand = MiddleHand()
         self.bottom_hand: Hand = BottomHand()
 
-    def place(self, card: poker.Card, hand: str):
+    def place_card(self, card: poker.Card, hand: str):
         """ Place a card in one of the three chinese poker hands. """
         if "top" in hand.lower():
             self.top_hand.add(card)
