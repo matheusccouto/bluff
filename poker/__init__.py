@@ -25,7 +25,13 @@ class Card:
         self._numerical_rank = self._rank_to_numerical(self._rank)
 
     def __repr__(self):
-        return self._rank + self._suit
+        return self.rank + self.suit
+
+    def __str__(self):
+        return self.__repr__()
+
+    def __eq__(self, other):
+        return self.rank == other.rank and self.suit == other.suit
 
     @property
     def rank(self):
@@ -83,6 +89,9 @@ class Deck:
     def __len__(self):
         return len(self._cards)
 
+    def __iter__(self):
+        return self._cards
+
     def set_and_shuffle(self):
         """ Set the deck cards and shuffle. """
         self._cards = [
@@ -106,21 +115,33 @@ class Hand:
         self._ranks: List[str] = []
         self._suits: List[str] = []
         self._numerical_ranks: List[int] = []
+        self._cards: List[Card] = []
 
         self.add(*args)
 
     def __repr__(self):
-        return " ".join(
-            [
-                rank + suit
-                for _, rank, suit in sorted(
-                    zip(self.numerical_ranks, self.ranks, self.suits)
-                )
-            ]
-        )
+        return " ".join(sorted([str(card) for card in self.cards]))
 
     def __len__(self):
-        return len(self.ranks)
+        return len(self.cards)
+
+    def __getitem__(self, item):
+        return self.cards[item]
+
+    def __setitem__(self, key, value: Card):
+        self._cards[key] = value
+        self._ranks[key] = value.rank
+        self._suits = value.suit
+        self._numerical_ranks = value.numerical_rank
+
+    def __delitem__(self, key):
+        self.cards.pop(key)
+        self.ranks.pop(key)
+        self.suits.pop(key)
+        self.numerical_ranks.pop(key)
+
+    def __contains__(self, item):
+        return item in self._cards
 
     @property
     def ranks(self):
@@ -133,6 +154,10 @@ class Hand:
     @property
     def numerical_ranks(self):
         return self._numerical_ranks
+
+    @property
+    def cards(self):
+        return self._cards
 
     @property
     def value(self):
@@ -152,8 +177,8 @@ class Hand:
         value = self._four_of_a_kind() + value
         value = self._straight_flush() + value
 
-        value = self._compensate_missing_cards_value(self.ranks, value)
-        value = self._compensate_extra_cards_value(self.ranks, value)
+        value = self._compensate_missing_cards_value(len(self), value)
+        value = self._compensate_extra_cards_value(len(self), value)
 
         return int(value)
 
@@ -210,6 +235,7 @@ class Hand:
         self._ranks += [card.rank for card in cards]
         self._suits += [card.suit for card in cards]
         self._numerical_ranks += [card.numerical_rank for card in cards]
+        self._cards += cards
 
     @staticmethod
     def _find_repeated_ranks(ranks: Sequence, reps: int) -> set:
@@ -329,24 +355,24 @@ class Hand:
         return "00"
 
     @staticmethod
-    def _compensate_missing_cards_value(ranks: Sized, value: str) -> str:
+    def _compensate_missing_cards_value(n_cards: int, value: str) -> str:
         """
         Add trailing zeros to the value in order to compensate missing
         cards.
         """
-        if len(ranks) < 5:
-            missing = 5 - len(ranks)
+        if n_cards < 5:
+            missing = 5 - n_cards
             return value + "00" * missing
         return value
 
     @staticmethod
-    def _compensate_extra_cards_value(ranks: Sized, value: str) -> str:
+    def _compensate_extra_cards_value(n_cards: int, value: str) -> str:
         """
         Remove trailing zeros to the value in order to compensate extra
         cards.
         """
-        if len(ranks) > 5:
-            extras = len(ranks) - 5
+        if n_cards > 5:
+            extras = n_cards - 5
             return value[: -2 * extras]
         return value
 
