@@ -94,8 +94,6 @@ class Hand:
         self.ranks: List[str] = []
         self.suits: List[str] = []
         self.numerical_ranks: List[int] = []
-        self.value: int = 0
-        self.n_cards: int = 0
 
         self.add(*args)
 
@@ -110,7 +108,30 @@ class Hand:
         )
 
     def __len__(self):
-        return self.n_cards
+        return len(self.ranks)
+
+    @property
+    def value(self):
+        """
+        Get the numerical value of the hand. The bigger the value, the
+        better the hand.
+        """
+        value = ""
+
+        value = self._high_card() + value
+        value = self._pair() + value
+        value = self._two_pairs() + value
+        value = self._three_of_a_kind() + value
+        value = self._straight() + value
+        value = self._flush() + value
+        value = self._full_house() + value
+        value = self._four_of_a_kind() + value
+        value = self._straight_flush() + value
+
+        value = self._compensate_missing_cards_value(self.ranks, value)
+        value = self._compensate_extra_cards_value(self.ranks, value)
+
+        return int(value)
 
     def _args_to_cards(self, *args: Union[Card, str]) -> List[Card]:
         """ Parse class arguments to Cards instances. """
@@ -145,8 +166,6 @@ class Hand:
         self.ranks += [card.rank for card in cards]
         self.suits += [card.suit for card in cards]
         self.numerical_ranks += [card.numerical_rank for card in cards]
-        self.value += self.get_value()
-        self.n_cards = len(self.ranks)
 
     @staticmethod
     def _find_repeated_ranks(ranks: Sequence, reps: int) -> set:
@@ -156,7 +175,7 @@ class Hand:
         """
         return {rank for rank in ranks if ranks.count(rank) == reps}
 
-    # The next methods are useful for the get_value method only. They
+    # The next methods are useful for the value property only. They
     # work by transforming a hand in a huge integer number. The bigger
     # the number, the stronger the hand. Bellow the construction of this
     # number is better explained.
@@ -286,29 +305,6 @@ class Hand:
             extras = len(ranks) - 5
             return value[: -2 * extras]
         return value
-
-    # TODO transform value in a property. Use property decorator.
-    def get_value(self) -> int:
-        """
-        Get the numerical value of the hand. The bigger the value, the
-        better the hand.
-        """
-        value = ""
-
-        value = self._high_card() + value
-        value = self._pair() + value
-        value = self._two_pairs() + value
-        value = self._three_of_a_kind() + value
-        value = self._straight() + value
-        value = self._flush() + value
-        value = self._full_house() + value
-        value = self._four_of_a_kind() + value
-        value = self._straight_flush() + value
-
-        value = self._compensate_missing_cards_value(self.ranks, value)
-        value = self._compensate_extra_cards_value(self.ranks, value)
-
-        return int(value)
 
     def is_high_card(self) -> bool:
         """ Check if the hand is a high card. """

@@ -223,7 +223,7 @@ class TestRound:
         rnd = poker.Round(players=players, n_starting_cards=n_starting_cards)
 
         for player in rnd.players:
-            assert player.hand.n_cards == n_starting_cards
+            assert len(player.hand) == n_starting_cards
 
     def test_deal_cards_to_one_player(self):
         """ Test dealing cards to a single player only. """
@@ -237,9 +237,9 @@ class TestRound:
 
         for player in rnd.players:
             if player is player_to_receive:
-                assert player.hand.n_cards == n_starting_cards + n_cards_to_deal
+                assert len(player.hand) == n_starting_cards + n_cards_to_deal
             else:
-                assert player.hand.n_cards == n_starting_cards
+                assert len(player.hand) == n_starting_cards
 
     def test_winner(self):
         """ Test the method winner. """
