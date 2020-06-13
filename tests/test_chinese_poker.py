@@ -1,7 +1,6 @@
 """ Tests for the module chinese_poker. """
 
 import pandas as pd
-import pytest
 
 import poker
 from poker import chinese_poker
