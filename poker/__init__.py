@@ -462,7 +462,7 @@ class Player:
         return self._hand
 
     @hand.setter
-    def hand(self, value: Sequence[Card]):
+    def hand(self, value: Hand):
         self._hand = value
 
     @staticmethod

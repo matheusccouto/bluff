@@ -10,7 +10,7 @@ class Hand(poker.Hand):
     _ROYALTIES_DICT: Dict[float, int] = {}
 
     @property
-    def royalties(self):
+    def royalties(self) -> int :
         for value, points in sorted(self._ROYALTIES_DICT.items(), reverse=True):
             if self.value > value:
                 return points
@@ -87,7 +87,7 @@ class Player(poker.Player):
         return self._top_hand
 
     @top_hand.setter
-    def top_hand(self, value):
+    def top_hand(self, value: Hand):
         self._top_hand = value
 
     @property
@@ -95,7 +95,7 @@ class Player(poker.Player):
         return self._middle_hand
 
     @middle_hand.setter
-    def middle_hand(self, value):
+    def middle_hand(self, value: Hand):
         self._middle_hand = value
 
     @property
@@ -103,7 +103,7 @@ class Player(poker.Player):
         return self._bottom_hand
 
     @bottom_hand.setter
-    def bottom_hand(self, value):
+    def bottom_hand(self, value: Hand):
         self._bottom_hand = value
 
     def place_card(self, card: poker.Card, hand: str):
@@ -125,4 +125,4 @@ class Round(poker.Round):
 class Poker(poker.Poker):
     """ Chinese Poker. """
 
-    _N_STARTING_CARDS = 13
+    _N_STARTING_CARDS: int = 13
