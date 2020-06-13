@@ -150,16 +150,22 @@ class Hand:
 
     @staticmethod
     def _find_repeated_ranks(ranks: Sequence, reps: int) -> set:
-        """ Find ranks that are repeated a certain number of times in a hand. """
+        """
+        Find ranks that are repeated a certain number of times in a
+        hand.
+        """
         return {rank for rank in ranks if ranks.count(rank) == reps}
 
-    # The next methods are useful for the get_value method only. They work by transforming a hand in a huge integer
-    # number. The bigger the number, the stronger the hand. Bellow the construction of this number is better explained.
+    # The next methods are useful for the get_value method only. They
+    # work by transforming a hand in a huge integer number. The bigger
+    # the number, the stronger the hand. Bellow the construction of this
+    # number is better explained.
 
-    # Each pair of letter bellow represent a numerical rank. For example:
-    # 02 stands for the deuce, while 11 stands for the Jack.
+    # Each pair of letter bellow represent a numerical rank. For
+    # example: 02 stands for the deuce, while 11 stands for the Jack.
 
-    # Every type of hand takes its magnitude multiplied for the numerical rank. The integer formation is bellow.
+    # Every type of hand takes its magnitude multiplied for the
+    # numerical rank. The integer formation is bellow.
     # AABBCCCCDDEEFFGGGGHHIIIIIIIIII
     # A - Straight Flush
     # B - Quads
@@ -171,12 +177,14 @@ class Hand:
     # H - Pair
     # I - High Card (Actually, the rank of every card)
 
-    # In a nutshell, the next methods return a code used to form the hand value.
-    # This is also where all the logic for deciding the hand level lies.
+    # In a nutshell, the next methods return a code used to form the
+    # hand value. This is also where all the logic for deciding the hand
+    # level lies.
 
     def _high_card(self) -> str:
         """ Hand value code for a high card."""
-        # Concatenate each cards value in a string, from the biggest to the smallest.
+        # Concatenate each cards value in a string, from the biggest to
+        # the smallest.
         return "".join(
             [
                 f"{rank:02d}"
@@ -207,7 +215,8 @@ class Hand:
 
     def _straight(self) -> str:
         """ Hand value code for a straight."""
-        # In a straight an Ace can be the highest or lowest card. This makes necessary to check both possibilities.
+        # In a straight an Ace can be the highest or lowest card. This
+        # makes necessary to check both possibilities.
         ace_high_hand = list(sorted(self.numerical_ranks))
         ace_low_hand = list(
             sorted([1 if rank == 14 else rank for rank in self.numerical_ranks])
@@ -218,7 +227,8 @@ class Hand:
         if not ace_high_hand:
             return "00"
 
-        # Create reference strings1 ** (2 * i) (based on the lowest card) to compare to.
+        # Create reference strings1 ** (2 * i) (based on the lowest
+        # card) to compare to.
         ace_high_straight = list(range(ace_high_hand[0], ace_high_hand[0] + 5))
         ace_low_straight = list(range(ace_low_hand[0], ace_low_hand[0] + 5))
 
@@ -257,7 +267,10 @@ class Hand:
 
     @staticmethod
     def _compensate_missing_cards_value(ranks: Sized, value: str) -> str:
-        """ Add trailing zeros to the value in order to compensate missing cards. """
+        """
+        Add trailing zeros to the value in order to compensate missing
+        cards.
+        """
         if len(ranks) < 5:
             missing = 5 - len(ranks)
             return value + "00" * missing
@@ -265,7 +278,10 @@ class Hand:
 
     @staticmethod
     def _compensate_extra_cards_value(ranks: Sized, value: str) -> str:
-        """"Remove trailing zeros to the value in order to compensate extra cards. """
+        """
+        Remove trailing zeros to the value in order to compensate extra
+        cards.
+        """
         if len(ranks) > 5:
             extras = len(ranks) - 5
             return value[: -2 * extras]
@@ -273,7 +289,10 @@ class Hand:
 
     # TODO transform value in a property. Use property decorator.
     def get_value(self) -> int:
-        """ Get the numerical value of the hand. The bigger the value, the better the hand. """
+        """
+        Get the numerical value of the hand. The bigger the value, the
+        better the hand.
+        """
         value = ""
 
         value = self._high_card() + value
@@ -356,7 +375,7 @@ class Player:
 class Round:
     """ Poker game round. """
 
-    def __init__(self, players: Iterable, n_starting_cards: int = 5):
+    def __init__(self, players: Sequence, n_starting_cards: int = 5):
         self.players = players
         self.deck = Deck()
         self.n_starting_cards = n_starting_cards
@@ -408,7 +427,10 @@ class Poker:
         players: Iterable[Player],
         seats: Union[None, Iterable[int]] = None,
     ):
-        """ Add players to their seats. Use seats=None to choose seats randomly. """
+        """
+        Add players to their seats. Use seats=None to choose seats
+        randomly.
+        """
         # When no seats are passed, chooses randomly.
         if seats is None:
             free_seats = [
@@ -434,9 +456,10 @@ class Poker:
 
     def _validate_dealer(self):
         """ Find a valid position for the dealer. """
-        # I sort the seats to put the dealer in the beginning so then I only have to add values to the seat number until
-        # I find a valid player. The move variable represents how  many seats the dealer button must move until it finds
-        # a valid player.
+        # I sort the seats to put the dealer in the beginning so then I
+        # only have to add values to the seat number until I find a
+        # valid player. The move variable represents how  many seats the
+        # dealer button must move until it finds a valid player.
         seats = self._item_to_beginning(self.seats, self.dealer)
         move = 0
         while seats[move] is None:
@@ -445,7 +468,8 @@ class Poker:
 
     def new_round(self) -> Round:
         """ Start a new round with available players. """
-        # Firstly, organize players list so it is passed to the Round class in the playing order.
+        # Firstly, organize players list so it is passed to the Round
+        # class in the playing order.
         self._validate_dealer()
         ordered_seats = self._item_to_beginning(self.seats, self.dealer)
         players = [seat for seat in ordered_seats if seat is not None]

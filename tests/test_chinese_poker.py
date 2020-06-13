@@ -11,6 +11,7 @@ class TestHand:
 
     @staticmethod
     def _test_royalties(hand_class, test_csv_file):
+        """ Test royalties counting. """
         data = pd.read_csv(test_csv_file, index_col=None)
         for row in data.itertuples():
             hand = hand_class(row.hand)
@@ -37,16 +38,19 @@ class TestPlayer:
     """ Test class player. """
 
     def test_place_card_in_top_hand(self):
+        """ Test placing a card in the top hand. """
         player = chinese_poker.Player(name="Chris Moneymaker", points=2344)
         player.place_card(card=poker.Card("As"), hand="top")
         assert len(player.top_hand) == 1
 
     def test_place_card_in_mid_hand(self):
+        """ Test placing a card in the mid hand. """
         player = chinese_poker.Player(name="Sam Farha", points=999)
         player.place_card(card=poker.Card("As"), hand="middle")
         assert len(player.middle_hand) == 1
 
     def test_place_card_in_btm_hand(self):
+        """ Test placing a card in the bottom hand. """
         player = chinese_poker.Player(name="Dan Harrington", points=574)
         player.place_card(card=poker.Card("As"), hand="bottom")
         assert len(player.bottom_hand) == 1

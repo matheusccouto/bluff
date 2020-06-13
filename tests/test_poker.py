@@ -84,7 +84,8 @@ class TestHand:
         assert hand.numerical_ranks == []
         assert hand.value == 0
 
-    def check_hand_ranking_method(self, method: str):
+    @staticmethod
+    def check_hand_ranking_method(method: str):
         """ Helper function to check the is_{ranking} methods. """
         for row in TEST_HANDS.itertuples():
             # Remove the "is_" from the beginning of the method name to
@@ -192,7 +193,7 @@ class TestPoker:
         pkr = poker.Poker(n_seats=len(players))
         pkr.add_players(players)
         pkr.remove_player(0)
-        assert pkr.seats[0] == None
+        assert pkr.seats[0] is None
 
     def test_set_dealer(self):
         """
