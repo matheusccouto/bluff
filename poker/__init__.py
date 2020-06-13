@@ -106,6 +106,10 @@ class Deck:
     def __iter__(self):
         return self._cards
 
+    @property
+    def cards(self):
+        return self._cards
+
     def set_and_shuffle(self):
         """ Set the deck cards and shuffle. """
         self._cards = [
@@ -145,8 +149,8 @@ class Hand:
     def __setitem__(self, key, value: Card):
         self._cards[key] = value
         self._ranks[key] = value.rank
-        self._suits = value.suit
-        self._numerical_ranks = value.numerical_rank
+        self._suits[key] = value.suit
+        self._numerical_ranks[key] = value.numerical_rank
 
     def __delitem__(self, key):
         self.cards.pop(key)
@@ -215,6 +219,7 @@ class Hand:
         for name in names:
             if getattr(self, f"is_{name}")():
                 return name
+        raise ValueError("Hand has unexpected value.")
 
     def _args_to_cards(self, *args: Union[Card, str]) -> List[Card]:
         """ Parse class arguments to Cards instances. """
@@ -239,11 +244,11 @@ class Hand:
     @staticmethod
     def _flatten(i: Iterable) -> Iterable:
         """ Flatten an irregular iterable. """
-        for i in i:
-            if isinstance(i, Iterable):
-                yield from i
+        for val in i:
+            if isinstance(val, Iterable):
+                yield from val
             else:
-                yield i
+                yield val
 
     def add(self, *args: Union[Card, str]):
         """ Add cards to the hands. """
@@ -575,9 +580,9 @@ class Poker:
             self.add_player(player=player, seat=seat)
 
     @staticmethod
-    def _random_pop(x: list):
+    def _random_pop(lst: list):
         """ Randomly pop an item from a list."""
-        return x.pop(random.randrange(len(x)))
+        return lst.pop(random.randrange(len(lst)))
 
     def remove_player(self, seat: int):
         """ Remove a player from a seat. """

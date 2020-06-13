@@ -10,7 +10,7 @@ class Hand(poker.Hand):
     _ROYALTIES_DICT: Dict[float, int] = {}
 
     @property
-    def royalties(self) -> int :
+    def royalties(self) -> int:
         for value, points in sorted(self._ROYALTIES_DICT.items(), reverse=True):
             if self.value > value:
                 return points

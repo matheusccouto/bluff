@@ -74,5 +74,5 @@ class TestGame:
         correct.
         """
         rnd = self._new_round()
-        p1 = rnd.players[0]
-        assert len(p1.hand) == 13
+        player1 = rnd.players[0]
+        assert len(player1.hand) == 13
