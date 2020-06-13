@@ -3,7 +3,7 @@
 import itertools
 import random
 import re
-from typing import Union, List, Iterable, Sequence, Sized
+from typing import Union, List, Iterable, Sequence, Optional
 
 import numpy as np
 
@@ -19,7 +19,7 @@ class SeatOccupiedError(Exception):
 class Card:
     """ French-style deck card."""
 
-    def __init__(self, abbreviation):
+    def __init__(self, abbreviation: str):
         self._rank = self._abbreviation_to_rank(abbreviation)
         self._suit = self._abbreviation_to_suit(abbreviation)
         self._numerical_rank = self._rank_to_numerical(self._rank)
@@ -34,15 +34,15 @@ class Card:
         return self.rank == other.rank and self.suit == other.suit
 
     @property
-    def rank(self):
+    def rank(self) -> str:
         return self._rank
 
     @property
-    def suit(self):
+    def suit(self) -> str:
         return self._suit
 
     @property
-    def numerical_rank(self):
+    def numerical_rank(self) -> int:
         return self._numerical_rank
 
     @staticmethod
@@ -79,8 +79,22 @@ class Card:
 class Deck:
     """ French-style deck. """
 
-    ranks = ["2", "3", "4", "5", "6", "7", "8", "9", "T", "J", "Q", "K", "A"]
-    suits = ["s", "h", "c", "d"]
+    ranks: Sequence[str] = [
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "T",
+        "J",
+        "Q",
+        "K",
+        "A",
+    ]
+    suits: Sequence[str] = ["s", "h", "c", "d"]
 
     def __init__(self):
         self._cards: List[Card] = []
@@ -144,23 +158,23 @@ class Hand:
         return item in self._cards
 
     @property
-    def ranks(self):
+    def ranks(self) -> List[str]:
         return self._ranks
 
     @property
-    def suits(self):
+    def suits(self) -> List[str]:
         return self._suits
 
     @property
-    def numerical_ranks(self):
+    def numerical_ranks(self) -> List[int]:
         return self._numerical_ranks
 
     @property
-    def cards(self):
+    def cards(self) -> List[Card]:
         return self._cards
 
     @property
-    def value(self):
+    def value(self) -> int:
         """
         Get the numerical value of the hand. The bigger the value, the
         better the hand.
@@ -183,7 +197,7 @@ class Hand:
         return int(value)
 
     @property
-    def name(self):
+    def name(self) -> str:
         """ Get ranking name of the hand. """
 
         names = [
@@ -209,8 +223,10 @@ class Hand:
         # Create cards instances if the user used string arguments.
         return [Card(card) if isinstance(card, str) else card for card in cards]
 
-    def _separate_concatenated_cards(self, *args: Union[Card, str]):
-        """ Separate concatenated cards in a argument. """
+    def _separate_concatenated_cards(
+        self, *args: Union[Card, str]
+    ) -> List[str]:
+        """ Separate concatenated cards repr in a argument. """
         nested = [
             re.findall(r"[2-9TJQKA][shcd]", card)
             if isinstance(card, str)
@@ -221,7 +237,7 @@ class Hand:
         return flat
 
     @staticmethod
-    def _flatten(i):
+    def _flatten(i: Iterable) -> Iterable:
         """ Flatten an irregular iterable. """
         for i in i:
             if isinstance(i, Iterable):
@@ -425,7 +441,7 @@ class Player:
         self._chips: float = self._validate_chips(chips)
         self._hand: Hand = Hand()
 
-    def __repr__(self) -> str:
+    def __repr__(self):
         return self._name
 
     @property
@@ -446,11 +462,11 @@ class Player:
         return self._hand
 
     @hand.setter
-    def hand(self, value):
+    def hand(self, value: Sequence[Card]):
         self._hand = value
 
     @staticmethod
-    def _validate_chips(chips) -> float:
+    def _validate_chips(chips: float) -> float:
         if chips < 0:
             raise ValueError("Chips must equal or greater to zero.")
         return chips
@@ -475,19 +491,19 @@ class Round:
         self.new()
 
     @property
-    def players(self):
+    def players(self) -> Sequence[Player]:
         return self._players
 
     @players.setter
-    def players(self, value):
+    def players(self, value: Sequence[Player]):
         self._players = value
 
     @property
-    def deck(self):
+    def deck(self) -> Deck:
         return self._deck
 
     @property
-    def n_starting_cards(self):
+    def n_starting_cards(self) -> int:
         return self._n_starting_cards
 
     def deal_cards(self, player: Player, n_cards: int):
@@ -507,34 +523,30 @@ class Round:
         self.deck.set_and_shuffle()
         self.deal_cards_to_all(self.n_starting_cards)
 
-    def _get_values(self) -> list:
-        """ Get values from players hands. """
-        return [player.hand.value for player in self.players]
-
     def winner(self) -> np.ndarray:
         """ Evaluate the winner player. """
-        return np.argmax(self._get_values())
+        return np.argmax([player.hand.value for player in self.players])
 
 
 class Poker:
     """ Abstract class for a poker game. """
 
-    _N_STARTING_CARDS = 5
+    _N_STARTING_CARDS: int = 5
 
     def __init__(self, n_seats: int = 9):
-        self._seats: List[Union[None, Player]] = [None] * n_seats
+        self._seats: List[Optional[Player]] = [None] * n_seats
         self._dealer = random.choice(range(n_seats))
 
     @property
-    def seats(self):
+    def seats(self) -> List[Optional[Player]]:
         return self._seats
 
     @property
-    def dealer(self):
+    def dealer(self) -> int:
         return self._dealer
 
     @dealer.setter
-    def dealer(self, value):
+    def dealer(self, value: int):
         if value >= len(self.seats):
             raise ValueError("Dealer must be set to an existing seat.")
         self._dealer = value
@@ -547,9 +559,7 @@ class Poker:
             raise SeatOccupiedError(f"The seat {seat} is already occupied.")
 
     def add_players(
-        self,
-        players: Iterable[Player],
-        seats: Union[None, Iterable[int]] = None,
+        self, players: Iterable[Player], seats: Optional[Iterable[int]] = None,
     ):
         """
         Add players to their seats. Use seats=None to choose seats
@@ -574,7 +584,7 @@ class Poker:
         self.seats[seat] = None
 
     @staticmethod
-    def _item_to_beginning(list_: list, index: int):
+    def _item_to_beginning(list_: list, index: int) -> List:
         """ Move an item to the beginning of a list. """
         return list_[index:] + list_[:index]
 
