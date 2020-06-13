@@ -15,7 +15,7 @@ class TestHand:
         data = pd.read_csv(test_csv_file, index_col=None)
         for row in data.itertuples():
             hand = hand_class(row.hand)
-            royalties = hand.royalties()
+            royalties = hand.royalties
             test_points = row.points
             assert royalties == test_points
 

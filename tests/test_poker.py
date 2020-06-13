@@ -26,32 +26,32 @@ class TestCard:
         """ Test lower and upper case suits. """
         lowercase_card = poker.Card("As")
         uppercase_card = poker.Card("AS")
-        assert lowercase_card.suit == uppercase_card.suit
+        assert lowercase_card._suit == uppercase_card._suit
 
     def test_case_rank(self):
         """ Test lower and upper case ranks. """
         lowercase_card = poker.Card("As")
         uppercase_card = poker.Card("as")
-        assert lowercase_card.rank == uppercase_card.rank
+        assert lowercase_card._rank == uppercase_card._rank
 
     def test_all_ranks(self):
         """ Test if all ranks are recognized. """
         for rank in self.RANKS:
             card = poker.Card(f"{rank}s")
-            assert card.rank == rank
+            assert card._rank == rank
 
     def test_numerical_rank(self):
         """ Test if ranks are converted to numerical ranks correctly. """
         numerical_ranks = range(2, 15)
         for rank, numerical_rank in zip(self.RANKS, numerical_ranks):
             card = poker.Card(f"{rank}s")
-            assert card.numerical_rank == numerical_rank
+            assert card._numerical_rank == numerical_rank
 
     def test_all_suits(self):
         """ test if all suits are recognized."""
         for suit in self.SUITS:
             card = poker.Card(f"A{suit}")
-            assert card.suit == suit
+            assert card._suit == suit
 
     def test_rank_value_error(self):
         """ Test if invalid ranks raise exceptions. """
@@ -175,6 +175,11 @@ class TestHand:
                 poker.Hand(row.hand)
             )
 
+    def test_hand_ranking_name(self):
+        """ Test name property from Hand class. """
+        for row in TEST_HANDS.itertuples():
+            assert poker.Hand(row.hand).name == row.ranking
+
 
 class TestPoker:
     """  Test the class Poker. """
@@ -277,11 +282,11 @@ class TestDeck:
     def test_set(self):
         """ Test if deck is being set correctly. """
         deck = poker.Deck()
-        assert len(deck.cards) == 52
+        assert len(deck._cards) == 52
 
     def test_shuffle(self):
         """ Test if method set and shuffle"""
         deck = poker.Deck()
-        cards = deck.cards.copy()
+        cards = deck._cards.copy()
         deck.set_and_shuffle()
-        assert cards != deck.cards
+        assert cards != deck._cards

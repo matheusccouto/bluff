@@ -20,15 +20,27 @@ class Card:
     """ French-style deck card."""
 
     def __init__(self, abbreviation):
-        self.rank = self._rank(abbreviation)
-        self.suit = self._suit(abbreviation)
-        self.numerical_rank = self._numerical_rank(self.rank)
+        self._rank = self._abbreviation_to_rank(abbreviation)
+        self._suit = self._abbreviation_to_suit(abbreviation)
+        self._numerical_rank = self._rank_to_numerical(self._rank)
 
     def __repr__(self):
-        return self.rank + self.suit
+        return self._rank + self._suit
+
+    @property
+    def rank(self):
+        return self._rank
+
+    @property
+    def suit(self):
+        return self._suit
+
+    @property
+    def numerical_rank(self):
+        return self._numerical_rank
 
     @staticmethod
-    def _rank(card_abbreviation: str) -> str:
+    def _abbreviation_to_rank(card_abbreviation: str) -> str:
         """ Get the rank from the card abbreviation. """
         rank = re.findall(r"[2-9TtJjQqKkAa]", card_abbreviation)
         # If didn't match, the re.findall returns an empty list.
@@ -39,7 +51,7 @@ class Card:
         )
 
     @staticmethod
-    def _suit(card_abbreviation: str) -> str:
+    def _abbreviation_to_suit(card_abbreviation: str) -> str:
         """ Get the suit from the card abbreviation. """
         suit = re.findall(r"[SsHhCcDd]", card_abbreviation)
         # If didn't match, the re.findall returns an empty list.
@@ -50,7 +62,7 @@ class Card:
         )
 
     @staticmethod
-    def _numerical_rank(rank: str) -> int:
+    def _rank_to_numerical(rank: str) -> int:
         """ Get the numerical rank from an alpha-numerical rank. """
         numbers = {"T": 10, "J": 11, "Q": 12, "K": 13, "A": 14}
         for key, value in numbers.items():
@@ -65,24 +77,24 @@ class Deck:
     suits = ["s", "h", "c", "d"]
 
     def __init__(self):
-        self.cards: List[Card] = []
+        self._cards: List[Card] = []
         self.set_and_shuffle()
 
     def __len__(self):
-        return len(self.cards)
+        return len(self._cards)
 
     def set_and_shuffle(self):
         """ Set the deck cards and shuffle. """
-        self.cards = [
+        self._cards = [
             Card(rank + suit)
             for rank, suit in itertools.product(self.ranks, self.suits)
         ]
-        random.shuffle(self.cards)  # random.shuffle is inplace
+        random.shuffle(self._cards)  # random.shuffle is inplace
 
     def draw(self) -> Card:
         """ Draw a card. """
         try:
-            return self.cards.pop(-1)
+            return self._cards.pop(-1)
         except IndexError:
             raise NotEnoughCardsError("There are no cards left in the deck.")
 
@@ -91,9 +103,9 @@ class Hand:
     """ Poker hand. Formed by Card objects. """
 
     def __init__(self, *args: Union[Card, str]):
-        self.ranks: List[str] = []
-        self.suits: List[str] = []
-        self.numerical_ranks: List[int] = []
+        self._ranks: List[str] = []
+        self._suits: List[str] = []
+        self._numerical_ranks: List[int] = []
 
         self.add(*args)
 
@@ -109,6 +121,18 @@ class Hand:
 
     def __len__(self):
         return len(self.ranks)
+
+    @property
+    def ranks(self):
+        return self._ranks
+
+    @property
+    def suits(self):
+        return self._suits
+
+    @property
+    def numerical_ranks(self):
+        return self._numerical_ranks
 
     @property
     def value(self):
@@ -132,6 +156,26 @@ class Hand:
         value = self._compensate_extra_cards_value(self.ranks, value)
 
         return int(value)
+
+    @property
+    def name(self):
+        """ Get ranking name of the hand. """
+
+        names = [
+            "high_card",
+            "pair",
+            "two_pairs",
+            "three_of_a_kind",
+            "straight",
+            "flush",
+            "full_house",
+            "four_of_a_kind",
+            "straight_flush",
+            "royal_straight_flush",
+        ]
+        for name in names:
+            if getattr(self, f"is_{name}")():
+                return name
 
     def _args_to_cards(self, *args: Union[Card, str]) -> List[Card]:
         """ Parse class arguments to Cards instances. """
@@ -163,9 +207,9 @@ class Hand:
     def add(self, *args: Union[Card, str]):
         """ Add cards to the hands. """
         cards = self._args_to_cards(*args)
-        self.ranks += [card.rank for card in cards]
-        self.suits += [card.suit for card in cards]
-        self.numerical_ranks += [card.numerical_rank for card in cards]
+        self._ranks += [card.rank for card in cards]
+        self._suits += [card.suit for card in cards]
+        self._numerical_ranks += [card.numerical_rank for card in cards]
 
     @staticmethod
     def _find_repeated_ranks(ranks: Sequence, reps: int) -> set:
@@ -351,12 +395,39 @@ class Player:
     """ Poker player. """
 
     def __init__(self, name: str, chips: float):
-        self.name: str = name
-        self.chips: float = chips
-        self.hand: Hand = Hand()
+        self._name: str = name
+        self._chips: float = self._validate_chips(chips)
+        self._hand: Hand = Hand()
 
-    def __repr__(self):
-        return self.name
+    def __repr__(self) -> str:
+        return self._name
+
+    @property
+    def name(self) -> str:
+        return self._name
+
+    @property
+    def chips(self) -> float:
+        return self._chips
+
+    @chips.setter
+    def chips(self, value: float):
+        value = self._validate_chips(value)
+        self._chips = value
+
+    @property
+    def hand(self) -> Hand:
+        return self._hand
+
+    @hand.setter
+    def hand(self, value):
+        self._hand = value
+
+    @staticmethod
+    def _validate_chips(chips) -> float:
+        if chips < 0:
+            raise ValueError("Chips must equal or greater to zero.")
+        return chips
 
     def add_cards(self, cards: Iterable[Card]):
         """ Add cards to a player hand. """
@@ -371,11 +442,27 @@ class Player:
 class Round:
     """ Poker game round. """
 
-    def __init__(self, players: Sequence, n_starting_cards: int = 5):
-        self.players = players
-        self.deck = Deck()
-        self.n_starting_cards = n_starting_cards
+    def __init__(self, players: Sequence[Player], n_starting_cards: int = 5):
+        self._players = players
+        self._deck = Deck()
+        self._n_starting_cards = n_starting_cards
         self.new()
+
+    @property
+    def players(self):
+        return self._players
+
+    @players.setter
+    def players(self, value):
+        self._players = value
+
+    @property
+    def deck(self):
+        return self._deck
+
+    @property
+    def n_starting_cards(self):
+        return self._n_starting_cards
 
     def deal_cards(self, player: Player, n_cards: int):
         """ Deal a number of cards to a single players. """
@@ -383,6 +470,7 @@ class Round:
         player.add_cards(cards)
 
     def deal_cards_to_all(self, n_cards: int):
+        """ Deal cards to all players. """
         for player in self.players:
             self.deal_cards(player=player, n_cards=n_cards)
 
@@ -405,11 +493,25 @@ class Round:
 class Poker:
     """ Abstract class for a poker game. """
 
-    N_STARTING_CARDS = 5
+    _N_STARTING_CARDS = 5
 
     def __init__(self, n_seats: int = 9):
-        self.seats: List[Union[None, Player]] = [None] * n_seats
-        self.dealer = random.choice(range(n_seats))
+        self._seats: List[Union[None, Player]] = [None] * n_seats
+        self._dealer = random.choice(range(n_seats))
+
+    @property
+    def seats(self):
+        return self._seats
+
+    @property
+    def dealer(self):
+        return self._dealer
+
+    @dealer.setter
+    def dealer(self, value):
+        if value >= len(self.seats):
+            raise ValueError("Dealer must be set to an existing seat.")
+        self._dealer = value
 
     def add_player(self, player: Player, seat: int):
         """ Add a player to a seat. """
@@ -471,7 +573,7 @@ class Poker:
         players = [seat for seat in ordered_seats if seat is not None]
 
         # Start a round
-        rnd = Round(players=players, n_starting_cards=self.N_STARTING_CARDS)
+        rnd = Round(players=players, n_starting_cards=self._N_STARTING_CARDS)
         rnd.new()
 
         return rnd

@@ -7,11 +7,11 @@ import poker
 class Hand(poker.Hand):
     """ Abstract chinese poker hand class"""
 
-    royalties_dict: Dict[float, int] = {}
+    _ROYALTIES_DICT: Dict[float, int] = {}
 
+    @property
     def royalties(self):
-        """ Find how many royalties points a hand has."""
-        for value, points in sorted(self.royalties_dict.items(), reverse=True):
+        for value, points in sorted(self._ROYALTIES_DICT.items(), reverse=True):
             if self.value > value:
                 return points
         return 0
@@ -20,7 +20,7 @@ class Hand(poker.Hand):
 class TopHand(Hand):
     """ Chinese poker top hand"""
 
-    royalties_dict: Dict[float, int] = {
+    _ROYALTIES_DICT: Dict[float, int] = {
         06e10: 1,
         07e10: 2,
         08e10: 3,
@@ -49,7 +49,7 @@ class TopHand(Hand):
 class MiddleHand(Hand):
     """ Chinese poker top hand"""
 
-    royalties_dict: Dict[float, int] = {
+    _ROYALTIES_DICT: Dict[float, int] = {
         02e16: 2,
         02e18: 4,
         02e20: 8,
@@ -63,7 +63,7 @@ class MiddleHand(Hand):
 class BottomHand(Hand):
     """ Chinese poker top hand"""
 
-    royalties_dict: Dict[float, int] = {
+    _ROYALTIES_DICT: Dict[float, int] = {
         02e18: 2,
         02e20: 4,
         02e22: 6,
@@ -78,9 +78,33 @@ class Player(poker.Player):
 
     def __init__(self, name: str, points: int):
         super().__init__(name=name, chips=points)
-        self.top_hand: Hand = TopHand()
-        self.middle_hand: Hand = MiddleHand()
-        self.bottom_hand: Hand = BottomHand()
+        self._top_hand: Hand = TopHand()
+        self._middle_hand: Hand = MiddleHand()
+        self._bottom_hand: Hand = BottomHand()
+
+    @property
+    def top_hand(self) -> Hand:
+        return self._top_hand
+
+    @top_hand.setter
+    def top_hand(self, value):
+        self._top_hand = value
+
+    @property
+    def middle_hand(self) -> Hand:
+        return self._middle_hand
+
+    @middle_hand.setter
+    def middle_hand(self, value):
+        self._middle_hand = value
+
+    @property
+    def bottom_hand(self) -> Hand:
+        return self._bottom_hand
+
+    @bottom_hand.setter
+    def bottom_hand(self, value):
+        self._bottom_hand = value
 
     def place_card(self, card: poker.Card, hand: str):
         """ Place a card in one of the three chinese poker hands. """
@@ -101,4 +125,4 @@ class Round(poker.Round):
 class Poker(poker.Poker):
     """ Chinese Poker. """
 
-    N_STARTING_CARDS = 13
+    _N_STARTING_CARDS = 13
