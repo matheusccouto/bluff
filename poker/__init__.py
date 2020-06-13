@@ -34,7 +34,9 @@ class Card:
         # If didn't match, the re.findall returns an empty list.
         if len(rank) == 1:
             return rank[0].upper()
-        raise ValueError(f"'{card_abbreviation}' is not a valid card abbreviation.")
+        raise ValueError(
+            f"'{card_abbreviation}' is not a valid card abbreviation."
+        )
 
     @staticmethod
     def _suit(card_abbreviation: str) -> str:
@@ -43,7 +45,9 @@ class Card:
         # If didn't match, the re.findall returns an empty list.
         if len(suit) == 1:
             return suit[0].lower()
-        raise ValueError(f"'{card_abbreviation}' is not a valid card abbreviation.")
+        raise ValueError(
+            f"'{card_abbreviation}' is not a valid card abbreviation."
+        )
 
     @staticmethod
     def _numerical_rank(rank: str) -> int:
@@ -69,7 +73,10 @@ class Deck:
 
     def set_and_shuffle(self):
         """ Set the deck cards and shuffle. """
-        self.cards = [Card(rank + suit) for rank, suit in itertools.product(self.ranks, self.suits)]
+        self.cards = [
+            Card(rank + suit)
+            for rank, suit in itertools.product(self.ranks, self.suits)
+        ]
         random.shuffle(self.cards)  # random.shuffle is inplace
 
     def draw(self) -> Card:
@@ -93,7 +100,14 @@ class Hand:
         self.add(*args)
 
     def __repr__(self):
-        return " ".join([rank + suit for _, rank, suit in sorted(zip(self.numerical_ranks, self.ranks, self.suits))])
+        return " ".join(
+            [
+                rank + suit
+                for _, rank, suit in sorted(
+                    zip(self.numerical_ranks, self.ranks, self.suits)
+                )
+            ]
+        )
 
     def __len__(self):
         return self.n_cards
@@ -107,7 +121,12 @@ class Hand:
 
     def _separate_concatenated_cards(self, *args: Union[Card, str]):
         """ Separate concatenated cards in a argument. """
-        nested = [re.findall(r"[2-9TJQKA][shcd]", card) if isinstance(card, str) else card for card in args]
+        nested = [
+            re.findall(r"[2-9TJQKA][shcd]", card)
+            if isinstance(card, str)
+            else card
+            for card in args
+        ]
         flat = list(self._flatten(nested))
         return flat
 
@@ -158,7 +177,12 @@ class Hand:
     def _high_card(self) -> str:
         """ Hand value code for a high card."""
         # Concatenate each cards value in a string, from the biggest to the smallest.
-        return "".join([f"{rank:02d}" for rank in sorted(self.numerical_ranks, reverse=True)])
+        return "".join(
+            [
+                f"{rank:02d}"
+                for rank in sorted(self.numerical_ranks, reverse=True)
+            ]
+        )
 
     def _pair(self) -> str:
         """ Hand value code for a pair."""
@@ -185,12 +209,14 @@ class Hand:
         """ Hand value code for a straight."""
         # In a straight an Ace can be the highest or lowest card. This makes necessary to check both possibilities.
         ace_high_hand = list(sorted(self.numerical_ranks))
-        ace_low_hand = list(sorted([1 if rank == 14 else rank for rank in self.numerical_ranks]))
+        ace_low_hand = list(
+            sorted([1 if rank == 14 else rank for rank in self.numerical_ranks])
+        )
 
         # This next comparisons only work when the Hand is not empty.
         # When the list is empty, it should return no value.
         if not ace_high_hand:
-            return '00'
+            return "00"
 
         # Create reference strings1 ** (2 * i) (based on the lowest card) to compare to.
         ace_high_straight = list(range(ace_high_hand[0], ace_high_hand[0] + 5))
@@ -377,11 +403,17 @@ class Poker:
         else:
             raise SeatOccupiedError(f"The seat {seat} is already occupied.")
 
-    def add_players(self, players: Iterable[Player], seats: Union[None, Iterable[int]] = None):
+    def add_players(
+        self,
+        players: Iterable[Player],
+        seats: Union[None, Iterable[int]] = None,
+    ):
         """ Add players to their seats. Use seats=None to choose seats randomly. """
         # When no seats are passed, chooses randomly.
         if seats is None:
-            free_seats = [seat for seat, player in enumerate(self.seats) if not player]
+            free_seats = [
+                seat for seat, player in enumerate(self.seats) if not player
+            ]
             seats = [self._random_pop(free_seats) for _ in players]
         for player, seat in zip(players, seats):
             self.add_player(player=player, seat=seat)

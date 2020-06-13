@@ -100,4 +100,5 @@ class Round(poker.Round):
 
 class Poker(poker.Poker):
     """ Chinese Poker. """
+
     N_STARTING_CARDS = 13

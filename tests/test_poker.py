@@ -148,7 +148,7 @@ class TestHand:
             poker.Card("Ks"),
             poker.Card("Tc"),
             poker.Card("6c"),
-            poker.Card("2h")
+            poker.Card("2h"),
         )
         alternatives = [
             poker.Hand("Ad", "Ks", "Tc", "6c", "2h"),
@@ -170,8 +170,9 @@ class TestHand:
             # working correctly, it must construct a Hand instance with
             # the same repr as the hand instance from the hand created
             # by with the test_hand.csv.
-            assert (repr(poker.Hand(repr(poker.Hand(row.hand))))
-                    == repr(poker.Hand(row.hand)))
+            assert repr(poker.Hand(repr(poker.Hand(row.hand)))) == repr(
+                poker.Hand(row.hand)
+            )
 
 
 class TestPoker:
@@ -215,7 +216,6 @@ class TestPoker:
 
 
 class TestRound:
-
     def test_deal_cards_to_all_players(self):
         """ Test dealing cards to all players. """
         n_starting_cards = 5
@@ -242,7 +242,11 @@ class TestRound:
 
     def test_winner(self):
         """ Test the method winner. """
-        test_hands = (poker.Hand('As Ah 4d Tc Js'), poker.Hand('3s 4h 5d 6c 7s'), poker.Hand('Qs Ah 4d Tc Js'))
+        test_hands = (
+            poker.Hand("As Ah 4d Tc Js"),
+            poker.Hand("3s 4h 5d 6c 7s"),
+            poker.Hand("Qs Ah 4d Tc Js"),
+        )
         winner = 1
         n_starting_cards = 5
         rnd = poker.Round(players=players, n_starting_cards=n_starting_cards)
