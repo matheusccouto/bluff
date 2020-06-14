@@ -122,10 +122,6 @@ class Player(poker.Player):
             raise ValueError(f"{hand} is not a valid hand.")
 
 
-class Round(poker.Round):
-    """ Chinese poker round. """
-
-
 class Poker(poker.Poker):
     """ Chinese Poker. """
 
