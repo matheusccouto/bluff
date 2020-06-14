@@ -22,13 +22,15 @@ class TestCard:
     RANKS = ("2", "3", "4", "5", "6", "7", "8", "9", "T", "J", "Q", "K", "A")
     SUITS = ("s", "h", "c", "d")
 
-    def test_case_suit(self):
+    @staticmethod
+    def test_case_suit():
         """ Test lower and upper case suits. """
         lowercase_card = poker.Card("As")
         uppercase_card = poker.Card("AS")
         assert lowercase_card.suit == uppercase_card.suit
 
-    def test_case_rank(self):
+    @staticmethod
+    def test_case_rank():
         """ Test lower and upper case ranks. """
         lowercase_card = poker.Card("As")
         uppercase_card = poker.Card("as")
@@ -53,14 +55,16 @@ class TestCard:
             card = poker.Card(f"A{suit}")
             assert card.suit == suit
 
-    def test_rank_value_error(self):
+    @staticmethod
+    def test_rank_value_error():
         """ Test if invalid ranks raise exceptions. """
         invalid_ranks = ("0", "1", "10")
         for rank in invalid_ranks:
             with pytest.raises(ValueError):
                 poker.Card(f"{rank}s")
 
-    def test_suit_value_error(self):
+    @staticmethod
+    def test_suit_value_error():
         """ "Test if invalid suits raise exceptions. """
         invalid_suits = ("spades", "hearts", "clubs", "diamonds", "x", "y", "z")
         for suit in invalid_suits:
@@ -76,7 +80,8 @@ class TestCard:
 class TestHand:
     """ Test class Hand. """
 
-    def test_create_empty_hand(self):
+    @staticmethod
+    def test_create_empty_hand():
         """ Test the creation of an empty hand. """
         hand = poker.Hand()
         assert hand.ranks == []
@@ -137,12 +142,14 @@ class TestHand:
         """ Test is_royal_straight_flush method. """
         self.check_hand_ranking_method("is_royal_straight_flush")
 
-    def test_value(self):
+    @staticmethod
+    def test_value():
         """ Test the hand value. """
         for row in TEST_HANDS.itertuples():
             assert poker.Hand(row.hand).value == int(row.value)
 
-    def test_string_arguments(self):
+    @staticmethod
+    def test_string_arguments():
         """" Test creation of a hand by string arguments. """
         reference = poker.Hand(
             poker.Card("Ad"),
@@ -161,7 +168,8 @@ class TestHand:
         for alt in alternatives:
             assert reference.value == alt.value
 
-    def test_repr(self):
+    @staticmethod
+    def test_repr():
         """ Test class' __repr__. """
         for row in TEST_HANDS.itertuples():
             # Since the repr from Hand sorts the hand. Comparing the
@@ -175,7 +183,8 @@ class TestHand:
                 poker.Hand(row.hand)
             )
 
-    def test_hand_ranking_name(self):
+    @staticmethod
+    def test_hand_ranking_name():
         """ Test name property from Hand class. """
         for row in TEST_HANDS.itertuples():
             assert poker.Hand(row.hand).name == row.ranking
@@ -184,7 +193,8 @@ class TestHand:
 class TestPoker:
     """  Test the class Poker. """
 
-    def test_add_player(self):
+    @staticmethod
+    def test_add_player():
         """ Test adding a player. """
         pkr = poker.Poker(n_seats=9)
         n_players_before = len([seat for seat in pkr.seats if seat is not None])
@@ -193,14 +203,16 @@ class TestPoker:
         n_players_after = len([seat for seat in pkr.seats if seat is not None])
         assert n_players_before + 1 == n_players_after
 
-    def test_remove_player(self):
+    @staticmethod
+    def test_remove_player():
         """ Test removing a player. """
         pkr = poker.Poker(n_seats=len(players))
         pkr.add_players(players)
         pkr.remove_player(0)
         assert pkr.seats[0] is None
 
-    def test_set_dealer(self):
+    @staticmethod
+    def test_set_dealer():
         """
         Test that a new dealer is set every time a new game is started.
         """
@@ -213,7 +225,8 @@ class TestPoker:
         pokers = [poker.Poker().dealer for _ in range(10)]
         assert len(set(pokers)) > 1
 
-    def test_raise_seat_occupied(self):
+    @staticmethod
+    def test_raise_seat_occupied():
         """ Test if SeatOccupiedError is thrown when necessary. """
         pkr = poker.Poker()
         pkr.add_player(players[0], seat=0)
@@ -224,7 +237,8 @@ class TestPoker:
 class TestRound:
     """ Test round class. """
 
-    def test_deal_cards_to_all_players(self):
+    @staticmethod
+    def test_deal_cards_to_all_players():
         """ Test dealing cards to all players. """
         n_starting_cards = 5
         rnd = poker.Round(players=players, n_starting_cards=n_starting_cards)
@@ -232,7 +246,8 @@ class TestRound:
         for player in rnd.players:
             assert len(player.hand) == n_starting_cards
 
-    def test_deal_cards_to_one_player(self):
+    @staticmethod
+    def test_deal_cards_to_one_player():
         """ Test dealing cards to a single player only. """
         n_starting_cards = 5
         n_cards_to_deal = 2
@@ -248,7 +263,8 @@ class TestRound:
             else:
                 assert len(player.hand) == n_starting_cards
 
-    def test_winner(self):
+    @staticmethod
+    def test_winner():
         """ Test the method winner. """
         test_hands = (
             poker.Hand("As Ah 4d Tc Js"),
@@ -281,12 +297,14 @@ class TestDeck:
         with pytest.raises(poker.NotEnoughCardsError):
             self.draw_many_cards(deck)
 
-    def test_set(self):
+    @staticmethod
+    def test_set():
         """ Test if deck is being set correctly. """
         deck = poker.Deck()
         assert len(deck.cards) == 52
 
-    def test_shuffle(self):
+    @staticmethod
+    def test_shuffle():
         """ Test if method set and shuffle"""
         deck = poker.Deck()
         cards = deck.cards.copy()

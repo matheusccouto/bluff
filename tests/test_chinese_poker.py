@@ -29,33 +29,35 @@ class TestHand:
 
     def test_bottom_royalties(self):
         """ Test bottom hand royalties. """
-        self._test_royalties(
-            chinese_poker.BottomHand, "test_bottom_royalties.csv"
-        )
+        self._test_royalties(chinese_poker.BottomHand, "test_bottom_royalties.csv")
 
 
 class TestPlayer:
     """ Test class player. """
 
-    def test_place_card_in_top_hand(self):
+    @staticmethod
+    def test_place_card_in_top_hand():
         """ Test placing a card in the top hand. """
         player = chinese_poker.Player(name="Chris Moneymaker", points=2344)
         player.place_card(card=poker.Card("As"), hand="top")
         assert len(player.top_hand) == 1
 
-    def test_place_card_in_mid_hand(self):
+    @staticmethod
+    def test_place_card_in_mid_hand():
         """ Test placing a card in the mid hand. """
         player = chinese_poker.Player(name="Sam Farha", points=999)
         player.place_card(card=poker.Card("As"), hand="middle")
         assert len(player.middle_hand) == 1
 
-    def test_place_card_in_btm_hand(self):
+    @staticmethod
+    def test_place_card_in_btm_hand():
         """ Test placing a card in the bottom hand. """
         player = chinese_poker.Player(name="Dan Harrington", points=574)
         player.place_card(card=poker.Card("As"), hand="bottom")
         assert len(player.bottom_hand) == 1
 
 
+# TODO Create more tests.
 class TestGame:
     """ Test game dynamics."""
 
@@ -69,10 +71,7 @@ class TestGame:
         return pkr.new_round()
 
     def test_round(self):
-        """
-        Test initializing a new round. Check if number of cards is
-        correct.
-        """
+        """ Test initializing a new round. Check if number of cards is correct. """
         rnd = self._new_round()
         player1 = rnd.players[0]
         assert len(player1.hand) == 13

@@ -35,14 +35,17 @@ class Card:
 
     @property
     def rank(self) -> str:
+        """ Get the card rank. """
         return self._rank
 
     @property
     def suit(self) -> str:
+        """ Get the card suit. """
         return self._suit
 
     @property
     def numerical_rank(self) -> int:
+        """ Get the card numerical rank. """
         return self._numerical_rank
 
     @staticmethod
@@ -52,9 +55,7 @@ class Card:
         # If didn't match, the re.findall returns an empty list.
         if len(rank) == 1:
             return rank[0].upper()
-        raise ValueError(
-            f"'{card_abbreviation}' is not a valid card abbreviation."
-        )
+        raise ValueError(f"'{card_abbreviation}' is not a valid card abbreviation.")
 
     @staticmethod
     def _abbreviation_to_suit(card_abbreviation: str) -> str:
@@ -63,9 +64,7 @@ class Card:
         # If didn't match, the re.findall returns an empty list.
         if len(suit) == 1:
             return suit[0].lower()
-        raise ValueError(
-            f"'{card_abbreviation}' is not a valid card abbreviation."
-        )
+        raise ValueError(f"'{card_abbreviation}' is not a valid card abbreviation.")
 
     @staticmethod
     def _rank_to_numerical(rank: str) -> int:
@@ -108,6 +107,7 @@ class Deck:
 
     @property
     def cards(self):
+        """ Get deck cards. """
         return self._cards
 
     def set_and_shuffle(self):
@@ -163,25 +163,28 @@ class Hand:
 
     @property
     def ranks(self) -> List[str]:
+        """ Get hand ranks. """
         return self._ranks
 
     @property
     def suits(self) -> List[str]:
+        """ Get hand suits. """
         return self._suits
 
     @property
     def numerical_ranks(self) -> List[int]:
+        """ Get hand numerical ranks. """
         return self._numerical_ranks
 
     @property
     def cards(self) -> List[Card]:
+        """ Get hand cards. """
         return self._cards
 
     @property
     def value(self) -> int:
         """
-        Get the numerical value of the hand. The bigger the value, the
-        better the hand.
+        Get the numerical value of the hand. The bigger the value, the better the hand.
         """
         value = ""
 
@@ -228,14 +231,10 @@ class Hand:
         # Create cards instances if the user used string arguments.
         return [Card(card) if isinstance(card, str) else card for card in cards]
 
-    def _separate_concatenated_cards(
-        self, *args: Union[Card, str]
-    ) -> List[str]:
+    def _separate_concatenated_cards(self, *args: Union[Card, str]) -> List[str]:
         """ Separate concatenated cards repr in a argument. """
         nested = [
-            re.findall(r"[2-9TJQKA][shcd]", card)
-            if isinstance(card, str)
-            else card
+            re.findall(r"[2-9TJQKA][shcd]", card) if isinstance(card, str) else card
             for card in args
         ]
         flat = list(self._flatten(nested))
@@ -245,6 +244,7 @@ class Hand:
     def _flatten(i: Iterable) -> Iterable:
         """ Flatten an irregular iterable. """
         for val in i:
+            # pylint: disable=W1116
             if isinstance(val, Iterable):
                 yield from val
             else:
@@ -260,10 +260,7 @@ class Hand:
 
     @staticmethod
     def _find_repeated_ranks(ranks: Sequence, reps: int) -> set:
-        """
-        Find ranks that are repeated a certain number of times in a
-        hand.
-        """
+        """ Find ranks that are repeated a certain number of times in a hand. """
         return {rank for rank in ranks if ranks.count(rank) == reps}
 
     # The next methods are useful for the value property only. They
@@ -296,10 +293,7 @@ class Hand:
         # Concatenate each cards value in a string, from the biggest to
         # the smallest.
         return "".join(
-            [
-                f"{rank:02d}"
-                for rank in sorted(self.numerical_ranks, reverse=True)
-            ]
+            [f"{rank:02d}" for rank in sorted(self.numerical_ranks, reverse=True)]
         )
 
     def _pair(self) -> str:
@@ -377,10 +371,7 @@ class Hand:
 
     @staticmethod
     def _compensate_missing_cards_value(n_cards: int, value: str) -> str:
-        """
-        Add trailing zeros to the value in order to compensate missing
-        cards.
-        """
+        """ Add trailing zeros to the value in order to compensate missing cards. """
         if n_cards < 5:
             missing = 5 - n_cards
             return value + "00" * missing
@@ -388,10 +379,7 @@ class Hand:
 
     @staticmethod
     def _compensate_extra_cards_value(n_cards: int, value: str) -> str:
-        """
-        Remove trailing zeros to the value in order to compensate extra
-        cards.
-        """
+        """ Remove trailing zeros to the value in order to compensate extra cards. """
         if n_cards > 5:
             extras = n_cards - 5
             return value[: -2 * extras]
@@ -451,10 +439,12 @@ class Player:
 
     @property
     def name(self) -> str:
+        """ Get player name. """
         return self._name
 
     @property
     def chips(self) -> float:
+        """ Get or set player chips amount. """
         return self._chips
 
     @chips.setter
@@ -464,6 +454,7 @@ class Player:
 
     @property
     def hand(self) -> Hand:
+        """ Get or set player hand. """
         return self._hand
 
     @hand.setter
@@ -472,6 +463,7 @@ class Player:
 
     @staticmethod
     def _validate_chips(chips: float) -> float:
+        """ Validate player chips amount. """
         if chips < 0:
             raise ValueError("Chips must equal or greater to zero.")
         return chips
@@ -497,6 +489,7 @@ class Round:
 
     @property
     def players(self) -> Sequence[Player]:
+        """ Get or set round players. """
         return self._players
 
     @players.setter
@@ -505,10 +498,12 @@ class Round:
 
     @property
     def deck(self) -> Deck:
+        """ Get round deck. """
         return self._deck
 
     @property
     def n_starting_cards(self) -> int:
+        """ Get round number of starting cards. """
         return self._n_starting_cards
 
     def deal_cards(self, player: Player, n_cards: int):
@@ -544,10 +539,12 @@ class Poker:
 
     @property
     def seats(self) -> List[Optional[Player]]:
+        """ Get list of seats. """
         return self._seats
 
     @property
     def dealer(self) -> int:
+        """ Get dealer position. """
         return self._dealer
 
     @dealer.setter
@@ -572,9 +569,7 @@ class Poker:
         """
         # When no seats are passed, chooses randomly.
         if seats is None:
-            free_seats = [
-                seat for seat, player in enumerate(self.seats) if not player
-            ]
+            free_seats = [seat for seat, player in enumerate(self.seats) if not player]
             seats = [self._random_pop(free_seats) for _ in players]
         for player, seat in zip(players, seats):
             self.add_player(player=player, seat=seat)

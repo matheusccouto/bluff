@@ -11,6 +11,7 @@ class Hand(poker.Hand):
 
     @property
     def royalties(self) -> int:
+        """ Get hand royalties. """
         for value, points in sorted(self._ROYALTIES_DICT.items(), reverse=True):
             if self.value > value:
                 return points
@@ -84,6 +85,7 @@ class Player(poker.Player):
 
     @property
     def top_hand(self) -> Hand:
+        """ Get or set top hand. """
         return self._top_hand
 
     @top_hand.setter
@@ -92,6 +94,7 @@ class Player(poker.Player):
 
     @property
     def middle_hand(self) -> Hand:
+        """ Get or set middle hand. """
         return self._middle_hand
 
     @middle_hand.setter
@@ -100,6 +103,7 @@ class Player(poker.Player):
 
     @property
     def bottom_hand(self) -> Hand:
+        """ Get or set bottom hand. """
         return self._bottom_hand
 
     @bottom_hand.setter
