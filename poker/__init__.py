@@ -5,6 +5,7 @@ import random
 import re
 from typing import Union, List, Iterable, Sequence, Optional
 
+import more_itertools
 import numpy as np
 
 
@@ -139,6 +140,9 @@ class Hand:
 
     def __repr__(self):
         return " ".join(sorted([str(card) for card in self.cards]))
+
+    def __str__(self):
+        return self.__repr__()
 
     def __len__(self):
         return len(self.cards)
@@ -319,32 +323,27 @@ class Hand:
 
     def _straight(self) -> str:
         """ Hand value code for a straight."""
-        # In a straight an Ace can be the highest or lowest card. This
-        # makes necessary to check both possibilities.
-        ace_high_hand = list(sorted(self.numerical_ranks))
-        ace_low_hand = list(
-            sorted([1 if rank == 14 else rank for rank in self.numerical_ranks])
-        )
+        aces_count = self.numerical_ranks.count(14)
+        hand = list(sorted(self.numerical_ranks + [1] * aces_count))
 
         # This next comparisons only work when the Hand is not empty.
         # When the list is empty, it should return no value.
-        if not ace_high_hand:
+        if not hand:
             return "00"
 
-        # Create reference strings1 ** (2 * i) (based on the lowest
-        # card) to compare to.
-        ace_high_straight = list(range(ace_high_hand[0], ace_high_hand[0] + 5))
-        ace_low_straight = list(range(ace_low_hand[0], ace_low_hand[0] + 5))
+        groups = [list(group) for group in more_itertools.consecutive_groups(hand)]
+        longest_sequence = max([group[-1] - group[0] for group in groups]) + 1
 
-        if ace_high_hand == ace_high_straight:
-            return f"{ace_high_hand[-1]:02d}"
-        if ace_low_hand == ace_low_straight:
-            return f"{ace_low_hand[-1]:02d}"
+        if longest_sequence >= 5:
+            largest_value = max([max(group) for group in groups if len(group) >= 5])
+            return f"{largest_value:02d}"
         return "00"
 
     def _flush(self) -> str:
         """ Hand value code for a flush."""
-        if len(set(self.suits)) == 1:
+        suits = ["s", "h", "c", "d"]
+        count = [self.suits.count(suit) for suit in suits]
+        if max(count) >= 5:
             return f"{max(self.numerical_ranks):02d}"
         return "00"
 
