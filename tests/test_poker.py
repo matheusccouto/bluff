@@ -2,6 +2,7 @@
 
 import itertools
 
+import numpy as np
 import pandas as pd
 import pytest
 
@@ -87,6 +88,7 @@ class TestHand:
         assert hand.ranks == []
         assert hand.suits == []
         assert hand.numerical_ranks == []
+        assert hand.hex_ranks == []
         assert hand.value == 0
 
     @staticmethod
@@ -146,7 +148,7 @@ class TestHand:
     def test_value():
         """ Test the hand value. """
         for row in TEST_HANDS.itertuples():
-            assert poker.Hand(row.hand).value == int(row.value)
+            assert poker.Hand(row.hand).value == int(row.value, 16)
 
     @staticmethod
     def test_string_arguments():

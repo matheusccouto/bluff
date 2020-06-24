@@ -1,12 +1,1 @@
-hand,ranking,value
-Ad Ks Tc 6c 2h,high_card,1413100602
-Ad As Tc 6c 2h,pair,141414100602
-Ad As Tc 2c 2h,two_pairs,1402001414100202
-Ad As Ac 6c 2h,three_of_a_kind,140000001414140602
-Ad 2s 3c 4c 5h,straight,05000000001405040302
-Ad Ks Qc Jc Th,straight,14000000001413121110
-Ad Kd Td 6d 2d,flush,1400000000001413100602
-Ad As Ac 6c 6h,full_house,14060000140000061414140606
-Ad As Ac Ah 2h,four_of_a_kind,1400000000000000001414141402
-7s 6s 9s 5s 8s,straight_flush,090000000909000000000908070605
-Ah Qh Kh Th Jh,royal_straight_flush,140000001414000000001413121110
+hand,ranking,valueAd Ks Tc 6c 2h,high_card,EDA62Ad As Tc 6c 2h,pair,EEEA62Ad As Tc 2c 2h,two_pairs,E20EEA22Ad As Ac 6c 2h,three_of_a_kind,E000EEE62Ad 2s 3c 4c 5h,straight,50000E5432Ad Ks Qc Jc Th,straight,E0000EDCBAAd Kd Td 6d 2d,flush,E00000EDA62Ad As Ac 6c 6h,full_house,E600E006EEE66Ad As Ac Ah 2h,four_of_a_kind,E00000000EEEE27s 6s 9s 5s 8s,straight_flush,900099000098765Ah Qh Kh Th Jh,royal_straight_flush,E000EE0000EDCBA

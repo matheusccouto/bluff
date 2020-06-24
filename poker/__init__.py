@@ -3,10 +3,11 @@
 import itertools
 import random
 import re
-from typing import Union, List, Iterable, Sequence, Optional
+from typing import Union, List, Iterable, Sequence, Optional, Dict
 
 import more_itertools
 import numpy as np
+import scipy.stats
 
 
 class NotEnoughCardsError(Exception):
@@ -48,6 +49,11 @@ class Card:
     def numerical_rank(self) -> int:
         """ Get the card numerical rank. """
         return self._numerical_rank
+
+    @property
+    def hex_rank(self) -> str:
+        """ Get the card alpha numerical rank (hexadecimal) """
+        return np.base_repr(self.numerical_rank, 16)
 
     @staticmethod
     def _abbreviation_to_rank(card_abbreviation: str) -> str:
@@ -181,6 +187,11 @@ class Hand:
         return self._numerical_ranks
 
     @property
+    def hex_ranks(self) -> List[str]:
+        """ Get hand alpha-numerical ranks (hexadecimal). """
+        return [np.base_repr(num_rank, 16) for num_rank in self.numerical_ranks]
+
+    @property
     def cards(self) -> List[Card]:
         """ Get hand cards. """
         return self._cards
@@ -205,7 +216,7 @@ class Hand:
         value = self._compensate_missing_cards_value(len(self), value)
         value = self._compensate_extra_cards_value(len(self), value)
 
-        return int(value)
+        return int(value, 16)
 
     @property
     def name(self) -> str:
@@ -275,9 +286,11 @@ class Hand:
     # Each pair of letter bellow represent a numerical rank. For
     # example: 02 stands for the deuce, while 11 stands for the Jack.
 
+    # In order to have only 1-dig numbers I'll work with hexadecimal.
+
     # Every type of hand takes its magnitude multiplied for the
     # numerical rank. The integer formation is bellow.
-    # AABBCCCCDDEEFFGGGGHHIIIIIIIIII
+    # ABCCDEFGGHIIIII
     # A - Straight Flush
     # B - Quads
     # C - Full House
@@ -296,84 +309,86 @@ class Hand:
         """ Hand value code for a high card."""
         # Concatenate each cards value in a string, from the biggest to
         # the smallest.
-        return "".join(
-            [f"{rank:02d}" for rank in sorted(self.numerical_ranks, reverse=True)]
-        )
+        return "".join(sorted(self.hex_ranks, reverse=True))
 
     def _pair(self) -> str:
         """ Hand value code for a pair."""
-        pairs = list(self._find_repeated_ranks(self.numerical_ranks, 2))
+        pairs = list(self._find_repeated_ranks(self.hex_ranks, 2))
         if len(pairs) == 1:
-            return f"{pairs[0]:02d}"
-        return "00"
+            return pairs[0]
+        return "0"
 
     def _two_pairs(self) -> str:
         """ Hand value code for a two pair."""
-        pairs = list(self._find_repeated_ranks(self.numerical_ranks, 2))
+        pairs = list(self._find_repeated_ranks(self.hex_ranks, 2))
         if len(pairs) == 2:
-            return f"{max(pairs):02d}{min(pairs):02d}"
-        return "0000"
+            return max(pairs) + min(pairs)
+        return "00"
 
     def _three_of_a_kind(self) -> str:
         """ Hand value code for a three of a kind."""
-        trips = list(self._find_repeated_ranks(self.numerical_ranks, 3))
+        trips = list(self._find_repeated_ranks(self.hex_ranks, 3))
         if trips:
-            return f"{trips[0]:02d}"
-        return "00"
+            return trips[0]
+        return "0"
 
     def _straight(self) -> str:
         """ Hand value code for a straight."""
+        # Work with base 10 numbers because more_itertools.consecutive_groups do work
+        # with hexadecimals.
         aces_count = self.numerical_ranks.count(14)
         hand = list(sorted(self.numerical_ranks + [1] * aces_count))
 
         # This next comparisons only work when the Hand is not empty.
         # When the list is empty, it should return no value.
         if not hand:
-            return "00"
+            return "0"
 
         groups = [list(group) for group in more_itertools.consecutive_groups(hand)]
         longest_sequence = max([group[-1] - group[0] for group in groups]) + 1
 
         if longest_sequence >= 5:
             largest_value = max([max(group) for group in groups if len(group) >= 5])
-            return f"{largest_value:02d}"
-        return "00"
+            return np.base_repr(largest_value, 16)  # Convert to hex.
+        return "0"
 
     def _flush(self) -> str:
         """ Hand value code for a flush."""
-        suits = ["s", "h", "c", "d"]
-        count = [self.suits.count(suit) for suit in suits]
-        if max(count) >= 5:
-            return f"{max(self.numerical_ranks):02d}"
-        return "00"
+        mode = scipy.stats.mode(self.suits).mode
+        if not mode:
+            return "0"
+        ranks = [r for r, s in zip(self.numerical_ranks, self.suits) if s == mode]
+        if len(ranks) >= 5:
+            return np.base_repr(max(ranks), 16)
+        return "0"
 
     def _full_house(self) -> str:
         """ Hand value code for a full house."""
-        trips = list(self._find_repeated_ranks(self.numerical_ranks, 3))
-        pair = list(self._find_repeated_ranks(self.numerical_ranks, 2))
+        trips = list(self._find_repeated_ranks(self.hex_ranks, 3))
+        pair = list(self._find_repeated_ranks(self.hex_ranks, 2))
         if trips and pair:
-            return f"{trips[0]:02d}{pair[0]:02d}"
-        return "0000"
+            return trips[0] + pair[0]
+        return "00"
 
     def _four_of_a_kind(self) -> str:
         """ Hand value code for a four of a kind."""
-        quads = list(self._find_repeated_ranks(self.numerical_ranks, 4))
+        quads = list(self._find_repeated_ranks(self.hex_ranks, 4))
         if quads:
-            return f"{quads[0]:02d}"
-        return "00"
+            return quads[0]
+        return "0"
 
     def _straight_flush(self) -> str:
         """ Hand value code for a straight flush."""
-        if "00" not in self._straight() and "00" not in self._flush():
+        if "0" not in self._straight() and "0" not in self._flush():
             return self._straight()
-        return "00"
+        return "0"
 
     @staticmethod
     def _compensate_missing_cards_value(n_cards: int, value: str) -> str:
         """ Add trailing zeros to the value in order to compensate missing cards. """
         if n_cards < 5:
             missing = 5 - n_cards
-            return value + "00" * missing
+            return value + "0" * missing
         return value
 
     @staticmethod
@@ -381,48 +396,48 @@ class Hand:
         """ Remove trailing zeros to the value in order to compensate extra cards. """
         if n_cards > 5:
             extras = n_cards - 5
-            return value[: -2 * extras]
+            return value[: -1 * extras]
         return value
 
     def is_high_card(self) -> bool:
         """ Check if the hand is a high card. """
-        return self.value < 1e10
+        return self.value < int("E" * 5, 16)
 
     def is_pair(self) -> bool:
         """ Check if the hand is a pair. """
-        return 1e10 < self.value < 1e12
+        return int("E" * 5, 16) < self.value < int("E" * 6, 16)
 
     def is_two_pairs(self) -> bool:
         """ Check if the hand is a two pair. """
-        return 1e12 < self.value < 1e16
+        return int("E" * 6, 16) < self.value < int("E" * 8, 16)
 
     def is_three_of_a_kind(self) -> bool:
         """ Check if the hand is a three of a kind. """
-        return 1e16 < self.value < 1e18
+        return int("E" * 8, 16) < self.value < int("E" * 9, 16)
 
     def is_straight(self) -> bool:
         """ Check if the hand is a straight. """
-        return 1e18 < self.value < 1e20
+        return int("E" * 9, 16) < self.value < int("E" * 10, 16)
 
     def is_flush(self) -> bool:
         """ Check if the hand is a flush. """
-        return 1e20 < self.value < 1e22
+        return int("E" * 10, 16) < self.value < int("E" * 11, 16)
 
     def is_full_house(self) -> bool:
         """ Check if the hand is a full house. """
-        return 1e22 < self.value < 1e26
+        return int("E" * 11, 16) < self.value < int("E" * 13, 16)
 
     def is_four_of_a_kind(self) -> bool:
         """ Check if the hand is a four of a kind. """
-        return 1e26 < self.value < 1e28
+        return int("E" * 13, 16) < self.value < int("E" * 14, 16)
 
     def is_straight_flush(self) -> bool:
         """ Check if the hand is a straight flush. """
-        return 1e28 < self.value < 1.4e29
+        return int("E" * 14, 16) < self.value < int("D" * 15, 16)
 
     def is_royal_straight_flush(self) -> bool:
         """ Check if the hand is a royal straight flush. """
-        return self.value > 1.4e29
+        return self.value > int("D" * 15, 16)
 
 
 class Player:
