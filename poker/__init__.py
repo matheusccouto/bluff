@@ -337,7 +337,7 @@ class Hand:
         # Work with base 10 numbers because more_itertools.consecutive_groups do work
         # with hexadecimals.
         aces_count = self.numerical_ranks.count(14)
-        hand = list(sorted(self.numerical_ranks + [1] * aces_count))
+        hand = set(self.numerical_ranks + [1] * aces_count)
 
         # This next comparisons only work when the Hand is not empty.
         # When the list is empty, it should return no value.
@@ -379,9 +379,13 @@ class Hand:
 
     def _straight_flush(self) -> str:
         """ Hand value code for a straight flush."""
-        if "0" not in self._straight() and "0" not in self._flush():
-            return self._straight()
-        return "0"
+        flush = self._flush()
+        if flush == "0":
+            return "0"
+        straight = self._straight()
+        if straight == "0":
+            return "0"
+        return straight
 
     @staticmethod
     def _compensate_missing_cards_value(n_cards: int, value: str) -> str:
