@@ -1,19 +1,19 @@
-""" Tests for poker module. """
+""" Tests for bluff module. """
+# pylint: disable=E0401
 
 import itertools
 
-import numpy as np
 import pandas as pd
 import pytest
 
-import poker
+import bluff
 
 TEST_HANDS = pd.read_csv("test_hands.csv", index_col=None)
 
 # Here we shall honor the 2003 WSOP finalists.
-p1 = poker.Player(name="Chris Moneymaker", chips=2344)
-p2 = poker.Player(name="Sam Farha", chips=999)
-p3 = poker.Player(name="Dan Harrington", chips=574)
+p1 = bluff.Player(name="Chris Moneymaker", chips=2344)
+p2 = bluff.Player(name="Sam Farha", chips=999)
+p3 = bluff.Player(name="Dan Harrington", chips=574)
 players = (p1, p2, p3)
 
 
@@ -26,34 +26,34 @@ class TestCard:
     @staticmethod
     def test_case_suit():
         """ Test lower and upper case suits. """
-        lowercase_card = poker.Card("As")
-        uppercase_card = poker.Card("AS")
+        lowercase_card = bluff.Card("As")
+        uppercase_card = bluff.Card("AS")
         assert lowercase_card.suit == uppercase_card.suit
 
     @staticmethod
     def test_case_rank():
         """ Test lower and upper case ranks. """
-        lowercase_card = poker.Card("As")
-        uppercase_card = poker.Card("as")
+        lowercase_card = bluff.Card("As")
+        uppercase_card = bluff.Card("as")
         assert lowercase_card.rank == uppercase_card.rank
 
     def test_all_ranks(self):
         """ Test if all ranks are recognized. """
         for rank in self.RANKS:
-            card = poker.Card(f"{rank}s")
+            card = bluff.Card(f"{rank}s")
             assert card.rank == rank
 
     def test_numerical_rank(self):
         """ Test if ranks are converted to numerical ranks correctly. """
         numerical_ranks = range(2, 15)
         for rank, numerical_rank in zip(self.RANKS, numerical_ranks):
-            card = poker.Card(f"{rank}s")
+            card = bluff.Card(f"{rank}s")
             assert card.numerical_rank == numerical_rank
 
     def test_all_suits(self):
         """ test if all suits are recognized."""
         for suit in self.SUITS:
-            card = poker.Card(f"A{suit}")
+            card = bluff.Card(f"A{suit}")
             assert card.suit == suit
 
     @staticmethod
@@ -62,7 +62,7 @@ class TestCard:
         invalid_ranks = ("0", "1", "10")
         for rank in invalid_ranks:
             with pytest.raises(ValueError):
-                poker.Card(f"{rank}s")
+                bluff.Card(f"{rank}s")
 
     @staticmethod
     def test_suit_value_error():
@@ -70,12 +70,12 @@ class TestCard:
         invalid_suits = ("spades", "hearts", "clubs", "diamonds", "x", "y", "z")
         for suit in invalid_suits:
             with pytest.raises(ValueError):
-                poker.Card(f"A{suit}")
+                bluff.Card(f"A{suit}")
 
     def test_repr(self):
         """ Test class' __repr__. """
         for rank, suit in itertools.product(self.RANKS, self.SUITS):
-            assert rank + suit == repr(poker.Card(rank + suit))
+            assert rank + suit == repr(bluff.Card(rank + suit))
 
 
 class TestHand:
@@ -84,7 +84,7 @@ class TestHand:
     @staticmethod
     def test_create_empty_hand():
         """ Test the creation of an empty hand. """
-        hand = poker.Hand()
+        hand = bluff.Hand()
         assert hand.ranks == []
         assert hand.suits == []
         assert hand.numerical_ranks == []
@@ -100,9 +100,9 @@ class TestHand:
             # ranking that the method is testing, the result must be
             # true, otherwise must be false.
             if row.ranking == method[3:]:
-                assert getattr(poker.Hand(row.hand), method)()
+                assert getattr(bluff.Hand(row.hand), method)()
             else:
-                assert not getattr(poker.Hand(row.hand), method)()
+                assert not getattr(bluff.Hand(row.hand), method)()
 
     def test_is_high_card(self):
         """ Test is_high_card method. """
@@ -148,24 +148,24 @@ class TestHand:
     def test_value():
         """ Test the hand value. """
         for row in TEST_HANDS.itertuples():
-            assert poker.Hand(row.hand).value == int(row.value, 16)
+            assert bluff.Hand(row.hand).value == int(row.value, 16)
 
     @staticmethod
     def test_string_arguments():
         """" Test creation of a hand by string arguments. """
-        reference = poker.Hand(
-            poker.Card("Ad"),
-            poker.Card("Ks"),
-            poker.Card("Tc"),
-            poker.Card("6c"),
-            poker.Card("2h"),
+        reference = bluff.Hand(
+            bluff.Card("Ad"),
+            bluff.Card("Ks"),
+            bluff.Card("Tc"),
+            bluff.Card("6c"),
+            bluff.Card("2h"),
         )
         alternatives = [
-            poker.Hand("Ad", "Ks", "Tc", "6c", "2h"),
-            poker.Hand("AdKsTc6c2h"),
-            poker.Hand("Ad Ks Tc 6c 2h"),
-            poker.Hand("Ad, Ks, Tc, 6c, 2h"),
-            poker.Hand("Ad,Ks,Tc,6c,2h"),
+            bluff.Hand("Ad", "Ks", "Tc", "6c", "2h"),
+            bluff.Hand("AdKsTc6c2h"),
+            bluff.Hand("Ad Ks Tc 6c 2h"),
+            bluff.Hand("Ad, Ks, Tc, 6c, 2h"),
+            bluff.Hand("Ad,Ks,Tc,6c,2h"),
         ]
         for alt in alternatives:
             assert reference.value == alt.value
@@ -181,15 +181,15 @@ class TestHand:
             # working correctly, it must construct a Hand instance with
             # the same repr as the hand instance from the hand created
             # by with the test_hand.csv.
-            assert repr(poker.Hand(repr(poker.Hand(row.hand)))) == repr(
-                poker.Hand(row.hand)
+            assert repr(bluff.Hand(repr(bluff.Hand(row.hand)))) == repr(
+                bluff.Hand(row.hand)
             )
 
     @staticmethod
     def test_hand_ranking_name():
         """ Test name property from Hand class. """
         for row in TEST_HANDS.itertuples():
-            assert poker.Hand(row.hand).name == row.ranking
+            assert bluff.Hand(row.hand).name == row.ranking
 
 
 class TestPoker:
@@ -198,7 +198,7 @@ class TestPoker:
     @staticmethod
     def test_add_player():
         """ Test adding a player. """
-        pkr = poker.Poker(n_seats=9)
+        pkr = bluff.Poker(n_seats=9)
         n_players_before = len([seat for seat in pkr.seats if seat is not None])
         player = players[0]
         pkr.add_player(player, seat=1)
@@ -208,7 +208,7 @@ class TestPoker:
     @staticmethod
     def test_remove_player():
         """ Test removing a player. """
-        pkr = poker.Poker(n_seats=len(players))
+        pkr = bluff.Poker(n_seats=len(players))
         pkr.add_players(players)
         pkr.remove_player(0)
         assert pkr.seats[0] is None
@@ -224,15 +224,15 @@ class TestPoker:
         # is not proof-leak, one may be so unlucky that all values are
         # randomly the same. However, the chances are very low, and
         # whenever this happens, when testing again it should work.
-        pokers = [poker.Poker().dealer for _ in range(10)]
+        pokers = [bluff.Poker().dealer for _ in range(10)]
         assert len(set(pokers)) > 1
 
     @staticmethod
     def test_raise_seat_occupied():
         """ Test if SeatOccupiedError is thrown when necessary. """
-        pkr = poker.Poker()
+        pkr = bluff.Poker()
         pkr.add_player(players[0], seat=0)
-        with pytest.raises(poker.SeatOccupiedError):
+        with pytest.raises(bluff.SeatOccupiedError):
             pkr.add_player(player=players[1], seat=0)
 
 
@@ -243,7 +243,7 @@ class TestRound:
     def test_deal_cards_to_all_players():
         """ Test dealing cards to all players. """
         n_starting_cards = 5
-        rnd = poker.Round(players=players, n_starting_cards=n_starting_cards)
+        rnd = bluff.Round(players=players, n_starting_cards=n_starting_cards)
 
         for player in rnd.players:
             assert len(player.hand) == n_starting_cards
@@ -253,7 +253,7 @@ class TestRound:
         """ Test dealing cards to a single player only. """
         n_starting_cards = 5
         n_cards_to_deal = 2
-        rnd = poker.Round(players=players, n_starting_cards=n_starting_cards)
+        rnd = bluff.Round(players=players, n_starting_cards=n_starting_cards)
 
         # Deal cards to a single player
         player_to_receive = rnd.players[0]
@@ -269,13 +269,13 @@ class TestRound:
     def test_winner():
         """ Test the method winner. """
         test_hands = (
-            poker.Hand("As Ah 4d Tc Js"),
-            poker.Hand("3s 4h 5d 6c 7s"),
-            poker.Hand("Qs Ah 4d Tc Js"),
+            bluff.Hand("As Ah 4d Tc Js"),
+            bluff.Hand("3s 4h 5d 6c 7s"),
+            bluff.Hand("Qs Ah 4d Tc Js"),
         )
         winner = 1
         n_starting_cards = 5
-        rnd = poker.Round(players=players, n_starting_cards=n_starting_cards)
+        rnd = bluff.Round(players=players, n_starting_cards=n_starting_cards)
 
         # Access the players hand to force they have the test hands.
         for player, test_hand in zip(rnd.players, test_hands):
@@ -295,20 +295,20 @@ class TestDeck:
 
     def test_raise_not_enough_cards(self):
         """ Test that NotEnoughCards is being raised when necessary. """
-        deck = poker.Deck()
-        with pytest.raises(poker.NotEnoughCardsError):
+        deck = bluff.Deck()
+        with pytest.raises(bluff.NotEnoughCardsError):
             self.draw_many_cards(deck)
 
     @staticmethod
     def test_set():
         """ Test if deck is being set correctly. """
-        deck = poker.Deck()
+        deck = bluff.Deck()
         assert len(deck.cards) == 52
 
     @staticmethod
     def test_shuffle():
         """ Test if method set and shuffle"""
-        deck = poker.Deck()
+        deck = bluff.Deck()
         cards = deck.cards.copy()
         deck.set_and_shuffle()
         assert cards != deck.cards

@@ -1,9 +1,10 @@
 """ Tests for the module chinese_poker. """
+# pylint: disable=E0401
 
 import pandas as pd
 
-import poker
-from poker import chinese_poker
+import bluff
+from bluff import chinese
 
 
 class TestHand:
@@ -21,15 +22,15 @@ class TestHand:
 
     def test_top_royalties(self):
         """ Test top hand royalties. """
-        self._test_royalties(chinese_poker.TopHand, "test_top_royalties.csv")
+        self._test_royalties(chinese.TopHand, "test_top_royalties.csv")
 
     def test_mid_royalties(self):
         """ Test middle hand royalties. """
-        self._test_royalties(chinese_poker.MiddleHand, "test_mid_royalties.csv")
+        self._test_royalties(chinese.MiddleHand, "test_mid_royalties.csv")
 
     def test_bottom_royalties(self):
         """ Test bottom hand royalties. """
-        self._test_royalties(chinese_poker.BottomHand, "test_bottom_royalties.csv")
+        self._test_royalties(chinese.BottomHand, "test_bottom_royalties.csv")
 
 
 class TestPlayer:
@@ -38,35 +39,34 @@ class TestPlayer:
     @staticmethod
     def test_place_card_in_top_hand():
         """ Test placing a card in the top hand. """
-        player = chinese_poker.Player(name="Chris Moneymaker", points=2344)
-        player.place_card(card=poker.Card("As"), hand="top")
+        player = chinese.Player(name="Chris Moneymaker", points=2344)
+        player.place_card(card=bluff.Card("As"), hand="top")
         assert len(player.top_hand) == 1
 
     @staticmethod
     def test_place_card_in_mid_hand():
         """ Test placing a card in the mid hand. """
-        player = chinese_poker.Player(name="Sam Farha", points=999)
-        player.place_card(card=poker.Card("As"), hand="middle")
+        player = chinese.Player(name="Sam Farha", points=999)
+        player.place_card(card=bluff.Card("As"), hand="middle")
         assert len(player.middle_hand) == 1
 
     @staticmethod
     def test_place_card_in_btm_hand():
         """ Test placing a card in the bottom hand. """
-        player = chinese_poker.Player(name="Dan Harrington", points=574)
-        player.place_card(card=poker.Card("As"), hand="bottom")
+        player = chinese.Player(name="Dan Harrington", points=574)
+        player.place_card(card=bluff.Card("As"), hand="bottom")
         assert len(player.bottom_hand) == 1
 
 
-# TODO Create more tests.
 class TestGame:
     """ Test game dynamics."""
 
     @staticmethod
     def _new_round():
         """ Start a new round. """
-        pkr = chinese_poker.Poker(n_seats=2)
-        chris = chinese_poker.Player(name="Chris Moneymaker", points=0)
-        sam = chinese_poker.Player(name="Sam Farha", points=0)
+        pkr = chinese.Poker(n_seats=2)
+        chris = chinese.Player(name="Chris Moneymaker", points=0)
+        sam = chinese.Player(name="Sam Farha", points=0)
         pkr.add_players(players=[chris, sam])
         return pkr.new_round()
 

@@ -1,2 +1,2 @@
-# poker
-[Under Development] A Chinese Poker API.
+# bluff
+`bluff` is a poker framework built entirely on Python.

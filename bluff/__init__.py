@@ -3,11 +3,10 @@
 import itertools
 import random
 import re
-from typing import Union, List, Iterable, Sequence, Optional, Dict
+from typing import Union, List, Iterable, Sequence, Optional
 
 import more_itertools
 import numpy as np
-import scipy.stats
 
 
 class NotEnoughCardsError(Exception):
@@ -58,27 +57,31 @@ class Card:
     @staticmethod
     def _abbreviation_to_rank(card_abbreviation: str) -> str:
         """ Get the rank from the card abbreviation. """
-        rank = re.findall(r"[2-9TtJjQqKkAa]", card_abbreviation)
-        # If didn't match, the re.findall returns an empty list.
-        if len(rank) == 1:
-            return rank[0].upper()
-        raise ValueError(f"'{card_abbreviation}' is not a valid card abbreviation.")
+        rank = card_abbreviation[0].upper()
+        valid = ["2", "3", "4", "5", "6", "7", "8", "9", "T", "J", "Q", "K", "A"]
+        if rank not in valid:
+            raise ValueError(f"'{card_abbreviation}' is not a valid card abbreviation.")
+        return rank
 
     @staticmethod
     def _abbreviation_to_suit(card_abbreviation: str) -> str:
         """ Get the suit from the card abbreviation. """
-        suit = re.findall(r"[SsHhCcDd]", card_abbreviation)
-        # If didn't match, the re.findall returns an empty list.
-        if len(suit) == 1:
-            return suit[0].lower()
-        raise ValueError(f"'{card_abbreviation}' is not a valid card abbreviation.")
+        if len(card_abbreviation) > 2:
+            raise ValueError(f"'{card_abbreviation}' is not a valid card abbreviation.")
+        suit = card_abbreviation[-1].lower()
+        valid = ["s", "h", "c", "d"]
+        if suit not in valid:
+            raise ValueError(f"'{card_abbreviation}' is not a valid card abbreviation.")
+        return suit
 
     @staticmethod
     def _rank_to_numerical(rank: str) -> int:
         """ Get the numerical rank from an alpha-numerical rank. """
-        numbers = {"T": 10, "J": 11, "Q": 12, "K": 13, "A": 14}
-        for key, value in numbers.items():
-            rank = rank.replace(key, str(value))
+        numbers = {"T": "10", "J": "11", "Q": "12", "K": "13", "A": "14"}
+        if rank in numbers:
+            for key, value in numbers.items():
+                if key in rank:
+                    rank = rank.replace(key, value)
         return int(rank)
 
 
@@ -102,9 +105,9 @@ class Deck:
     ]
     suits: Sequence[str] = ["s", "h", "c", "d"]
 
-    def __init__(self):
+    def __init__(self, random_state=None):
         self._cards: List[Card] = []
-        self.set_and_shuffle()
+        self.set_and_shuffle(random_state)
 
     def __len__(self):
         return len(self._cards)
@@ -117,13 +120,15 @@ class Deck:
         """ Get deck cards. """
         return self._cards
 
-    def set_and_shuffle(self):
+    def set_and_shuffle(self, random_state=None):
         """ Set the deck cards and shuffle. """
         self._cards = [
             Card(rank + suit)
             for rank, suit in itertools.product(self.ranks, self.suits)
         ]
-        random.shuffle(self._cards)  # random.shuffle is inplace
+        # pylint: disable=E1101
+        random_state = np.random.RandomState(random_state)
+        random_state.shuffle(self._cards)
 
     def draw(self) -> Card:
         """ Draw a card. """
@@ -140,6 +145,7 @@ class Hand:
         self._ranks: List[str] = []
         self._suits: List[str] = []
         self._numerical_ranks: List[int] = []
+        self._hex_ranks: List[str] = []
         self._cards: List[Card] = []
 
         self.add(*args)
@@ -161,12 +167,14 @@ class Hand:
         self._ranks[key] = value.rank
         self._suits[key] = value.suit
         self._numerical_ranks[key] = value.numerical_rank
+        self._hex_ranks[key] = value.hex_rank
 
     def __delitem__(self, key):
         self.cards.pop(key)
         self.ranks.pop(key)
         self.suits.pop(key)
         self.numerical_ranks.pop(key)
+        self.hex_ranks.pop(key)
 
     def __contains__(self, item):
         return item in self._cards
@@ -189,7 +197,7 @@ class Hand:
     @property
     def hex_ranks(self) -> List[str]:
         """ Get hand alpha-numerical ranks (hexadecimal). """
-        return [np.base_repr(num_rank, 16) for num_rank in self.numerical_ranks]
+        return self._hex_ranks
 
     @property
     def cards(self) -> List[Card]:
@@ -246,13 +254,13 @@ class Hand:
         # Create cards instances if the user used string arguments.
         return [Card(card) if isinstance(card, str) else card for card in cards]
 
-    def _separate_concatenated_cards(self, *args: Union[Card, str]) -> List[str]:
+    def _separate_concatenated_cards(self, *args: Union[Card, str]) -> Iterable[str]:
         """ Separate concatenated cards repr in a argument. """
         nested = [
             re.findall(r"[2-9TJQKA][shcd]", card) if isinstance(card, str) else card
             for card in args
         ]
-        flat = list(self._flatten(nested))
+        flat = self._flatten(nested)
         return flat
 
     @staticmethod
@@ -271,6 +279,12 @@ class Hand:
         self._ranks += [card.rank for card in cards]
         self._suits += [card.suit for card in cards]
         self._numerical_ranks += [card.numerical_rank for card in cards]
+        self._hex_ranks += [
+            np.base_repr(card.numerical_rank, 16)
+            if card.numerical_rank > 9
+            else card.rank
+            for card in cards
+        ]
         self._cards += cards
 
     @staticmethod
@@ -354,13 +368,11 @@ class Hand:
 
     def _flush(self) -> str:
         """ Hand value code for a flush."""
-        mode = scipy.stats.mode(self.suits).mode
-        if not mode:
+        suits = {suit for suit in self.suits if self.suits.count(suit) >= 5}
+        if len(suits) == 0:
             return "0"
-        ranks = [r for r, s in zip(self.numerical_ranks, self.suits) if s == mode]
-        if len(ranks) >= 5:
-            return np.base_repr(max(ranks), 16)
-        return "0"
+        ranks = [r for r, s in zip(self.numerical_ranks, self.suits) if s in suits]
+        return np.base_repr(max(ranks), 16)
 
     def _full_house(self) -> str:
         """ Hand value code for a full house."""
@@ -547,7 +559,7 @@ class Round:
 
 
 class Poker:
-    """ Abstract class for a poker game. """
+    """ Abstract class for a bluff game. """
 
     _N_STARTING_CARDS: int = 5
 

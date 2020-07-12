@@ -1,4 +1,4 @@
-""" Chinese poker game. """
+""" Chinese bluff game. """
 
 from typing import Tuple
 

@@ -1,9 +1,9 @@
 """ Abstract Texas Hold'em module. """
 
-import poker
+import bluff
 
 
-class Poker(poker.Poker):
+class Poker(bluff.Poker):
     """ Chinese Poker. """
 
     _N_STARTING_CARDS: int = 2

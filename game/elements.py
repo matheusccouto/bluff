@@ -1,7 +1,5 @@
 """ Game objects definitions. """
 
-from typing import Tuple
-
 import pygame
 
 

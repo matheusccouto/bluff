@@ -1,11 +1,11 @@
-""" Abstract chinese poker module. """
+""" Abstract chinese bluff module. """
 from typing import Dict
 
-import poker
+import bluff
 
 
-class Hand(poker.Hand):
-    """ Abstract chinese poker hand class"""
+class Hand(bluff.Hand):
+    """ Abstract chinese bluff hand class"""
 
     _ROYALTIES_DICT: Dict[float, int] = {}
 
@@ -19,7 +19,7 @@ class Hand(poker.Hand):
 
 
 class TopHand(Hand):
-    """ Chinese poker top hand"""
+    """ Chinese bluff top hand"""
 
     _ROYALTIES_DICT: Dict[float, int] = {
         int("6" + "0" * 5, 16): 1,
@@ -48,7 +48,7 @@ class TopHand(Hand):
 
 
 class MiddleHand(Hand):
-    """ Chinese poker top hand"""
+    """ Chinese bluff top hand"""
 
     _ROYALTIES_DICT: Dict[float, int] = {
         int("2" + "0" * 8, 16): 2,
@@ -62,7 +62,7 @@ class MiddleHand(Hand):
 
 
 class BottomHand(Hand):
-    """ Chinese poker top hand"""
+    """ Chinese bluff top hand"""
 
     _ROYALTIES_DICT: Dict[int, int] = {
         int("2" + "0" * 9, 16): 2,
@@ -74,8 +74,8 @@ class BottomHand(Hand):
     }
 
 
-class Player(poker.Player):
-    """ Chinese poker player. """
+class Player(bluff.Player):
+    """ Chinese bluff player. """
 
     def __init__(self, name: str, points: int):
         super().__init__(name=name, chips=points)
@@ -110,8 +110,8 @@ class Player(poker.Player):
     def bottom_hand(self, value: Hand):
         self._bottom_hand = value
 
-    def place_card(self, card: poker.Card, hand: str):
-        """ Place a card in one of the three chinese poker hands. """
+    def place_card(self, card: bluff.Card, hand: str):
+        """ Place a card in one of the three chinese bluff hands. """
         if "top" in hand.lower():
             self.top_hand.add(card)
         elif "mid" in hand.lower():
@@ -122,7 +122,7 @@ class Player(poker.Player):
             raise ValueError(f"{hand} is not a valid hand.")
 
 
-class Poker(poker.Poker):
+class Poker(bluff.Poker):
     """ Chinese Poker. """
 
     _N_STARTING_CARDS: int = 13
