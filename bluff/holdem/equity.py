@@ -352,3 +352,20 @@ def equity(
         for descr in players_ranges
     ]
     return equity_from_range_descr(players_ranges, times)
+
+
+def eval_ranges(
+    hero_hand: str, villains_range: Sequence[float], times: int = 10000
+) -> Sequence[float]:
+    """
+    Evaluate chances of hero winning against each villain range.
+
+    Args:
+        hero_hand:
+        villains_range:
+        times:
+
+    Returns:
+        Sequence of equities against each villain.
+    """
+    return [equity([hero_hand, villain], times=times)[0] for villain in villains_range]
