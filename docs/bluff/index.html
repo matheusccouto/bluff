@@ -1,0 +1,2251 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.8.4" />
+<title>bluff API documentation</title>
+<meta name="description" content="An abstract Poker module." />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/highlight.min.js" integrity="sha256-eOgo0OtLL4cdq7RdwRUiGKLX9XsIJ7nGhWEKbohmVAQ=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Package <code>bluff</code></h1>
+</header>
+<section id="section-intro">
+<p>An abstract Poker module.</p>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">&#34;&#34;&#34; An abstract Poker module. &#34;&#34;&#34;
+
+import itertools
+import random
+import re
+from typing import Union, List, Iterable, Sequence, Optional
+
+import more_itertools
+import numpy as np
+
+
+class NotEnoughCardsError(Exception):
+    &#34;&#34;&#34; Raise when the deck runs out of cards. &#34;&#34;&#34;
+
+
+class SeatOccupiedError(Exception):
+    &#34;&#34;&#34; Raise when trying to put a player in an already occupied seat. &#34;&#34;&#34;
+
+
+class Card:
+    &#34;&#34;&#34; French-style deck card.&#34;&#34;&#34;
+
+    def __init__(self, abbreviation: str):
+        self._rank = self._abbreviation_to_rank(abbreviation)
+        self._suit = self._abbreviation_to_suit(abbreviation)
+        self._numerical_rank = self._rank_to_numerical(self._rank)
+
+    def __repr__(self):
+        return self.rank + self.suit
+
+    def __str__(self):
+        return self.__repr__()
+
+    def __eq__(self, other):
+        return self.rank == other.rank and self.suit == other.suit
+
+    @property
+    def rank(self) -&gt; str:
+        &#34;&#34;&#34; Get the card rank. &#34;&#34;&#34;
+        return self._rank
+
+    @property
+    def suit(self) -&gt; str:
+        &#34;&#34;&#34; Get the card suit. &#34;&#34;&#34;
+        return self._suit
+
+    @property
+    def numerical_rank(self) -&gt; int:
+        &#34;&#34;&#34; Get the card numerical rank. &#34;&#34;&#34;
+        return self._numerical_rank
+
+    @property
+    def hex_rank(self) -&gt; str:
+        &#34;&#34;&#34; Get the card alpha numerical rank (hexadecimal) &#34;&#34;&#34;
+        return np.base_repr(self.numerical_rank, 16)
+
+    @staticmethod
+    def _abbreviation_to_rank(card_abbreviation: str) -&gt; str:
+        &#34;&#34;&#34; Get the rank from the card abbreviation. &#34;&#34;&#34;
+        rank = card_abbreviation[0].upper()
+        valid = [&#34;2&#34;, &#34;3&#34;, &#34;4&#34;, &#34;5&#34;, &#34;6&#34;, &#34;7&#34;, &#34;8&#34;, &#34;9&#34;, &#34;T&#34;, &#34;J&#34;, &#34;Q&#34;, &#34;K&#34;, &#34;A&#34;]
+        if rank not in valid:
+            raise ValueError(f&#34;&#39;{card_abbreviation}&#39; is not a valid card abbreviation.&#34;)
+        return rank
+
+    @staticmethod
+    def _abbreviation_to_suit(card_abbreviation: str) -&gt; str:
+        &#34;&#34;&#34; Get the suit from the card abbreviation. &#34;&#34;&#34;
+        if len(card_abbreviation) &gt; 2:
+            raise ValueError(f&#34;&#39;{card_abbreviation}&#39; is not a valid card abbreviation.&#34;)
+        suit = card_abbreviation[-1].lower()
+        valid = [&#34;s&#34;, &#34;h&#34;, &#34;c&#34;, &#34;d&#34;]
+        if suit not in valid:
+            raise ValueError(f&#34;&#39;{card_abbreviation}&#39; is not a valid card abbreviation.&#34;)
+        return suit
+
+    @staticmethod
+    def _rank_to_numerical(rank: str) -&gt; int:
+        &#34;&#34;&#34; Get the numerical rank from an alpha-numerical rank. &#34;&#34;&#34;
+        numbers = {&#34;T&#34;: &#34;10&#34;, &#34;J&#34;: &#34;11&#34;, &#34;Q&#34;: &#34;12&#34;, &#34;K&#34;: &#34;13&#34;, &#34;A&#34;: &#34;14&#34;}
+        if rank in numbers:
+            for key, value in numbers.items():
+                if key in rank:
+                    rank = rank.replace(key, value)
+        return int(rank)
+
+
+class Deck:
+    &#34;&#34;&#34; French-style deck. &#34;&#34;&#34;
+
+    ranks: Sequence[str] = [
+        &#34;2&#34;,
+        &#34;3&#34;,
+        &#34;4&#34;,
+        &#34;5&#34;,
+        &#34;6&#34;,
+        &#34;7&#34;,
+        &#34;8&#34;,
+        &#34;9&#34;,
+        &#34;T&#34;,
+        &#34;J&#34;,
+        &#34;Q&#34;,
+        &#34;K&#34;,
+        &#34;A&#34;,
+    ]
+    suits: Sequence[str] = [&#34;s&#34;, &#34;h&#34;, &#34;c&#34;, &#34;d&#34;]
+
+    def __init__(self, random_state=None):
+        self._cards: List[Card] = []
+        self.set_and_shuffle(random_state)
+
+    def __len__(self):
+        return len(self._cards)
+
+    def __iter__(self):
+        return self._cards
+
+    @property
+    def cards(self):
+        &#34;&#34;&#34; Get deck cards. &#34;&#34;&#34;
+        return self._cards
+
+    def set_and_shuffle(self, random_state=None):
+        &#34;&#34;&#34; Set the deck cards and shuffle. &#34;&#34;&#34;
+        self._cards = [
+            Card(rank + suit)
+            for rank, suit in itertools.product(self.ranks, self.suits)
+        ]
+        # pylint: disable=E1101
+        random_state = np.random.RandomState(random_state)
+        random_state.shuffle(self._cards)
+
+    def draw(self) -&gt; Card:
+        &#34;&#34;&#34; Draw a card. &#34;&#34;&#34;
+        try:
+            return self._cards.pop(-1)
+        except IndexError:
+            raise NotEnoughCardsError(&#34;There are no cards left in the deck.&#34;)
+
+
+class Hand:
+    &#34;&#34;&#34; Poker hand. Formed by Card objects. &#34;&#34;&#34;
+
+    def __init__(self, *args: Union[Card, str]):
+        self._ranks: List[str] = []
+        self._suits: List[str] = []
+        self._numerical_ranks: List[int] = []
+        self._hex_ranks: List[str] = []
+        self._cards: List[Card] = []
+
+        self.add(*args)
+
+    def __repr__(self):
+        return &#34; &#34;.join(sorted([str(card) for card in self.cards]))
+
+    def __str__(self):
+        return self.__repr__()
+
+    def __len__(self):
+        return len(self.cards)
+
+    def __getitem__(self, item):
+        return self.cards[item]
+
+    def __setitem__(self, key, value: Card):
+        self._cards[key] = value
+        self._ranks[key] = value.rank
+        self._suits[key] = value.suit
+        self._numerical_ranks[key] = value.numerical_rank
+        self._hex_ranks[key] = value.hex_rank
+
+    def __delitem__(self, key):
+        self.cards.pop(key)
+        self.ranks.pop(key)
+        self.suits.pop(key)
+        self.numerical_ranks.pop(key)
+        self.hex_ranks.pop(key)
+
+    def __contains__(self, item):
+        return item in self._cards
+
+    @property
+    def ranks(self) -&gt; List[str]:
+        &#34;&#34;&#34; Get hand ranks. &#34;&#34;&#34;
+        return self._ranks
+
+    @property
+    def suits(self) -&gt; List[str]:
+        &#34;&#34;&#34; Get hand suits. &#34;&#34;&#34;
+        return self._suits
+
+    @property
+    def numerical_ranks(self) -&gt; List[int]:
+        &#34;&#34;&#34; Get hand numerical ranks. &#34;&#34;&#34;
+        return self._numerical_ranks
+
+    @property
+    def hex_ranks(self) -&gt; List[str]:
+        &#34;&#34;&#34; Get hand alpha-numerical ranks (hexadecimal). &#34;&#34;&#34;
+        return self._hex_ranks
+
+    @property
+    def cards(self) -&gt; List[Card]:
+        &#34;&#34;&#34; Get hand cards. &#34;&#34;&#34;
+        return self._cards
+
+    @property
+    def value(self) -&gt; int:
+        &#34;&#34;&#34;
+        Get the numerical value of the hand. The bigger the value, the better the hand.
+        &#34;&#34;&#34;
+        value = &#34;&#34;
+
+        value = self._high_card() + value
+        value = self._pair() + value
+        value = self._two_pairs() + value
+        value = self._three_of_a_kind() + value
+        value = self._straight() + value
+        value = self._flush() + value
+        value = self._full_house() + value
+        value = self._four_of_a_kind() + value
+        value = self._straight_flush() + value
+
+        value = self._compensate_missing_cards_value(len(self), value)
+        value = self._compensate_extra_cards_value(len(self), value)
+
+        return int(value, 16)
+
+    @property
+    def name(self) -&gt; str:
+        &#34;&#34;&#34; Get ranking name of the hand. &#34;&#34;&#34;
+
+        names = [
+            &#34;high_card&#34;,
+            &#34;pair&#34;,
+            &#34;two_pairs&#34;,
+            &#34;three_of_a_kind&#34;,
+            &#34;straight&#34;,
+            &#34;flush&#34;,
+            &#34;full_house&#34;,
+            &#34;four_of_a_kind&#34;,
+            &#34;straight_flush&#34;,
+            &#34;royal_straight_flush&#34;,
+        ]
+        for name in names:
+            if getattr(self, f&#34;is_{name}&#34;)():
+                return name
+        raise ValueError(&#34;Hand has unexpected value.&#34;)
+
+    def _args_to_cards(self, *args: Union[Card, str]) -&gt; List[Card]:
+        &#34;&#34;&#34; Parse class arguments to Cards instances. &#34;&#34;&#34;
+        # Separate args if the user used a concatenated argument.
+        cards = self._separate_concatenated_cards(*args)
+        # Create cards instances if the user used string arguments.
+        return [Card(card) if isinstance(card, str) else card for card in cards]
+
+    def _separate_concatenated_cards(self, *args: Union[Card, str]) -&gt; Iterable[str]:
+        &#34;&#34;&#34; Separate concatenated cards repr in a argument. &#34;&#34;&#34;
+        nested = [
+            re.findall(r&#34;[2-9TJQKA][shcd]&#34;, card) if isinstance(card, str) else card
+            for card in args
+        ]
+        flat = self._flatten(nested)
+        return flat
+
+    @staticmethod
+    def _flatten(i: Iterable) -&gt; Iterable:
+        &#34;&#34;&#34; Flatten an irregular iterable. &#34;&#34;&#34;
+        for val in i:
+            # pylint: disable=W1116
+            if isinstance(val, Iterable):
+                yield from val
+            else:
+                yield val
+
+    def add(self, *args: Union[Card, str]):
+        &#34;&#34;&#34; Add cards to the hands. &#34;&#34;&#34;
+        cards = self._args_to_cards(*args)
+        self._ranks += [card.rank for card in cards]
+        self._suits += [card.suit for card in cards]
+        self._numerical_ranks += [card.numerical_rank for card in cards]
+        self._hex_ranks += [
+            np.base_repr(card.numerical_rank, 16)
+            if card.numerical_rank &gt; 9
+            else card.rank
+            for card in cards
+        ]
+        self._cards += cards
+
+    @staticmethod
+    def _find_repeated_ranks(ranks: Sequence, reps: int) -&gt; set:
+        &#34;&#34;&#34; Find ranks that are repeated a certain number of times in a hand. &#34;&#34;&#34;
+        return {rank for rank in ranks if ranks.count(rank) == reps}
+
+    # The next methods are useful for the value property only. They
+    # work by transforming a hand in a huge integer number. The bigger
+    # the number, the stronger the hand. Bellow the construction of this
+    # number is better explained.
+
+    # Each pair of letter bellow represent a numerical rank. For
+    # example: 02 stands for the deuce, while 11 stands for the Jack.
+
+    # In order to have only 1-dig numbers I&#39;ll work with hexadecimal.
+
+    # Every type of hand takes its magnitude multiplied for the
+    # numerical rank. The integer formation is bellow.
+    # ABCCDEFGGHIIIII
+    # A - Straight Flush
+    # B - Quads
+    # C - Full House
+    # D - Flush
+    # E - Straight
+    # F - Trips
+    # G - Two Pair
+    # H - Pair
+    # I - High Card (Actually, the rank of every card)
+
+    # In a nutshell, the next methods return a code used to form the
+    # hand value. This is also where all the logic for deciding the hand
+    # level lies.
+
+    def _high_card(self) -&gt; str:
+        &#34;&#34;&#34; Hand value code for a high card.&#34;&#34;&#34;
+        # Concatenate each cards value in a string, from the biggest to
+        # the smallest.
+        return &#34;&#34;.join(sorted(self.hex_ranks, reverse=True))
+
+    def _pair(self) -&gt; str:
+        &#34;&#34;&#34; Hand value code for a pair.&#34;&#34;&#34;
+        pairs = list(self._find_repeated_ranks(self.hex_ranks, 2))
+        if len(pairs) == 1:
+            return pairs[0]
+        return &#34;0&#34;
+
+    def _two_pairs(self) -&gt; str:
+        &#34;&#34;&#34; Hand value code for a two pair.&#34;&#34;&#34;
+        pairs = list(self._find_repeated_ranks(self.hex_ranks, 2))
+        if len(pairs) == 2:
+            return max(pairs) + min(pairs)
+        return &#34;00&#34;
+
+    def _three_of_a_kind(self) -&gt; str:
+        &#34;&#34;&#34; Hand value code for a three of a kind.&#34;&#34;&#34;
+        trips = list(self._find_repeated_ranks(self.hex_ranks, 3))
+        if trips:
+            return trips[0]
+        return &#34;0&#34;
+
+    def _straight(self) -&gt; str:
+        &#34;&#34;&#34; Hand value code for a straight.&#34;&#34;&#34;
+        # Work with base 10 numbers because more_itertools.consecutive_groups do work
+        # with hexadecimals.
+        aces_count = self.numerical_ranks.count(14)
+        hand = set(self.numerical_ranks + [1] * aces_count)
+
+        # This next comparisons only work when the Hand is not empty.
+        # When the list is empty, it should return no value.
+        if not hand:
+            return &#34;0&#34;
+
+        groups = [list(group) for group in more_itertools.consecutive_groups(hand)]
+        longest_sequence = max([group[-1] - group[0] for group in groups]) + 1
+
+        if longest_sequence &gt;= 5:
+            largest_value = max([max(group) for group in groups if len(group) &gt;= 5])
+            return np.base_repr(largest_value, 16)  # Convert to hex.
+        return &#34;0&#34;
+
+    def _flush(self) -&gt; str:
+        &#34;&#34;&#34; Hand value code for a flush.&#34;&#34;&#34;
+        suits = {suit for suit in self.suits if self.suits.count(suit) &gt;= 5}
+        if len(suits) == 0:
+            return &#34;0&#34;
+        ranks = [r for r, s in zip(self.numerical_ranks, self.suits) if s in suits]
+        return np.base_repr(max(ranks), 16)
+
+    def _full_house(self) -&gt; str:
+        &#34;&#34;&#34; Hand value code for a full house.&#34;&#34;&#34;
+        trips = list(self._find_repeated_ranks(self.hex_ranks, 3))
+        pair = list(self._find_repeated_ranks(self.hex_ranks, 2))
+        if trips and pair:
+            return trips[0] + pair[0]
+        return &#34;00&#34;
+
+    def _four_of_a_kind(self) -&gt; str:
+        &#34;&#34;&#34; Hand value code for a four of a kind.&#34;&#34;&#34;
+        quads = list(self._find_repeated_ranks(self.hex_ranks, 4))
+        if quads:
+            return quads[0]
+        return &#34;0&#34;
+
+    def _straight_flush(self) -&gt; str:
+        &#34;&#34;&#34; Hand value code for a straight flush.&#34;&#34;&#34;
+        flush = self._flush()
+        if flush == &#34;0&#34;:
+            return &#34;0&#34;
+        straight = self._straight()
+        if straight == &#34;0&#34;:
+            return &#34;0&#34;
+        return straight
+
+    @staticmethod
+    def _compensate_missing_cards_value(n_cards: int, value: str) -&gt; str:
+        &#34;&#34;&#34; Add trailing zeros to the value in order to compensate missing cards. &#34;&#34;&#34;
+        if n_cards &lt; 5:
+            missing = 5 - n_cards
+            return value + &#34;0&#34; * missing
+        return value
+
+    @staticmethod
+    def _compensate_extra_cards_value(n_cards: int, value: str) -&gt; str:
+        &#34;&#34;&#34; Remove trailing zeros to the value in order to compensate extra cards. &#34;&#34;&#34;
+        if n_cards &gt; 5:
+            extras = n_cards - 5
+            return value[: -1 * extras]
+        return value
+
+    def is_high_card(self) -&gt; bool:
+        &#34;&#34;&#34; Check if the hand is a high card. &#34;&#34;&#34;
+        return self.value &lt; int(&#34;E&#34; * 5, 16)
+
+    def is_pair(self) -&gt; bool:
+        &#34;&#34;&#34; Check if the hand is a pair. &#34;&#34;&#34;
+        return int(&#34;E&#34; * 5, 16) &lt; self.value &lt; int(&#34;E&#34; * 6, 16)
+
+    def is_two_pairs(self) -&gt; bool:
+        &#34;&#34;&#34; Check if the hand is a two pair. &#34;&#34;&#34;
+        return int(&#34;E&#34; * 6, 16) &lt; self.value &lt; int(&#34;E&#34; * 8, 16)
+
+    def is_three_of_a_kind(self) -&gt; bool:
+        &#34;&#34;&#34; Check if the hand is a three of a kind. &#34;&#34;&#34;
+        return int(&#34;E&#34; * 8, 16) &lt; self.value &lt; int(&#34;E&#34; * 9, 16)
+
+    def is_straight(self) -&gt; bool:
+        &#34;&#34;&#34; Check if the hand is a straight. &#34;&#34;&#34;
+        return int(&#34;E&#34; * 9, 16) &lt; self.value &lt; int(&#34;E&#34; * 10, 16)
+
+    def is_flush(self) -&gt; bool:
+        &#34;&#34;&#34; Check if the hand is a flush. &#34;&#34;&#34;
+        return int(&#34;E&#34; * 10, 16) &lt; self.value &lt; int(&#34;E&#34; * 11, 16)
+
+    def is_full_house(self) -&gt; bool:
+        &#34;&#34;&#34; Check if the hand is a full house. &#34;&#34;&#34;
+        return int(&#34;E&#34; * 11, 16) &lt; self.value &lt; int(&#34;E&#34; * 13, 16)
+
+    def is_four_of_a_kind(self) -&gt; bool:
+        &#34;&#34;&#34; Check if the hand is a four of a kind. &#34;&#34;&#34;
+        return int(&#34;E&#34; * 13, 16) &lt; self.value &lt; int(&#34;E&#34; * 14, 16)
+
+    def is_straight_flush(self) -&gt; bool:
+        &#34;&#34;&#34; Check if the hand is a straight flush. &#34;&#34;&#34;
+        return int(&#34;E&#34; * 14, 16) &lt; self.value &lt; int(&#34;D&#34; * 15, 16)
+
+    def is_royal_straight_flush(self) -&gt; bool:
+        &#34;&#34;&#34; Check if the hand is a royal straight flush. &#34;&#34;&#34;
+        return self.value &gt; int(&#34;D&#34; * 15, 16)
+
+
+class Player:
+    &#34;&#34;&#34; Poker player. &#34;&#34;&#34;
+
+    def __init__(self, name: str, chips: float):
+        self._name: str = name
+        self._chips: float = self._validate_chips(chips)
+        self._hand: Hand = Hand()
+
+    def __repr__(self):
+        return self._name
+
+    @property
+    def name(self) -&gt; str:
+        &#34;&#34;&#34; Get player name. &#34;&#34;&#34;
+        return self._name
+
+    @property
+    def chips(self) -&gt; float:
+        &#34;&#34;&#34; Get or set player chips amount. &#34;&#34;&#34;
+        return self._chips
+
+    @chips.setter
+    def chips(self, value: float):
+        value = self._validate_chips(value)
+        self._chips = value
+
+    @property
+    def hand(self) -&gt; Hand:
+        &#34;&#34;&#34; Get or set player hand. &#34;&#34;&#34;
+        return self._hand
+
+    @hand.setter
+    def hand(self, value: Hand):
+        self._hand = value
+
+    @staticmethod
+    def _validate_chips(chips: float) -&gt; float:
+        &#34;&#34;&#34; Validate player chips amount. &#34;&#34;&#34;
+        if chips &lt; 0:
+            raise ValueError(&#34;Chips must equal or greater to zero.&#34;)
+        return chips
+
+    def add_cards(self, cards: Iterable[Card]):
+        &#34;&#34;&#34; Add cards to a player hand. &#34;&#34;&#34;
+        for card in cards:
+            self.hand.add(card)
+
+    def clear_hand(self):
+        &#34;&#34;&#34;&#34; Clear a player hand&#34;&#34;&#34;
+        self.hand = Hand()
+
+
+class Round:
+    &#34;&#34;&#34; Poker game round. &#34;&#34;&#34;
+
+    def __init__(self, players: Sequence[Player], n_starting_cards: int = 5):
+        self._players = players
+        self._deck = Deck()
+        self._n_starting_cards = n_starting_cards
+        self.new()
+
+    @property
+    def players(self) -&gt; Sequence[Player]:
+        &#34;&#34;&#34; Get or set round players. &#34;&#34;&#34;
+        return self._players
+
+    @players.setter
+    def players(self, value: Sequence[Player]):
+        self._players = value
+
+    @property
+    def deck(self) -&gt; Deck:
+        &#34;&#34;&#34; Get round deck. &#34;&#34;&#34;
+        return self._deck
+
+    @property
+    def n_starting_cards(self) -&gt; int:
+        &#34;&#34;&#34; Get round number of starting cards. &#34;&#34;&#34;
+        return self._n_starting_cards
+
+    def deal_cards(self, player: Player, n_cards: int):
+        &#34;&#34;&#34; Deal a number of cards to a single players. &#34;&#34;&#34;
+        cards = [self.deck.draw() for _ in range(n_cards)]
+        player.add_cards(cards)
+
+    def deal_cards_to_all(self, n_cards: int):
+        &#34;&#34;&#34; Deal cards to all players. &#34;&#34;&#34;
+        for player in self.players:
+            self.deal_cards(player=player, n_cards=n_cards)
+
+    def new(self):
+        &#34;&#34;&#34; Start a new round. &#34;&#34;&#34;
+        for player in self.players:
+            player.clear_hand()
+        self.deck.set_and_shuffle()
+        self.deal_cards_to_all(self.n_starting_cards)
+
+    def winner(self) -&gt; np.ndarray:
+        &#34;&#34;&#34; Evaluate the winner player. &#34;&#34;&#34;
+        return np.argmax([player.hand.value for player in self.players])
+
+
+class Poker:
+    &#34;&#34;&#34; Abstract class for a bluff game. &#34;&#34;&#34;
+
+    _N_STARTING_CARDS: int = 5
+
+    def __init__(self, n_seats: int = 9):
+        self._seats: List[Optional[Player]] = [None] * n_seats
+        self._dealer = random.choice(range(n_seats))
+
+    @property
+    def seats(self) -&gt; List[Optional[Player]]:
+        &#34;&#34;&#34; Get list of seats. &#34;&#34;&#34;
+        return self._seats
+
+    @property
+    def dealer(self) -&gt; int:
+        &#34;&#34;&#34; Get dealer position. &#34;&#34;&#34;
+        return self._dealer
+
+    @dealer.setter
+    def dealer(self, value: int):
+        if value &gt;= len(self.seats):
+            raise ValueError(&#34;Dealer must be set to an existing seat.&#34;)
+        self._dealer = value
+
+    def add_player(self, player: Player, seat: int):
+        &#34;&#34;&#34; Add a player to a seat. &#34;&#34;&#34;
+        if self.seats[seat] is None:
+            self.seats[seat] = player
+        else:
+            raise SeatOccupiedError(f&#34;The seat {seat} is already occupied.&#34;)
+
+    def add_players(
+        self, players: Iterable[Player], seats: Optional[Iterable[int]] = None,
+    ):
+        &#34;&#34;&#34;
+        Add players to their seats. Use seats=None to choose seats
+        randomly.
+        &#34;&#34;&#34;
+        # When no seats are passed, chooses randomly.
+        if seats is None:
+            free_seats = [seat for seat, player in enumerate(self.seats) if not player]
+            seats = [self._random_pop(free_seats) for _ in players]
+        for player, seat in zip(players, seats):
+            self.add_player(player=player, seat=seat)
+
+    @staticmethod
+    def _random_pop(lst: list):
+        &#34;&#34;&#34; Randomly pop an item from a list.&#34;&#34;&#34;
+        return lst.pop(random.randrange(len(lst)))
+
+    def remove_player(self, seat: int):
+        &#34;&#34;&#34; Remove a player from a seat. &#34;&#34;&#34;
+        self.seats[seat] = None
+
+    @staticmethod
+    def _item_to_beginning(list_: list, index: int) -&gt; List:
+        &#34;&#34;&#34; Move an item to the beginning of a list. &#34;&#34;&#34;
+        return list_[index:] + list_[:index]
+
+    def _validate_dealer(self):
+        &#34;&#34;&#34; Find a valid position for the dealer. &#34;&#34;&#34;
+        # I sort the seats to put the dealer in the beginning so then I
+        # only have to add values to the seat number until I find a
+        # valid player. The move variable represents how  many seats the
+        # dealer button must move until it finds a valid player.
+        seats = self._item_to_beginning(self.seats, self.dealer)
+        move = 0
+        while seats[move] is None:
+            move += 1
+        self.dealer += move
+
+    def new_round(self) -&gt; Round:
+        &#34;&#34;&#34; Start a new round with available players. &#34;&#34;&#34;
+        # Firstly, organize players list so it is passed to the Round
+        # class in the playing order.
+        self._validate_dealer()
+        ordered_seats = self._item_to_beginning(self.seats, self.dealer)
+        players = [seat for seat in ordered_seats if seat is not None]
+
+        # Start a round
+        rnd = Round(players=players, n_starting_cards=self._N_STARTING_CARDS)
+        rnd.new()
+
+        return rnd</code></pre>
+</details>
+</section>
+<section>
+<h2 class="section-title" id="header-submodules">Sub-modules</h2>
+<dl>
+<dt><code class="name"><a title="bluff.chinese" href="chinese/index.html">bluff.chinese</a></code></dt>
+<dd>
+<div class="desc"><p>Bluff is a pythonic poker framework.</p></div>
+</dd>
+<dt><code class="name"><a title="bluff.holdem" href="holdem/index.html">bluff.holdem</a></code></dt>
+<dd>
+<div class="desc"><p>Abstract Texas Hold'em module.</p></div>
+</dd>
+</dl>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="bluff.Card"><code class="flex name class">
+<span>class <span class="ident">Card</span></span>
+<span>(</span><span>abbreviation: str)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>French-style deck card.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Card:
+    &#34;&#34;&#34; French-style deck card.&#34;&#34;&#34;
+
+    def __init__(self, abbreviation: str):
+        self._rank = self._abbreviation_to_rank(abbreviation)
+        self._suit = self._abbreviation_to_suit(abbreviation)
+        self._numerical_rank = self._rank_to_numerical(self._rank)
+
+    def __repr__(self):
+        return self.rank + self.suit
+
+    def __str__(self):
+        return self.__repr__()
+
+    def __eq__(self, other):
+        return self.rank == other.rank and self.suit == other.suit
+
+    @property
+    def rank(self) -&gt; str:
+        &#34;&#34;&#34; Get the card rank. &#34;&#34;&#34;
+        return self._rank
+
+    @property
+    def suit(self) -&gt; str:
+        &#34;&#34;&#34; Get the card suit. &#34;&#34;&#34;
+        return self._suit
+
+    @property
+    def numerical_rank(self) -&gt; int:
+        &#34;&#34;&#34; Get the card numerical rank. &#34;&#34;&#34;
+        return self._numerical_rank
+
+    @property
+    def hex_rank(self) -&gt; str:
+        &#34;&#34;&#34; Get the card alpha numerical rank (hexadecimal) &#34;&#34;&#34;
+        return np.base_repr(self.numerical_rank, 16)
+
+    @staticmethod
+    def _abbreviation_to_rank(card_abbreviation: str) -&gt; str:
+        &#34;&#34;&#34; Get the rank from the card abbreviation. &#34;&#34;&#34;
+        rank = card_abbreviation[0].upper()
+        valid = [&#34;2&#34;, &#34;3&#34;, &#34;4&#34;, &#34;5&#34;, &#34;6&#34;, &#34;7&#34;, &#34;8&#34;, &#34;9&#34;, &#34;T&#34;, &#34;J&#34;, &#34;Q&#34;, &#34;K&#34;, &#34;A&#34;]
+        if rank not in valid:
+            raise ValueError(f&#34;&#39;{card_abbreviation}&#39; is not a valid card abbreviation.&#34;)
+        return rank
+
+    @staticmethod
+    def _abbreviation_to_suit(card_abbreviation: str) -&gt; str:
+        &#34;&#34;&#34; Get the suit from the card abbreviation. &#34;&#34;&#34;
+        if len(card_abbreviation) &gt; 2:
+            raise ValueError(f&#34;&#39;{card_abbreviation}&#39; is not a valid card abbreviation.&#34;)
+        suit = card_abbreviation[-1].lower()
+        valid = [&#34;s&#34;, &#34;h&#34;, &#34;c&#34;, &#34;d&#34;]
+        if suit not in valid:
+            raise ValueError(f&#34;&#39;{card_abbreviation}&#39; is not a valid card abbreviation.&#34;)
+        return suit
+
+    @staticmethod
+    def _rank_to_numerical(rank: str) -&gt; int:
+        &#34;&#34;&#34; Get the numerical rank from an alpha-numerical rank. &#34;&#34;&#34;
+        numbers = {&#34;T&#34;: &#34;10&#34;, &#34;J&#34;: &#34;11&#34;, &#34;Q&#34;: &#34;12&#34;, &#34;K&#34;: &#34;13&#34;, &#34;A&#34;: &#34;14&#34;}
+        if rank in numbers:
+            for key, value in numbers.items():
+                if key in rank:
+                    rank = rank.replace(key, value)
+        return int(rank)</code></pre>
+</details>
+<h3>Instance variables</h3>
+<dl>
+<dt id="bluff.Card.hex_rank"><code class="name">var <span class="ident">hex_rank</span> : str</code></dt>
+<dd>
+<div class="desc"><p>Get the card alpha numerical rank (hexadecimal)</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def hex_rank(self) -&gt; str:
+    &#34;&#34;&#34; Get the card alpha numerical rank (hexadecimal) &#34;&#34;&#34;
+    return np.base_repr(self.numerical_rank, 16)</code></pre>
+</details>
+</dd>
+<dt id="bluff.Card.numerical_rank"><code class="name">var <span class="ident">numerical_rank</span> : int</code></dt>
+<dd>
+<div class="desc"><p>Get the card numerical rank.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def numerical_rank(self) -&gt; int:
+    &#34;&#34;&#34; Get the card numerical rank. &#34;&#34;&#34;
+    return self._numerical_rank</code></pre>
+</details>
+</dd>
+<dt id="bluff.Card.rank"><code class="name">var <span class="ident">rank</span> : str</code></dt>
+<dd>
+<div class="desc"><p>Get the card rank.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def rank(self) -&gt; str:
+    &#34;&#34;&#34; Get the card rank. &#34;&#34;&#34;
+    return self._rank</code></pre>
+</details>
+</dd>
+<dt id="bluff.Card.suit"><code class="name">var <span class="ident">suit</span> : str</code></dt>
+<dd>
+<div class="desc"><p>Get the card suit.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def suit(self) -&gt; str:
+    &#34;&#34;&#34; Get the card suit. &#34;&#34;&#34;
+    return self._suit</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="bluff.Deck"><code class="flex name class">
+<span>class <span class="ident">Deck</span></span>
+<span>(</span><span>random_state=None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>French-style deck.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Deck:
+    &#34;&#34;&#34; French-style deck. &#34;&#34;&#34;
+
+    ranks: Sequence[str] = [
+        &#34;2&#34;,
+        &#34;3&#34;,
+        &#34;4&#34;,
+        &#34;5&#34;,
+        &#34;6&#34;,
+        &#34;7&#34;,
+        &#34;8&#34;,
+        &#34;9&#34;,
+        &#34;T&#34;,
+        &#34;J&#34;,
+        &#34;Q&#34;,
+        &#34;K&#34;,
+        &#34;A&#34;,
+    ]
+    suits: Sequence[str] = [&#34;s&#34;, &#34;h&#34;, &#34;c&#34;, &#34;d&#34;]
+
+    def __init__(self, random_state=None):
+        self._cards: List[Card] = []
+        self.set_and_shuffle(random_state)
+
+    def __len__(self):
+        return len(self._cards)
+
+    def __iter__(self):
+        return self._cards
+
+    @property
+    def cards(self):
+        &#34;&#34;&#34; Get deck cards. &#34;&#34;&#34;
+        return self._cards
+
+    def set_and_shuffle(self, random_state=None):
+        &#34;&#34;&#34; Set the deck cards and shuffle. &#34;&#34;&#34;
+        self._cards = [
+            Card(rank + suit)
+            for rank, suit in itertools.product(self.ranks, self.suits)
+        ]
+        # pylint: disable=E1101
+        random_state = np.random.RandomState(random_state)
+        random_state.shuffle(self._cards)
+
+    def draw(self) -&gt; Card:
+        &#34;&#34;&#34; Draw a card. &#34;&#34;&#34;
+        try:
+            return self._cards.pop(-1)
+        except IndexError:
+            raise NotEnoughCardsError(&#34;There are no cards left in the deck.&#34;)</code></pre>
+</details>
+<h3>Class variables</h3>
+<dl>
+<dt id="bluff.Deck.ranks"><code class="name">var <span class="ident">ranks</span> : Sequence[str]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="bluff.Deck.suits"><code class="name">var <span class="ident">suits</span> : Sequence[str]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Instance variables</h3>
+<dl>
+<dt id="bluff.Deck.cards"><code class="name">var <span class="ident">cards</span></code></dt>
+<dd>
+<div class="desc"><p>Get deck cards.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def cards(self):
+    &#34;&#34;&#34; Get deck cards. &#34;&#34;&#34;
+    return self._cards</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="bluff.Deck.draw"><code class="name flex">
+<span>def <span class="ident">draw</span></span>(<span>self) ‑> <a title="bluff.Card" href="#bluff.Card">Card</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Draw a card.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def draw(self) -&gt; Card:
+    &#34;&#34;&#34; Draw a card. &#34;&#34;&#34;
+    try:
+        return self._cards.pop(-1)
+    except IndexError:
+        raise NotEnoughCardsError(&#34;There are no cards left in the deck.&#34;)</code></pre>
+</details>
+</dd>
+<dt id="bluff.Deck.set_and_shuffle"><code class="name flex">
+<span>def <span class="ident">set_and_shuffle</span></span>(<span>self, random_state=None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Set the deck cards and shuffle.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def set_and_shuffle(self, random_state=None):
+    &#34;&#34;&#34; Set the deck cards and shuffle. &#34;&#34;&#34;
+    self._cards = [
+        Card(rank + suit)
+        for rank, suit in itertools.product(self.ranks, self.suits)
+    ]
+    # pylint: disable=E1101
+    random_state = np.random.RandomState(random_state)
+    random_state.shuffle(self._cards)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="bluff.Hand"><code class="flex name class">
+<span>class <span class="ident">Hand</span></span>
+<span>(</span><span>*args: Union[<a title="bluff.Card" href="#bluff.Card">Card</a>, str])</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Poker hand. Formed by Card objects.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Hand:
+    &#34;&#34;&#34; Poker hand. Formed by Card objects. &#34;&#34;&#34;
+
+    def __init__(self, *args: Union[Card, str]):
+        self._ranks: List[str] = []
+        self._suits: List[str] = []
+        self._numerical_ranks: List[int] = []
+        self._hex_ranks: List[str] = []
+        self._cards: List[Card] = []
+
+        self.add(*args)
+
+    def __repr__(self):
+        return &#34; &#34;.join(sorted([str(card) for card in self.cards]))
+
+    def __str__(self):
+        return self.__repr__()
+
+    def __len__(self):
+        return len(self.cards)
+
+    def __getitem__(self, item):
+        return self.cards[item]
+
+    def __setitem__(self, key, value: Card):
+        self._cards[key] = value
+        self._ranks[key] = value.rank
+        self._suits[key] = value.suit
+        self._numerical_ranks[key] = value.numerical_rank
+        self._hex_ranks[key] = value.hex_rank
+
+    def __delitem__(self, key):
+        self.cards.pop(key)
+        self.ranks.pop(key)
+        self.suits.pop(key)
+        self.numerical_ranks.pop(key)
+        self.hex_ranks.pop(key)
+
+    def __contains__(self, item):
+        return item in self._cards
+
+    @property
+    def ranks(self) -&gt; List[str]:
+        &#34;&#34;&#34; Get hand ranks. &#34;&#34;&#34;
+        return self._ranks
+
+    @property
+    def suits(self) -&gt; List[str]:
+        &#34;&#34;&#34; Get hand suits. &#34;&#34;&#34;
+        return self._suits
+
+    @property
+    def numerical_ranks(self) -&gt; List[int]:
+        &#34;&#34;&#34; Get hand numerical ranks. &#34;&#34;&#34;
+        return self._numerical_ranks
+
+    @property
+    def hex_ranks(self) -&gt; List[str]:
+        &#34;&#34;&#34; Get hand alpha-numerical ranks (hexadecimal). &#34;&#34;&#34;
+        return self._hex_ranks
+
+    @property
+    def cards(self) -&gt; List[Card]:
+        &#34;&#34;&#34; Get hand cards. &#34;&#34;&#34;
+        return self._cards
+
+    @property
+    def value(self) -&gt; int:
+        &#34;&#34;&#34;
+        Get the numerical value of the hand. The bigger the value, the better the hand.
+        &#34;&#34;&#34;
+        value = &#34;&#34;
+
+        value = self._high_card() + value
+        value = self._pair() + value
+        value = self._two_pairs() + value
+        value = self._three_of_a_kind() + value
+        value = self._straight() + value
+        value = self._flush() + value
+        value = self._full_house() + value
+        value = self._four_of_a_kind() + value
+        value = self._straight_flush() + value
+
+        value = self._compensate_missing_cards_value(len(self), value)
+        value = self._compensate_extra_cards_value(len(self), value)
+
+        return int(value, 16)
+
+    @property
+    def name(self) -&gt; str:
+        &#34;&#34;&#34; Get ranking name of the hand. &#34;&#34;&#34;
+
+        names = [
+            &#34;high_card&#34;,
+            &#34;pair&#34;,
+            &#34;two_pairs&#34;,
+            &#34;three_of_a_kind&#34;,
+            &#34;straight&#34;,
+            &#34;flush&#34;,
+            &#34;full_house&#34;,
+            &#34;four_of_a_kind&#34;,
+            &#34;straight_flush&#34;,
+            &#34;royal_straight_flush&#34;,
+        ]
+        for name in names:
+            if getattr(self, f&#34;is_{name}&#34;)():
+                return name
+        raise ValueError(&#34;Hand has unexpected value.&#34;)
+
+    def _args_to_cards(self, *args: Union[Card, str]) -&gt; List[Card]:
+        &#34;&#34;&#34; Parse class arguments to Cards instances. &#34;&#34;&#34;
+        # Separate args if the user used a concatenated argument.
+        cards = self._separate_concatenated_cards(*args)
+        # Create cards instances if the user used string arguments.
+        return [Card(card) if isinstance(card, str) else card for card in cards]
+
+    def _separate_concatenated_cards(self, *args: Union[Card, str]) -&gt; Iterable[str]:
+        &#34;&#34;&#34; Separate concatenated cards repr in a argument. &#34;&#34;&#34;
+        nested = [
+            re.findall(r&#34;[2-9TJQKA][shcd]&#34;, card) if isinstance(card, str) else card
+            for card in args
+        ]
+        flat = self._flatten(nested)
+        return flat
+
+    @staticmethod
+    def _flatten(i: Iterable) -&gt; Iterable:
+        &#34;&#34;&#34; Flatten an irregular iterable. &#34;&#34;&#34;
+        for val in i:
+            # pylint: disable=W1116
+            if isinstance(val, Iterable):
+                yield from val
+            else:
+                yield val
+
+    def add(self, *args: Union[Card, str]):
+        &#34;&#34;&#34; Add cards to the hands. &#34;&#34;&#34;
+        cards = self._args_to_cards(*args)
+        self._ranks += [card.rank for card in cards]
+        self._suits += [card.suit for card in cards]
+        self._numerical_ranks += [card.numerical_rank for card in cards]
+        self._hex_ranks += [
+            np.base_repr(card.numerical_rank, 16)
+            if card.numerical_rank &gt; 9
+            else card.rank
+            for card in cards
+        ]
+        self._cards += cards
+
+    @staticmethod
+    def _find_repeated_ranks(ranks: Sequence, reps: int) -&gt; set:
+        &#34;&#34;&#34; Find ranks that are repeated a certain number of times in a hand. &#34;&#34;&#34;
+        return {rank for rank in ranks if ranks.count(rank) == reps}
+
+    # The next methods are useful for the value property only. They
+    # work by transforming a hand in a huge integer number. The bigger
+    # the number, the stronger the hand. Bellow the construction of this
+    # number is better explained.
+
+    # Each pair of letter bellow represent a numerical rank. For
+    # example: 02 stands for the deuce, while 11 stands for the Jack.
+
+    # In order to have only 1-dig numbers I&#39;ll work with hexadecimal.
+
+    # Every type of hand takes its magnitude multiplied for the
+    # numerical rank. The integer formation is bellow.
+    # ABCCDEFGGHIIIII
+    # A - Straight Flush
+    # B - Quads
+    # C - Full House
+    # D - Flush
+    # E - Straight
+    # F - Trips
+    # G - Two Pair
+    # H - Pair
+    # I - High Card (Actually, the rank of every card)
+
+    # In a nutshell, the next methods return a code used to form the
+    # hand value. This is also where all the logic for deciding the hand
+    # level lies.
+
+    def _high_card(self) -&gt; str:
+        &#34;&#34;&#34; Hand value code for a high card.&#34;&#34;&#34;
+        # Concatenate each cards value in a string, from the biggest to
+        # the smallest.
+        return &#34;&#34;.join(sorted(self.hex_ranks, reverse=True))
+
+    def _pair(self) -&gt; str:
+        &#34;&#34;&#34; Hand value code for a pair.&#34;&#34;&#34;
+        pairs = list(self._find_repeated_ranks(self.hex_ranks, 2))
+        if len(pairs) == 1:
+            return pairs[0]
+        return &#34;0&#34;
+
+    def _two_pairs(self) -&gt; str:
+        &#34;&#34;&#34; Hand value code for a two pair.&#34;&#34;&#34;
+        pairs = list(self._find_repeated_ranks(self.hex_ranks, 2))
+        if len(pairs) == 2:
+            return max(pairs) + min(pairs)
+        return &#34;00&#34;
+
+    def _three_of_a_kind(self) -&gt; str:
+        &#34;&#34;&#34; Hand value code for a three of a kind.&#34;&#34;&#34;
+        trips = list(self._find_repeated_ranks(self.hex_ranks, 3))
+        if trips:
+            return trips[0]
+        return &#34;0&#34;
+
+    def _straight(self) -&gt; str:
+        &#34;&#34;&#34; Hand value code for a straight.&#34;&#34;&#34;
+        # Work with base 10 numbers because more_itertools.consecutive_groups do work
+        # with hexadecimals.
+        aces_count = self.numerical_ranks.count(14)
+        hand = set(self.numerical_ranks + [1] * aces_count)
+
+        # This next comparisons only work when the Hand is not empty.
+        # When the list is empty, it should return no value.
+        if not hand:
+            return &#34;0&#34;
+
+        groups = [list(group) for group in more_itertools.consecutive_groups(hand)]
+        longest_sequence = max([group[-1] - group[0] for group in groups]) + 1
+
+        if longest_sequence &gt;= 5:
+            largest_value = max([max(group) for group in groups if len(group) &gt;= 5])
+            return np.base_repr(largest_value, 16)  # Convert to hex.
+        return &#34;0&#34;
+
+    def _flush(self) -&gt; str:
+        &#34;&#34;&#34; Hand value code for a flush.&#34;&#34;&#34;
+        suits = {suit for suit in self.suits if self.suits.count(suit) &gt;= 5}
+        if len(suits) == 0:
+            return &#34;0&#34;
+        ranks = [r for r, s in zip(self.numerical_ranks, self.suits) if s in suits]
+        return np.base_repr(max(ranks), 16)
+
+    def _full_house(self) -&gt; str:
+        &#34;&#34;&#34; Hand value code for a full house.&#34;&#34;&#34;
+        trips = list(self._find_repeated_ranks(self.hex_ranks, 3))
+        pair = list(self._find_repeated_ranks(self.hex_ranks, 2))
+        if trips and pair:
+            return trips[0] + pair[0]
+        return &#34;00&#34;
+
+    def _four_of_a_kind(self) -&gt; str:
+        &#34;&#34;&#34; Hand value code for a four of a kind.&#34;&#34;&#34;
+        quads = list(self._find_repeated_ranks(self.hex_ranks, 4))
+        if quads:
+            return quads[0]
+        return &#34;0&#34;
+
+    def _straight_flush(self) -&gt; str:
+        &#34;&#34;&#34; Hand value code for a straight flush.&#34;&#34;&#34;
+        flush = self._flush()
+        if flush == &#34;0&#34;:
+            return &#34;0&#34;
+        straight = self._straight()
+        if straight == &#34;0&#34;:
+            return &#34;0&#34;
+        return straight
+
+    @staticmethod
+    def _compensate_missing_cards_value(n_cards: int, value: str) -&gt; str:
+        &#34;&#34;&#34; Add trailing zeros to the value in order to compensate missing cards. &#34;&#34;&#34;
+        if n_cards &lt; 5:
+            missing = 5 - n_cards
+            return value + &#34;0&#34; * missing
+        return value
+
+    @staticmethod
+    def _compensate_extra_cards_value(n_cards: int, value: str) -&gt; str:
+        &#34;&#34;&#34; Remove trailing zeros to the value in order to compensate extra cards. &#34;&#34;&#34;
+        if n_cards &gt; 5:
+            extras = n_cards - 5
+            return value[: -1 * extras]
+        return value
+
+    def is_high_card(self) -&gt; bool:
+        &#34;&#34;&#34; Check if the hand is a high card. &#34;&#34;&#34;
+        return self.value &lt; int(&#34;E&#34; * 5, 16)
+
+    def is_pair(self) -&gt; bool:
+        &#34;&#34;&#34; Check if the hand is a pair. &#34;&#34;&#34;
+        return int(&#34;E&#34; * 5, 16) &lt; self.value &lt; int(&#34;E&#34; * 6, 16)
+
+    def is_two_pairs(self) -&gt; bool:
+        &#34;&#34;&#34; Check if the hand is a two pair. &#34;&#34;&#34;
+        return int(&#34;E&#34; * 6, 16) &lt; self.value &lt; int(&#34;E&#34; * 8, 16)
+
+    def is_three_of_a_kind(self) -&gt; bool:
+        &#34;&#34;&#34; Check if the hand is a three of a kind. &#34;&#34;&#34;
+        return int(&#34;E&#34; * 8, 16) &lt; self.value &lt; int(&#34;E&#34; * 9, 16)
+
+    def is_straight(self) -&gt; bool:
+        &#34;&#34;&#34; Check if the hand is a straight. &#34;&#34;&#34;
+        return int(&#34;E&#34; * 9, 16) &lt; self.value &lt; int(&#34;E&#34; * 10, 16)
+
+    def is_flush(self) -&gt; bool:
+        &#34;&#34;&#34; Check if the hand is a flush. &#34;&#34;&#34;
+        return int(&#34;E&#34; * 10, 16) &lt; self.value &lt; int(&#34;E&#34; * 11, 16)
+
+    def is_full_house(self) -&gt; bool:
+        &#34;&#34;&#34; Check if the hand is a full house. &#34;&#34;&#34;
+        return int(&#34;E&#34; * 11, 16) &lt; self.value &lt; int(&#34;E&#34; * 13, 16)
+
+    def is_four_of_a_kind(self) -&gt; bool:
+        &#34;&#34;&#34; Check if the hand is a four of a kind. &#34;&#34;&#34;
+        return int(&#34;E&#34; * 13, 16) &lt; self.value &lt; int(&#34;E&#34; * 14, 16)
+
+    def is_straight_flush(self) -&gt; bool:
+        &#34;&#34;&#34; Check if the hand is a straight flush. &#34;&#34;&#34;
+        return int(&#34;E&#34; * 14, 16) &lt; self.value &lt; int(&#34;D&#34; * 15, 16)
+
+    def is_royal_straight_flush(self) -&gt; bool:
+        &#34;&#34;&#34; Check if the hand is a royal straight flush. &#34;&#34;&#34;
+        return self.value &gt; int(&#34;D&#34; * 15, 16)</code></pre>
+</details>
+<h3>Subclasses</h3>
+<ul class="hlist">
+<li><a title="bluff.chinese.Hand" href="chinese/index.html#bluff.chinese.Hand">Hand</a></li>
+</ul>
+<h3>Instance variables</h3>
+<dl>
+<dt id="bluff.Hand.cards"><code class="name">var <span class="ident">cards</span> : List[<a title="bluff.Card" href="#bluff.Card">Card</a>]</code></dt>
+<dd>
+<div class="desc"><p>Get hand cards.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def cards(self) -&gt; List[Card]:
+    &#34;&#34;&#34; Get hand cards. &#34;&#34;&#34;
+    return self._cards</code></pre>
+</details>
+</dd>
+<dt id="bluff.Hand.hex_ranks"><code class="name">var <span class="ident">hex_ranks</span> : List[str]</code></dt>
+<dd>
+<div class="desc"><p>Get hand alpha-numerical ranks (hexadecimal).</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def hex_ranks(self) -&gt; List[str]:
+    &#34;&#34;&#34; Get hand alpha-numerical ranks (hexadecimal). &#34;&#34;&#34;
+    return self._hex_ranks</code></pre>
+</details>
+</dd>
+<dt id="bluff.Hand.name"><code class="name">var <span class="ident">name</span> : str</code></dt>
+<dd>
+<div class="desc"><p>Get ranking name of the hand.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def name(self) -&gt; str:
+    &#34;&#34;&#34; Get ranking name of the hand. &#34;&#34;&#34;
+
+    names = [
+        &#34;high_card&#34;,
+        &#34;pair&#34;,
+        &#34;two_pairs&#34;,
+        &#34;three_of_a_kind&#34;,
+        &#34;straight&#34;,
+        &#34;flush&#34;,
+        &#34;full_house&#34;,
+        &#34;four_of_a_kind&#34;,
+        &#34;straight_flush&#34;,
+        &#34;royal_straight_flush&#34;,
+    ]
+    for name in names:
+        if getattr(self, f&#34;is_{name}&#34;)():
+            return name
+    raise ValueError(&#34;Hand has unexpected value.&#34;)</code></pre>
+</details>
+</dd>
+<dt id="bluff.Hand.numerical_ranks"><code class="name">var <span class="ident">numerical_ranks</span> : List[int]</code></dt>
+<dd>
+<div class="desc"><p>Get hand numerical ranks.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def numerical_ranks(self) -&gt; List[int]:
+    &#34;&#34;&#34; Get hand numerical ranks. &#34;&#34;&#34;
+    return self._numerical_ranks</code></pre>
+</details>
+</dd>
+<dt id="bluff.Hand.ranks"><code class="name">var <span class="ident">ranks</span> : List[str]</code></dt>
+<dd>
+<div class="desc"><p>Get hand ranks.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def ranks(self) -&gt; List[str]:
+    &#34;&#34;&#34; Get hand ranks. &#34;&#34;&#34;
+    return self._ranks</code></pre>
+</details>
+</dd>
+<dt id="bluff.Hand.suits"><code class="name">var <span class="ident">suits</span> : List[str]</code></dt>
+<dd>
+<div class="desc"><p>Get hand suits.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def suits(self) -&gt; List[str]:
+    &#34;&#34;&#34; Get hand suits. &#34;&#34;&#34;
+    return self._suits</code></pre>
+</details>
+</dd>
+<dt id="bluff.Hand.value"><code class="name">var <span class="ident">value</span> : int</code></dt>
+<dd>
+<div class="desc"><p>Get the numerical value of the hand. The bigger the value, the better the hand.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def value(self) -&gt; int:
+    &#34;&#34;&#34;
+    Get the numerical value of the hand. The bigger the value, the better the hand.
+    &#34;&#34;&#34;
+    value = &#34;&#34;
+
+    value = self._high_card() + value
+    value = self._pair() + value
+    value = self._two_pairs() + value
+    value = self._three_of_a_kind() + value
+    value = self._straight() + value
+    value = self._flush() + value
+    value = self._full_house() + value
+    value = self._four_of_a_kind() + value
+    value = self._straight_flush() + value
+
+    value = self._compensate_missing_cards_value(len(self), value)
+    value = self._compensate_extra_cards_value(len(self), value)
+
+    return int(value, 16)</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="bluff.Hand.add"><code class="name flex">
+<span>def <span class="ident">add</span></span>(<span>self, *args: Union[<a title="bluff.Card" href="#bluff.Card">Card</a>, str])</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Add cards to the hands.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def add(self, *args: Union[Card, str]):
+    &#34;&#34;&#34; Add cards to the hands. &#34;&#34;&#34;
+    cards = self._args_to_cards(*args)
+    self._ranks += [card.rank for card in cards]
+    self._suits += [card.suit for card in cards]
+    self._numerical_ranks += [card.numerical_rank for card in cards]
+    self._hex_ranks += [
+        np.base_repr(card.numerical_rank, 16)
+        if card.numerical_rank &gt; 9
+        else card.rank
+        for card in cards
+    ]
+    self._cards += cards</code></pre>
+</details>
+</dd>
+<dt id="bluff.Hand.is_flush"><code class="name flex">
+<span>def <span class="ident">is_flush</span></span>(<span>self) ‑> bool</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Check if the hand is a flush.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def is_flush(self) -&gt; bool:
+    &#34;&#34;&#34; Check if the hand is a flush. &#34;&#34;&#34;
+    return int(&#34;E&#34; * 10, 16) &lt; self.value &lt; int(&#34;E&#34; * 11, 16)</code></pre>
+</details>
+</dd>
+<dt id="bluff.Hand.is_four_of_a_kind"><code class="name flex">
+<span>def <span class="ident">is_four_of_a_kind</span></span>(<span>self) ‑> bool</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Check if the hand is a four of a kind.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def is_four_of_a_kind(self) -&gt; bool:
+    &#34;&#34;&#34; Check if the hand is a four of a kind. &#34;&#34;&#34;
+    return int(&#34;E&#34; * 13, 16) &lt; self.value &lt; int(&#34;E&#34; * 14, 16)</code></pre>
+</details>
+</dd>
+<dt id="bluff.Hand.is_full_house"><code class="name flex">
+<span>def <span class="ident">is_full_house</span></span>(<span>self) ‑> bool</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Check if the hand is a full house.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def is_full_house(self) -&gt; bool:
+    &#34;&#34;&#34; Check if the hand is a full house. &#34;&#34;&#34;
+    return int(&#34;E&#34; * 11, 16) &lt; self.value &lt; int(&#34;E&#34; * 13, 16)</code></pre>
+</details>
+</dd>
+<dt id="bluff.Hand.is_high_card"><code class="name flex">
+<span>def <span class="ident">is_high_card</span></span>(<span>self) ‑> bool</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Check if the hand is a high card.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def is_high_card(self) -&gt; bool:
+    &#34;&#34;&#34; Check if the hand is a high card. &#34;&#34;&#34;
+    return self.value &lt; int(&#34;E&#34; * 5, 16)</code></pre>
+</details>
+</dd>
+<dt id="bluff.Hand.is_pair"><code class="name flex">
+<span>def <span class="ident">is_pair</span></span>(<span>self) ‑> bool</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Check if the hand is a pair.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def is_pair(self) -&gt; bool:
+    &#34;&#34;&#34; Check if the hand is a pair. &#34;&#34;&#34;
+    return int(&#34;E&#34; * 5, 16) &lt; self.value &lt; int(&#34;E&#34; * 6, 16)</code></pre>
+</details>
+</dd>
+<dt id="bluff.Hand.is_royal_straight_flush"><code class="name flex">
+<span>def <span class="ident">is_royal_straight_flush</span></span>(<span>self) ‑> bool</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Check if the hand is a royal straight flush.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def is_royal_straight_flush(self) -&gt; bool:
+    &#34;&#34;&#34; Check if the hand is a royal straight flush. &#34;&#34;&#34;
+    return self.value &gt; int(&#34;D&#34; * 15, 16)</code></pre>
+</details>
+</dd>
+<dt id="bluff.Hand.is_straight"><code class="name flex">
+<span>def <span class="ident">is_straight</span></span>(<span>self) ‑> bool</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Check if the hand is a straight.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def is_straight(self) -&gt; bool:
+    &#34;&#34;&#34; Check if the hand is a straight. &#34;&#34;&#34;
+    return int(&#34;E&#34; * 9, 16) &lt; self.value &lt; int(&#34;E&#34; * 10, 16)</code></pre>
+</details>
+</dd>
+<dt id="bluff.Hand.is_straight_flush"><code class="name flex">
+<span>def <span class="ident">is_straight_flush</span></span>(<span>self) ‑> bool</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Check if the hand is a straight flush.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def is_straight_flush(self) -&gt; bool:
+    &#34;&#34;&#34; Check if the hand is a straight flush. &#34;&#34;&#34;
+    return int(&#34;E&#34; * 14, 16) &lt; self.value &lt; int(&#34;D&#34; * 15, 16)</code></pre>
+</details>
+</dd>
+<dt id="bluff.Hand.is_three_of_a_kind"><code class="name flex">
+<span>def <span class="ident">is_three_of_a_kind</span></span>(<span>self) ‑> bool</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Check if the hand is a three of a kind.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def is_three_of_a_kind(self) -&gt; bool:
+    &#34;&#34;&#34; Check if the hand is a three of a kind. &#34;&#34;&#34;
+    return int(&#34;E&#34; * 8, 16) &lt; self.value &lt; int(&#34;E&#34; * 9, 16)</code></pre>
+</details>
+</dd>
+<dt id="bluff.Hand.is_two_pairs"><code class="name flex">
+<span>def <span class="ident">is_two_pairs</span></span>(<span>self) ‑> bool</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Check if the hand is a two pair.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def is_two_pairs(self) -&gt; bool:
+    &#34;&#34;&#34; Check if the hand is a two pair. &#34;&#34;&#34;
+    return int(&#34;E&#34; * 6, 16) &lt; self.value &lt; int(&#34;E&#34; * 8, 16)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="bluff.NotEnoughCardsError"><code class="flex name class">
+<span>class <span class="ident">NotEnoughCardsError</span></span>
+<span>(</span><span>...)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Raise when the deck runs out of cards.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class NotEnoughCardsError(Exception):
+    &#34;&#34;&#34; Raise when the deck runs out of cards. &#34;&#34;&#34;</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>builtins.Exception</li>
+<li>builtins.BaseException</li>
+</ul>
+</dd>
+<dt id="bluff.Player"><code class="flex name class">
+<span>class <span class="ident">Player</span></span>
+<span>(</span><span>name: str, chips: float)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Poker player.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Player:
+    &#34;&#34;&#34; Poker player. &#34;&#34;&#34;
+
+    def __init__(self, name: str, chips: float):
+        self._name: str = name
+        self._chips: float = self._validate_chips(chips)
+        self._hand: Hand = Hand()
+
+    def __repr__(self):
+        return self._name
+
+    @property
+    def name(self) -&gt; str:
+        &#34;&#34;&#34; Get player name. &#34;&#34;&#34;
+        return self._name
+
+    @property
+    def chips(self) -&gt; float:
+        &#34;&#34;&#34; Get or set player chips amount. &#34;&#34;&#34;
+        return self._chips
+
+    @chips.setter
+    def chips(self, value: float):
+        value = self._validate_chips(value)
+        self._chips = value
+
+    @property
+    def hand(self) -&gt; Hand:
+        &#34;&#34;&#34; Get or set player hand. &#34;&#34;&#34;
+        return self._hand
+
+    @hand.setter
+    def hand(self, value: Hand):
+        self._hand = value
+
+    @staticmethod
+    def _validate_chips(chips: float) -&gt; float:
+        &#34;&#34;&#34; Validate player chips amount. &#34;&#34;&#34;
+        if chips &lt; 0:
+            raise ValueError(&#34;Chips must equal or greater to zero.&#34;)
+        return chips
+
+    def add_cards(self, cards: Iterable[Card]):
+        &#34;&#34;&#34; Add cards to a player hand. &#34;&#34;&#34;
+        for card in cards:
+            self.hand.add(card)
+
+    def clear_hand(self):
+        &#34;&#34;&#34;&#34; Clear a player hand&#34;&#34;&#34;
+        self.hand = Hand()</code></pre>
+</details>
+<h3>Subclasses</h3>
+<ul class="hlist">
+<li><a title="bluff.chinese.Player" href="chinese/index.html#bluff.chinese.Player">Player</a></li>
+</ul>
+<h3>Instance variables</h3>
+<dl>
+<dt id="bluff.Player.chips"><code class="name">var <span class="ident">chips</span> : float</code></dt>
+<dd>
+<div class="desc"><p>Get or set player chips amount.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def chips(self) -&gt; float:
+    &#34;&#34;&#34; Get or set player chips amount. &#34;&#34;&#34;
+    return self._chips</code></pre>
+</details>
+</dd>
+<dt id="bluff.Player.hand"><code class="name">var <span class="ident">hand</span> : <a title="bluff.Hand" href="#bluff.Hand">Hand</a></code></dt>
+<dd>
+<div class="desc"><p>Get or set player hand.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def hand(self) -&gt; Hand:
+    &#34;&#34;&#34; Get or set player hand. &#34;&#34;&#34;
+    return self._hand</code></pre>
+</details>
+</dd>
+<dt id="bluff.Player.name"><code class="name">var <span class="ident">name</span> : str</code></dt>
+<dd>
+<div class="desc"><p>Get player name.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def name(self) -&gt; str:
+    &#34;&#34;&#34; Get player name. &#34;&#34;&#34;
+    return self._name</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="bluff.Player.add_cards"><code class="name flex">
+<span>def <span class="ident">add_cards</span></span>(<span>self, cards: Iterable[<a title="bluff.Card" href="#bluff.Card">Card</a>])</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Add cards to a player hand.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def add_cards(self, cards: Iterable[Card]):
+    &#34;&#34;&#34; Add cards to a player hand. &#34;&#34;&#34;
+    for card in cards:
+        self.hand.add(card)</code></pre>
+</details>
+</dd>
+<dt id="bluff.Player.clear_hand"><code class="name flex">
+<span>def <span class="ident">clear_hand</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>" Clear a player hand</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def clear_hand(self):
+    &#34;&#34;&#34;&#34; Clear a player hand&#34;&#34;&#34;
+    self.hand = Hand()</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="bluff.Poker"><code class="flex name class">
+<span>class <span class="ident">Poker</span></span>
+<span>(</span><span>n_seats: int = 9)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Abstract class for a bluff game.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Poker:
+    &#34;&#34;&#34; Abstract class for a bluff game. &#34;&#34;&#34;
+
+    _N_STARTING_CARDS: int = 5
+
+    def __init__(self, n_seats: int = 9):
+        self._seats: List[Optional[Player]] = [None] * n_seats
+        self._dealer = random.choice(range(n_seats))
+
+    @property
+    def seats(self) -&gt; List[Optional[Player]]:
+        &#34;&#34;&#34; Get list of seats. &#34;&#34;&#34;
+        return self._seats
+
+    @property
+    def dealer(self) -&gt; int:
+        &#34;&#34;&#34; Get dealer position. &#34;&#34;&#34;
+        return self._dealer
+
+    @dealer.setter
+    def dealer(self, value: int):
+        if value &gt;= len(self.seats):
+            raise ValueError(&#34;Dealer must be set to an existing seat.&#34;)
+        self._dealer = value
+
+    def add_player(self, player: Player, seat: int):
+        &#34;&#34;&#34; Add a player to a seat. &#34;&#34;&#34;
+        if self.seats[seat] is None:
+            self.seats[seat] = player
+        else:
+            raise SeatOccupiedError(f&#34;The seat {seat} is already occupied.&#34;)
+
+    def add_players(
+        self, players: Iterable[Player], seats: Optional[Iterable[int]] = None,
+    ):
+        &#34;&#34;&#34;
+        Add players to their seats. Use seats=None to choose seats
+        randomly.
+        &#34;&#34;&#34;
+        # When no seats are passed, chooses randomly.
+        if seats is None:
+            free_seats = [seat for seat, player in enumerate(self.seats) if not player]
+            seats = [self._random_pop(free_seats) for _ in players]
+        for player, seat in zip(players, seats):
+            self.add_player(player=player, seat=seat)
+
+    @staticmethod
+    def _random_pop(lst: list):
+        &#34;&#34;&#34; Randomly pop an item from a list.&#34;&#34;&#34;
+        return lst.pop(random.randrange(len(lst)))
+
+    def remove_player(self, seat: int):
+        &#34;&#34;&#34; Remove a player from a seat. &#34;&#34;&#34;
+        self.seats[seat] = None
+
+    @staticmethod
+    def _item_to_beginning(list_: list, index: int) -&gt; List:
+        &#34;&#34;&#34; Move an item to the beginning of a list. &#34;&#34;&#34;
+        return list_[index:] + list_[:index]
+
+    def _validate_dealer(self):
+        &#34;&#34;&#34; Find a valid position for the dealer. &#34;&#34;&#34;
+        # I sort the seats to put the dealer in the beginning so then I
+        # only have to add values to the seat number until I find a
+        # valid player. The move variable represents how  many seats the
+        # dealer button must move until it finds a valid player.
+        seats = self._item_to_beginning(self.seats, self.dealer)
+        move = 0
+        while seats[move] is None:
+            move += 1
+        self.dealer += move
+
+    def new_round(self) -&gt; Round:
+        &#34;&#34;&#34; Start a new round with available players. &#34;&#34;&#34;
+        # Firstly, organize players list so it is passed to the Round
+        # class in the playing order.
+        self._validate_dealer()
+        ordered_seats = self._item_to_beginning(self.seats, self.dealer)
+        players = [seat for seat in ordered_seats if seat is not None]
+
+        # Start a round
+        rnd = Round(players=players, n_starting_cards=self._N_STARTING_CARDS)
+        rnd.new()
+
+        return rnd</code></pre>
+</details>
+<h3>Subclasses</h3>
+<ul class="hlist">
+<li><a title="bluff.chinese.Poker" href="chinese/index.html#bluff.chinese.Poker">Poker</a></li>
+<li><a title="bluff.holdem.Poker" href="holdem/index.html#bluff.holdem.Poker">Poker</a></li>
+</ul>
+<h3>Instance variables</h3>
+<dl>
+<dt id="bluff.Poker.dealer"><code class="name">var <span class="ident">dealer</span> : int</code></dt>
+<dd>
+<div class="desc"><p>Get dealer position.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def dealer(self) -&gt; int:
+    &#34;&#34;&#34; Get dealer position. &#34;&#34;&#34;
+    return self._dealer</code></pre>
+</details>
+</dd>
+<dt id="bluff.Poker.seats"><code class="name">var <span class="ident">seats</span> : List[Union[<a title="bluff.Player" href="#bluff.Player">Player</a>, NoneType]]</code></dt>
+<dd>
+<div class="desc"><p>Get list of seats.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def seats(self) -&gt; List[Optional[Player]]:
+    &#34;&#34;&#34; Get list of seats. &#34;&#34;&#34;
+    return self._seats</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="bluff.Poker.add_player"><code class="name flex">
+<span>def <span class="ident">add_player</span></span>(<span>self, player: <a title="bluff.Player" href="#bluff.Player">Player</a>, seat: int)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Add a player to a seat.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def add_player(self, player: Player, seat: int):
+    &#34;&#34;&#34; Add a player to a seat. &#34;&#34;&#34;
+    if self.seats[seat] is None:
+        self.seats[seat] = player
+    else:
+        raise SeatOccupiedError(f&#34;The seat {seat} is already occupied.&#34;)</code></pre>
+</details>
+</dd>
+<dt id="bluff.Poker.add_players"><code class="name flex">
+<span>def <span class="ident">add_players</span></span>(<span>self, players: Iterable[<a title="bluff.Player" href="#bluff.Player">Player</a>], seats: Union[Iterable[int], NoneType] = None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Add players to their seats. Use seats=None to choose seats
+randomly.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def add_players(
+    self, players: Iterable[Player], seats: Optional[Iterable[int]] = None,
+):
+    &#34;&#34;&#34;
+    Add players to their seats. Use seats=None to choose seats
+    randomly.
+    &#34;&#34;&#34;
+    # When no seats are passed, chooses randomly.
+    if seats is None:
+        free_seats = [seat for seat, player in enumerate(self.seats) if not player]
+        seats = [self._random_pop(free_seats) for _ in players]
+    for player, seat in zip(players, seats):
+        self.add_player(player=player, seat=seat)</code></pre>
+</details>
+</dd>
+<dt id="bluff.Poker.new_round"><code class="name flex">
+<span>def <span class="ident">new_round</span></span>(<span>self) ‑> <a title="bluff.Round" href="#bluff.Round">Round</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Start a new round with available players.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def new_round(self) -&gt; Round:
+    &#34;&#34;&#34; Start a new round with available players. &#34;&#34;&#34;
+    # Firstly, organize players list so it is passed to the Round
+    # class in the playing order.
+    self._validate_dealer()
+    ordered_seats = self._item_to_beginning(self.seats, self.dealer)
+    players = [seat for seat in ordered_seats if seat is not None]
+
+    # Start a round
+    rnd = Round(players=players, n_starting_cards=self._N_STARTING_CARDS)
+    rnd.new()
+
+    return rnd</code></pre>
+</details>
+</dd>
+<dt id="bluff.Poker.remove_player"><code class="name flex">
+<span>def <span class="ident">remove_player</span></span>(<span>self, seat: int)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Remove a player from a seat.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def remove_player(self, seat: int):
+    &#34;&#34;&#34; Remove a player from a seat. &#34;&#34;&#34;
+    self.seats[seat] = None</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="bluff.Round"><code class="flex name class">
+<span>class <span class="ident">Round</span></span>
+<span>(</span><span>players: Sequence[<a title="bluff.Player" href="#bluff.Player">Player</a>], n_starting_cards: int = 5)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Poker game round.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Round:
+    &#34;&#34;&#34; Poker game round. &#34;&#34;&#34;
+
+    def __init__(self, players: Sequence[Player], n_starting_cards: int = 5):
+        self._players = players
+        self._deck = Deck()
+        self._n_starting_cards = n_starting_cards
+        self.new()
+
+    @property
+    def players(self) -&gt; Sequence[Player]:
+        &#34;&#34;&#34; Get or set round players. &#34;&#34;&#34;
+        return self._players
+
+    @players.setter
+    def players(self, value: Sequence[Player]):
+        self._players = value
+
+    @property
+    def deck(self) -&gt; Deck:
+        &#34;&#34;&#34; Get round deck. &#34;&#34;&#34;
+        return self._deck
+
+    @property
+    def n_starting_cards(self) -&gt; int:
+        &#34;&#34;&#34; Get round number of starting cards. &#34;&#34;&#34;
+        return self._n_starting_cards
+
+    def deal_cards(self, player: Player, n_cards: int):
+        &#34;&#34;&#34; Deal a number of cards to a single players. &#34;&#34;&#34;
+        cards = [self.deck.draw() for _ in range(n_cards)]
+        player.add_cards(cards)
+
+    def deal_cards_to_all(self, n_cards: int):
+        &#34;&#34;&#34; Deal cards to all players. &#34;&#34;&#34;
+        for player in self.players:
+            self.deal_cards(player=player, n_cards=n_cards)
+
+    def new(self):
+        &#34;&#34;&#34; Start a new round. &#34;&#34;&#34;
+        for player in self.players:
+            player.clear_hand()
+        self.deck.set_and_shuffle()
+        self.deal_cards_to_all(self.n_starting_cards)
+
+    def winner(self) -&gt; np.ndarray:
+        &#34;&#34;&#34; Evaluate the winner player. &#34;&#34;&#34;
+        return np.argmax([player.hand.value for player in self.players])</code></pre>
+</details>
+<h3>Instance variables</h3>
+<dl>
+<dt id="bluff.Round.deck"><code class="name">var <span class="ident">deck</span> : <a title="bluff.Deck" href="#bluff.Deck">Deck</a></code></dt>
+<dd>
+<div class="desc"><p>Get round deck.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def deck(self) -&gt; Deck:
+    &#34;&#34;&#34; Get round deck. &#34;&#34;&#34;
+    return self._deck</code></pre>
+</details>
+</dd>
+<dt id="bluff.Round.n_starting_cards"><code class="name">var <span class="ident">n_starting_cards</span> : int</code></dt>
+<dd>
+<div class="desc"><p>Get round number of starting cards.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def n_starting_cards(self) -&gt; int:
+    &#34;&#34;&#34; Get round number of starting cards. &#34;&#34;&#34;
+    return self._n_starting_cards</code></pre>
+</details>
+</dd>
+<dt id="bluff.Round.players"><code class="name">var <span class="ident">players</span> : Sequence[<a title="bluff.Player" href="#bluff.Player">Player</a>]</code></dt>
+<dd>
+<div class="desc"><p>Get or set round players.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def players(self) -&gt; Sequence[Player]:
+    &#34;&#34;&#34; Get or set round players. &#34;&#34;&#34;
+    return self._players</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="bluff.Round.deal_cards"><code class="name flex">
+<span>def <span class="ident">deal_cards</span></span>(<span>self, player: <a title="bluff.Player" href="#bluff.Player">Player</a>, n_cards: int)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Deal a number of cards to a single players.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def deal_cards(self, player: Player, n_cards: int):
+    &#34;&#34;&#34; Deal a number of cards to a single players. &#34;&#34;&#34;
+    cards = [self.deck.draw() for _ in range(n_cards)]
+    player.add_cards(cards)</code></pre>
+</details>
+</dd>
+<dt id="bluff.Round.deal_cards_to_all"><code class="name flex">
+<span>def <span class="ident">deal_cards_to_all</span></span>(<span>self, n_cards: int)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Deal cards to all players.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def deal_cards_to_all(self, n_cards: int):
+    &#34;&#34;&#34; Deal cards to all players. &#34;&#34;&#34;
+    for player in self.players:
+        self.deal_cards(player=player, n_cards=n_cards)</code></pre>
+</details>
+</dd>
+<dt id="bluff.Round.new"><code class="name flex">
+<span>def <span class="ident">new</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Start a new round.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def new(self):
+    &#34;&#34;&#34; Start a new round. &#34;&#34;&#34;
+    for player in self.players:
+        player.clear_hand()
+    self.deck.set_and_shuffle()
+    self.deal_cards_to_all(self.n_starting_cards)</code></pre>
+</details>
+</dd>
+<dt id="bluff.Round.winner"><code class="name flex">
+<span>def <span class="ident">winner</span></span>(<span>self) ‑> numpy.ndarray</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Evaluate the winner player.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def winner(self) -&gt; np.ndarray:
+    &#34;&#34;&#34; Evaluate the winner player. &#34;&#34;&#34;
+    return np.argmax([player.hand.value for player in self.players])</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="bluff.SeatOccupiedError"><code class="flex name class">
+<span>class <span class="ident">SeatOccupiedError</span></span>
+<span>(</span><span>...)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Raise when trying to put a player in an already occupied seat.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class SeatOccupiedError(Exception):
+    &#34;&#34;&#34; Raise when trying to put a player in an already occupied seat. &#34;&#34;&#34;</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>builtins.Exception</li>
+<li>builtins.BaseException</li>
+</ul>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3><a href="#header-submodules">Sub-modules</a></h3>
+<ul>
+<li><code><a title="bluff.chinese" href="chinese/index.html">bluff.chinese</a></code></li>
+<li><code><a title="bluff.holdem" href="holdem/index.html">bluff.holdem</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="bluff.Card" href="#bluff.Card">Card</a></code></h4>
+<ul class="">
+<li><code><a title="bluff.Card.hex_rank" href="#bluff.Card.hex_rank">hex_rank</a></code></li>
+<li><code><a title="bluff.Card.numerical_rank" href="#bluff.Card.numerical_rank">numerical_rank</a></code></li>
+<li><code><a title="bluff.Card.rank" href="#bluff.Card.rank">rank</a></code></li>
+<li><code><a title="bluff.Card.suit" href="#bluff.Card.suit">suit</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="bluff.Deck" href="#bluff.Deck">Deck</a></code></h4>
+<ul class="">
+<li><code><a title="bluff.Deck.cards" href="#bluff.Deck.cards">cards</a></code></li>
+<li><code><a title="bluff.Deck.draw" href="#bluff.Deck.draw">draw</a></code></li>
+<li><code><a title="bluff.Deck.ranks" href="#bluff.Deck.ranks">ranks</a></code></li>
+<li><code><a title="bluff.Deck.set_and_shuffle" href="#bluff.Deck.set_and_shuffle">set_and_shuffle</a></code></li>
+<li><code><a title="bluff.Deck.suits" href="#bluff.Deck.suits">suits</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="bluff.Hand" href="#bluff.Hand">Hand</a></code></h4>
+<ul class="">
+<li><code><a title="bluff.Hand.add" href="#bluff.Hand.add">add</a></code></li>
+<li><code><a title="bluff.Hand.cards" href="#bluff.Hand.cards">cards</a></code></li>
+<li><code><a title="bluff.Hand.hex_ranks" href="#bluff.Hand.hex_ranks">hex_ranks</a></code></li>
+<li><code><a title="bluff.Hand.is_flush" href="#bluff.Hand.is_flush">is_flush</a></code></li>
+<li><code><a title="bluff.Hand.is_four_of_a_kind" href="#bluff.Hand.is_four_of_a_kind">is_four_of_a_kind</a></code></li>
+<li><code><a title="bluff.Hand.is_full_house" href="#bluff.Hand.is_full_house">is_full_house</a></code></li>
+<li><code><a title="bluff.Hand.is_high_card" href="#bluff.Hand.is_high_card">is_high_card</a></code></li>
+<li><code><a title="bluff.Hand.is_pair" href="#bluff.Hand.is_pair">is_pair</a></code></li>
+<li><code><a title="bluff.Hand.is_royal_straight_flush" href="#bluff.Hand.is_royal_straight_flush">is_royal_straight_flush</a></code></li>
+<li><code><a title="bluff.Hand.is_straight" href="#bluff.Hand.is_straight">is_straight</a></code></li>
+<li><code><a title="bluff.Hand.is_straight_flush" href="#bluff.Hand.is_straight_flush">is_straight_flush</a></code></li>
+<li><code><a title="bluff.Hand.is_three_of_a_kind" href="#bluff.Hand.is_three_of_a_kind">is_three_of_a_kind</a></code></li>
+<li><code><a title="bluff.Hand.is_two_pairs" href="#bluff.Hand.is_two_pairs">is_two_pairs</a></code></li>
+<li><code><a title="bluff.Hand.name" href="#bluff.Hand.name">name</a></code></li>
+<li><code><a title="bluff.Hand.numerical_ranks" href="#bluff.Hand.numerical_ranks">numerical_ranks</a></code></li>
+<li><code><a title="bluff.Hand.ranks" href="#bluff.Hand.ranks">ranks</a></code></li>
+<li><code><a title="bluff.Hand.suits" href="#bluff.Hand.suits">suits</a></code></li>
+<li><code><a title="bluff.Hand.value" href="#bluff.Hand.value">value</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="bluff.NotEnoughCardsError" href="#bluff.NotEnoughCardsError">NotEnoughCardsError</a></code></h4>
+</li>
+<li>
+<h4><code><a title="bluff.Player" href="#bluff.Player">Player</a></code></h4>
+<ul class="">
+<li><code><a title="bluff.Player.add_cards" href="#bluff.Player.add_cards">add_cards</a></code></li>
+<li><code><a title="bluff.Player.chips" href="#bluff.Player.chips">chips</a></code></li>
+<li><code><a title="bluff.Player.clear_hand" href="#bluff.Player.clear_hand">clear_hand</a></code></li>
+<li><code><a title="bluff.Player.hand" href="#bluff.Player.hand">hand</a></code></li>
+<li><code><a title="bluff.Player.name" href="#bluff.Player.name">name</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="bluff.Poker" href="#bluff.Poker">Poker</a></code></h4>
+<ul class="two-column">
+<li><code><a title="bluff.Poker.add_player" href="#bluff.Poker.add_player">add_player</a></code></li>
+<li><code><a title="bluff.Poker.add_players" href="#bluff.Poker.add_players">add_players</a></code></li>
+<li><code><a title="bluff.Poker.dealer" href="#bluff.Poker.dealer">dealer</a></code></li>
+<li><code><a title="bluff.Poker.new_round" href="#bluff.Poker.new_round">new_round</a></code></li>
+<li><code><a title="bluff.Poker.remove_player" href="#bluff.Poker.remove_player">remove_player</a></code></li>
+<li><code><a title="bluff.Poker.seats" href="#bluff.Poker.seats">seats</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="bluff.Round" href="#bluff.Round">Round</a></code></h4>
+<ul class="two-column">
+<li><code><a title="bluff.Round.deal_cards" href="#bluff.Round.deal_cards">deal_cards</a></code></li>
+<li><code><a title="bluff.Round.deal_cards_to_all" href="#bluff.Round.deal_cards_to_all">deal_cards_to_all</a></code></li>
+<li><code><a title="bluff.Round.deck" href="#bluff.Round.deck">deck</a></code></li>
+<li><code><a title="bluff.Round.n_starting_cards" href="#bluff.Round.n_starting_cards">n_starting_cards</a></code></li>
+<li><code><a title="bluff.Round.new" href="#bluff.Round.new">new</a></code></li>
+<li><code><a title="bluff.Round.players" href="#bluff.Round.players">players</a></code></li>
+<li><code><a title="bluff.Round.winner" href="#bluff.Round.winner">winner</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="bluff.SeatOccupiedError" href="#bluff.SeatOccupiedError">SeatOccupiedError</a></code></h4>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.8.4</a>.</p>
+</footer>
+</body>
+</html>

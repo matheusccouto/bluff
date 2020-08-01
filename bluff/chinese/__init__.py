@@ -1,4 +1,4 @@
-""" Abstract chinese bluff module. """
+""" Bluff is a pythonic poker framework. """
 from typing import Dict
 
 import bluff
