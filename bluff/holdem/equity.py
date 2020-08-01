@@ -361,9 +361,9 @@ def eval_ranges(
     Evaluate chances of hero winning against each villain range.
 
     Args:
-        hero_hand:
-        villains_range:
-        times:
+        hero_hand: Hero hand
+        villains_range: Villain ranges
+        times: Number of times to evaluate.
 
     Returns:
         Sequence of equities against each villain.
