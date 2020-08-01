@@ -69,6 +69,8 @@ equity.eval_ranges("JTs", ("KQs ATo 99", "AKs QQ"), times=10000)
 equity.eval_ranges("JTs", (10, 30), times=10000)
 ```
 
+For more information see the [documentation](https://matheusccouto.github.io/bluff/).
+
 ## Contributing
 
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
