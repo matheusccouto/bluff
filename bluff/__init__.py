@@ -1,4 +1,4 @@
-""" An abstract Poker module. """
+""" Bluff is a pythonic poker framework. """
 
 import itertools
 import random

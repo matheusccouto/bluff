@@ -1,4 +1,4 @@
-""" Abstract Texas Hold'em module. """
+""" Bluff's Texas Hold'em sub-module. """
 
 import bluff
 

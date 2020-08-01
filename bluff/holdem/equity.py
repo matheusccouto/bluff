@@ -1,4 +1,4 @@
-""" Hand evaluation. """
+""" Texas Hold'em hand evaluation. """
 
 import itertools
 import os
