@@ -8,6 +8,8 @@ from typing import Union, List, Iterable, Sequence, Optional
 import more_itertools
 import numpy as np
 
+__version__ = "1.0.2"
+
 
 class NotEnoughCardsError(Exception):
     """ Raise when the deck runs out of cards. """
