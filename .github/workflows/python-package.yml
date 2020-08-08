@@ -38,3 +38,5 @@ jobs:
       working-directory: tests
       run: |
         pytest
+    - name: Coveralls Python
+      uses: AndreMiras/coveralls-python-action@v20200413
